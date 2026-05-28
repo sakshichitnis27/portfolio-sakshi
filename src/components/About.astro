@@ -75,13 +75,13 @@ import { profile } from '../data/portfolio';
   .about-section { background: transparent; }
 
   .about-container {
-    max-width: 1280px;
+    max-width: 1440px;
     margin: 0 auto;
   }
 
   .section-title {
     max-width: 980px;
-    font-size: clamp(2.8rem, 5vw, 5.25rem);
+    font-size: var(--fs-xl);
     font-weight: 700;
     letter-spacing: 0;
     margin-top: 0.75rem;
@@ -112,13 +112,13 @@ import { profile } from '../data/portfolio';
   }
 
   .bio-lead {
-    font-size: 1.15rem !important;
-    line-height: 1.5 !important;
+    font-size: var(--fs-md);
+    line-height: 1.5;
   }
 
   .bio-accent {
     font-weight: 700;
-    font-size: 1.15rem;
+    font-size: var(--fs-md);
     background: var(--nebula-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -127,7 +127,7 @@ import { profile } from '../data/portfolio';
   }
 
   .about-bio p {
-    font-size: 1rem;
+    font-size: var(--fs-base);
     color: rgba(255,255,255,0.62);
     line-height: 1.8;
   }
@@ -138,7 +138,7 @@ import { profile } from '../data/portfolio';
   }
 
   .bio-closing {
-    font-size: 0.88rem !important;
+    font-size: var(--fs-sm);
     color: rgba(255,255,255,0.9) !important;
     letter-spacing: 0.02em;
     border-left: 2px solid rgba(157,78,221,0.4);
@@ -174,14 +174,14 @@ import { profile } from '../data/portfolio';
   }
 
   .qf-label {
-    font-size: 0.62rem;
+    font-size: var(--fs-2xs);
     color: rgba(255,255,255,0.74);
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
   .qf-value {
-    font-size: 0.82rem;
+    font-size: var(--fs-sm);
     color: rgba(255,255,255,0.92);
     font-weight: 500;
   }
@@ -196,7 +196,7 @@ import { profile } from '../data/portfolio';
     display: flex;
     align-items: flex-start;
     gap: 0.65rem;
-    font-size: 0.82rem;
+    font-size: var(--fs-sm);
     color: rgba(255,255,255,0.84);
     line-height: 1.55;
     padding: 0.55rem 0.75rem;
@@ -214,7 +214,7 @@ import { profile } from '../data/portfolio';
 
   .trait-icon {
     color: var(--nebula-accent);
-    font-size: 0.65rem;
+    font-size: var(--fs-2xs);
     margin-top: 0.18em;
     flex-shrink: 0;
   }
@@ -224,10 +224,6 @@ import { profile } from '../data/portfolio';
   }
 
   @media (max-width: 640px) {
-    .section-title {
-      font-size: 2.35rem;
-    }
-
     .quick-facts {
       grid-template-columns: 1fr;
     }

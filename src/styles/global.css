@@ -22,6 +22,18 @@
   --nebula-accent-4: #23f6a5;
   --nebula-accent-5: #ffb84d;
   --nebula-gradient: linear-gradient(110deg, #ffffff 0%, var(--nebula-accent) 22%, var(--nebula-accent-2) 48%, var(--nebula-accent-3) 72%, var(--nebula-accent-4) 100%);
+
+  /* ── Type scale (10 sizes) ──────────────────────────── */
+  --fs-2xs:     0.625rem;                      /* ~10px  tiny tags, index badges, proof tags  */
+  --fs-xs:      0.75rem;                       /* ~12px  kickers, mono labels, tickers, footer */
+  --fs-sm:      0.875rem;                      /* ~14px  secondary body, meta values, traits   */
+  --fs-base:    1rem;                          /* ~16px  main body text                        */
+  --fs-md:      1.125rem;                      /* ~18px  lead text, section sub-headings       */
+  --fs-lg:      clamp(1.4rem, 2vw, 2rem);      /* ~24px  card headings                         */
+  --fs-xl:      clamp(2.2rem, 3.5vw, 3.8rem); /* ~38px  project node titles                   */
+  --fs-2xl:     clamp(2.8rem, 5vw, 5.25rem);  /* ~84px  section h2 headings                   */
+  --fs-3xl:     clamp(3.2rem, 7vw, 7rem);     /* ~112px contact CTA heading                   */
+  --fs-display: clamp(5rem, 7.5vw, 7.4rem);   /* ~118px hero display title                    */
 }
 
 * {
@@ -186,7 +198,7 @@ select {
 
 .loader-copy span {
   color: var(--nebula-accent);
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.24em;
 }
 
@@ -199,6 +211,8 @@ select {
 
 .loader-done .stage-loader {
   pointer-events: none;
+  background: transparent;
+  transition: background 0.35s ease;
 }
 
 .loader-done .loader-curtain-left {
@@ -435,7 +449,7 @@ body::before {
 /* Section number */
 .section-num {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
+  font-size: var(--fs-sm);
   color: var(--nebula-accent);
   letter-spacing: 0.2em;
   text-transform: uppercase;

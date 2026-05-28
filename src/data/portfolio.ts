@@ -25,29 +25,6 @@ export const impactMetrics = [
   { value: '-22%', label: 'LLM cost reduction' },
 ] as const;
 
-export const systemProfile = [
-  {
-    label: 'Backend',
-    value: 'Revenue + data systems',
-    detail: 'Payments / events / rollout controls',
-  },
-  {
-    label: 'AI systems',
-    value: 'LLM cost + eval loops',
-    detail: 'Routing / MCP / agent workflows',
-  },
-  {
-    label: 'Databases',
-    value: 'Hot path ownership',
-    detail: 'Locks / indexes / Redis pressure',
-  },
-  {
-    label: 'Production',
-    value: 'Owned after launch',
-    detail: 'Runbooks / dashboards / reliability',
-  },
-] as const;
-
 export const techTicker = [
   'Python',
   'Go',
@@ -80,7 +57,7 @@ export const journey = [
   {
     id: 'gammastack',
     label: 'Gammastack',
-    status: 'Realtime systems',
+    status: 'Realtime work',
     title: 'Live data and fraud paths',
     line: 'Realtime feeds, payment-risk signals, cloud pipelines, and production delivery.',
     proof: ['RabbitMQ', 'WebSocket', 'GCP pipelines'],
@@ -89,7 +66,7 @@ export const journey = [
   {
     id: 'past-consumer',
     label: 'Pocket FM - past work',
-    status: 'Scale chapter',
+    status: 'Past consumer scale',
     title: 'Revenue, DB, events, AI',
     line: 'Built payments, retention loops, DB optimizations, search, LLM cost control, MCP workflows, and agent evals.',
     proof: ['250K/day', '10B events', '-60% DB load', '-22% LLM cost'],
@@ -97,9 +74,9 @@ export const journey = [
   },
   {
     id: 'somewhere',
-    label: 'Current chapter',
-    status: 'Quiet build mode',
-    title: 'AI agents and sharp tools',
+    label: 'Somewhere',
+    status: 'Quiet AI build',
+    title: 'Working quietly on AI agents',
     line: 'Working quietly on agent workflows, MCP experiments, eval loops, and small systems that make software feel faster.',
     proof: ['AI agents', 'MCP', 'Evals'],
     accent: '#23f6a5',
@@ -107,7 +84,7 @@ export const journey = [
   {
     id: 'call',
     label: 'Waiting for your call',
-    status: 'Next chapter',
+    status: 'Next role',
     title: 'Bring the hard problem',
     line: 'Revenue systems. Database bottlenecks. Event platforms. AI tooling. Ready for the next serious team.',
     proof: ['Senior backend', 'Global', 'Bengaluru'],
