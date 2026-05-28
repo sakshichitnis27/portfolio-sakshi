@@ -127,16 +127,16 @@ const roles = [
   const experiences = [
     {
       role: "Senior Software Engineer",
-      company: "PocketFM",
-      period: "2022 - Present",
+      company: "Pocket FM",
+      period: "2022 - 2025",
       description: `
-        I lead the charge in scaling out a 700+ server orchestra at one of India's biggest audio OTT platforms, 
-        keeping over 200M users happily listening around the globe.
+        I helped scale revenue-critical backend systems for a 200M+ user audio platform across payments,
+        subscriptions, experimentation, search, and high-traffic product paths.
       `,
       bullets: [
-        "Reduced MySQL lock contentions by cunning optimization—who knew queries could be so dramatic?",
-        "Introduced a streak feature that boosted retention (users love a good challenge, turns out).",
-        "Conducted 50+ A/B experiments to refine ARPU, user engagement, and maybe my coffee intake."
+        "Reduced MySQL lock contention by tightening transaction scope, query shape, and hot-path data access.",
+        "Shipped retention systems and product experiments that improved engagement and rollout confidence.",
+        "Partnered on A/B experiments across ARPU, retention, and backend platform controls."
       ]
     },
     {
@@ -329,10 +329,10 @@ revealElements.forEach(element => {
   const experiences_2 = [
     {
       role: "Senior Software Engineer",
-      company: "PocketFM",
-      period: "2022 - Present",
+      company: "Pocket FM",
+      period: "2022 - 2025",
       heading:"**Scalability Adventures in OTT**",
-      description: " Worked with a 700+ server symphony to hit all the right notes for one of India's largest audio OTT platforms, delighting 200M+ users globally and managing 2.5M RPM without missing a beat. Tuned MySQL queries to cut down on lock contention—because who wants a database drama? Boosted user engagement with features like streak challenges that hit the sweet spot for retention. Conducted A/B experiments that tuned ARPU, engagement, and maybe even my caffeine budget.",
+      description: " Built and improved backend systems for a 200M+ user audio platform, handling payments, subscriptions, experimentation, search, and high-traffic product flows. Tuned MySQL queries and transaction paths to reduce lock contention, shipped retention features, and partnered on experiments that improved engagement and rollout confidence.",
       techStack: ["Python", "Go", "MySQL", "Redis", "Kubernetes", "Kafka", "Elasticsearch", "Cassandra", "GCP", "Airflow", "Redshift", "Databricks"]
     },
     {
@@ -355,7 +355,7 @@ revealElements.forEach(element => {
         // Highlight technical terms
         .replace(/(MySQL|Redis|ARPU|A\/B)/g, '<span class="highlight-orange">$1</span>')
         // Highlight company name
-        .replace(/(PocketFM|India's)/g, '<span class="highlight-blue">$1</span>')
+        .replace(/(Pocket FM|India's)/g, '<span class="highlight-blue">$1</span>')
         // Replace the title with a styled version
         .replace(/\*\*(.*?)\*\*/g, '<span class="exp-title">$1</span>');
     };

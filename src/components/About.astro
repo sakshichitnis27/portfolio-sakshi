@@ -1,29 +1,30 @@
 ---
+import { profile } from '../data/portfolio';
 ---
 
 <section id="about" class="section about-section">
   <div class="about-container">
     <div class="section-header fade-up">
-      <div class="section-num">01 — ABOUT</div>
-      <h2 class="section-title">Backend Systems, <span class="text-gradient">Owned End to End</span></h2>
+      <div class="section-num">01 / ABOUT</div>
+      <h2 class="section-title">The backend engineer for messy, expensive, <span>AI-shaped</span> scale problems.</h2>
     </div>
 
     <div class="about-layout fade-up" style="transition-delay:0.1s">
       <div class="about-bio">
         <p class="bio-lead">
-          <span class="bio-accent">Senior backend engineer focused on reliability, cost, and scale.</span>
+          <span class="bio-accent">Database-heavy backend engineer focused on reliability, AI cost, and scale.</span>
         </p>
         <p>
-          I've spent 5+ years building revenue-critical systems across subscriptions, payments, experimentation, search, caching, and LLM tooling, where latency, correctness, and cost all show up in production.
+          I have spent 5+ years building revenue-critical systems across subscriptions, payments, experimentation, search, caching, realtime data, LLM workflows, and AI-native developer tooling. The through-line is simple: latency, correctness, and cost all show up in production.
         </p>
         <p>
-          I've partnered with PMs and data teams on 30+ experiments, from assignment and exposure logging to measurement and rollout decisions.
+          I am strongest where product ambition collides with backend reality: transaction scope, query plans, hot keys, event design, rollout controls, LLM routing, eval loops, observability, and the operational path after launch.
         </p>
         <p>
-          I'm strongest in ambiguous systems work: defining the failure modes, tightening the data model, and making the operational path explicit before the first deploy.
+          I have partnered with PMs and data teams on 30+ experiments, from assignment and exposure logging to measurement and rollout decisions.
         </p>
         <p class="bio-closing">
-          Distributed systems, payments infra, LLM tooling, real-time pipelines. Built for production, instrumented for feedback, and owned after launch.
+          Payments infra, database performance, LLM systems, MCP workflows, realtime pipelines. Built for production, instrumented for feedback, and owned after launch.
         </p>
       </div>
 
@@ -31,7 +32,7 @@
         <div class="quick-facts">
           <div class="qf-item">
             <span class="qf-label mono">Location</span>
-            <span class="qf-value">Bengaluru, India</span>
+            <span class="qf-value">{profile.location}</span>
           </div>
           <div class="qf-item">
             <span class="qf-label mono">Experience</span>
@@ -39,18 +40,18 @@
           </div>
           <div class="qf-item">
             <span class="qf-label mono">Focus</span>
-            <span class="qf-value">Distributed Systems · Scale</span>
+            <span class="qf-value">Distributed Systems / AI</span>
           </div>
           <div class="qf-item">
             <span class="qf-label mono">Systems</span>
-            <span class="qf-value">Payments · Kafka · Redis</span>
+            <span class="qf-value">Payments / LLM / Redis</span>
           </div>
         </div>
 
         <div class="about-traits">
           <div class="trait-item">
             <span class="trait-icon">⬡</span>
-            <span>Turns product goals into reliable backend systems</span>
+            <span>Turns product goals into backend systems with clear failure modes</span>
           </div>
           <div class="trait-item">
             <span class="trait-icon">⬡</span>
@@ -58,11 +59,11 @@
           </div>
           <div class="trait-item">
             <span class="trait-icon">⬡</span>
-            <span>Owns reliability — from DB query to on-call runbook</span>
+            <span>Owns reliability from DB query shape to on-call runbook</span>
           </div>
           <div class="trait-item">
             <span class="trait-icon">⬡</span>
-            <span>Built LLM tooling with cost, latency, and quality constraints</span>
+            <span>Built LLM and agent tooling with cost, latency, eval, and quality constraints</span>
           </div>
         </div>
       </div>
@@ -76,16 +77,24 @@
   .about-container {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 2rem;
   }
 
   .section-title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
+    max-width: 980px;
+    font-size: clamp(2.8rem, 5vw, 5.25rem);
     font-weight: 700;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
     margin-top: 0.75rem;
     color: #fff;
-    line-height: 1.1;
+    line-height: 0.96;
+    text-wrap: balance;
+  }
+
+  .section-title span {
+    background: var(--nebula-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .about-layout {
@@ -110,11 +119,11 @@
   .bio-accent {
     font-weight: 700;
     font-size: 1.15rem;
-    background: linear-gradient(90deg, #c77dff, #ff006e 55%, #00d2ff);
+    background: var(--nebula-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   .about-bio p {
@@ -130,7 +139,7 @@
 
   .bio-closing {
     font-size: 0.88rem !important;
-    color: rgba(255,255,255,0.38) !important;
+    color: rgba(255,255,255,0.9) !important;
     letter-spacing: 0.02em;
     border-left: 2px solid rgba(157,78,221,0.4);
     padding-left: 1rem;
@@ -166,14 +175,14 @@
 
   .qf-label {
     font-size: 0.62rem;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.74);
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
   .qf-value {
     font-size: 0.82rem;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.92);
     font-weight: 500;
   }
 
@@ -188,7 +197,7 @@
     align-items: flex-start;
     gap: 0.65rem;
     font-size: 0.82rem;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.84);
     line-height: 1.55;
     padding: 0.55rem 0.75rem;
     border-radius: 8px;
@@ -200,11 +209,11 @@
   .trait-item:hover {
     background: rgba(157,78,221,0.06);
     border-color: rgba(157,78,221,0.18);
-    color: rgba(255,255,255,0.72);
+    color: #fff;
   }
 
   .trait-icon {
-    color: #9d4edd;
+    color: var(--nebula-accent);
     font-size: 0.65rem;
     margin-top: 0.18em;
     flex-shrink: 0;
@@ -212,5 +221,15 @@
 
   @media (max-width: 900px) {
     .about-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+
+  @media (max-width: 640px) {
+    .section-title {
+      font-size: 2.35rem;
+    }
+
+    .quick-facts {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

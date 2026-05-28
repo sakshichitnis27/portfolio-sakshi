@@ -89,9 +89,9 @@ src/
 - Scroll-down indicator arrow
 
 ### 3. Experience Section
-- VSCode-tab style UI (kept from current design, refined)
+- VSCode-tab style UI (kept from earlier design, refined)
 - Terminal header: `experience.go` title with red/yellow/green dots
-- Click between companies to switch content (PocketFM, Gammastack)
+- Click between experience groups (Pocket FM past work, Gammastack, anonymized systems)
 - Stats callouts: `200M+ users`, `2.5M RPM`, `11K QPS` as highlighted badges
 - Timeline connector on desktop, stacked cards on mobile
 

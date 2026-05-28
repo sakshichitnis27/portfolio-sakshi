@@ -6,7 +6,10 @@ export interface Props {
   description?: string;
 }
 
-const { title = 'Vismay Tiwari — Backend Engineer', description = 'Backend-heavy Full Stack Engineer with 5+ years building distributed systems at consumer scale. Python, Go, Kafka, Redis, Kubernetes, AWS.' } = Astro.props;
+const {
+  title = 'Vismay Tiwari - Backend Systems Engineer',
+  description = 'Database-heavy backend engineer building revenue-critical distributed systems across payments, subscriptions, search, LLM tooling, Kafka, Redis, Kubernetes, and AWS.',
+} = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +17,8 @@ const { title = 'Vismay Tiwari — Backend Engineer', description = 'Backend-hea
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
-  <meta name="keywords" content="backend engineer, distributed systems, python, golang, kafka, redis, aws, portfolio" />
+  <meta name="keywords" content="backend engineer, distributed systems, python, golang, kafka, redis, aws, cloud, portfolio" />
+  <meta name="theme-color" content="#050005" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
@@ -24,68 +28,177 @@ const { title = 'Vismay Tiwari — Backend Engineer', description = 'Backend-hea
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- Full-page fluid aurora background -->
-  <canvas id="fluid-canvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+  <div class="stage-loader" id="stage-loader" aria-hidden="true">
+    <div class="loader-curtain loader-curtain-left"></div>
+    <div class="loader-curtain loader-curtain-right"></div>
+    <div class="loader-galaxy"></div>
+    <div class="loader-copy">
+      <span class="mono">VISMAY TIWARI</span>
+      <strong>systems coming online</strong>
+    </div>
+  </div>
 
-  <!-- Custom cursor (desktop only) -->
+  <canvas id="fluid-canvas" aria-hidden="true"></canvas>
+  <div class="fluid-depth" aria-hidden="true">
+    <span class="depth-ring depth-ring-a"></span>
+    <span class="depth-ring depth-ring-b"></span>
+    <span class="depth-scan"></span>
+  </div>
+  <div class="page-progress" id="page-progress" aria-hidden="true"></div>
+
   <div class="cursor" id="cursor"></div>
   <div class="cursor-follower" id="cursor-follower"></div>
 
   <slot />
 
   <script>
-    // Full-page aurora background
-    import * as THREE from 'three';
-    import FluidBackground from '../scripts/FluidBackground.js';
-    (window as any).THREE = THREE;
-    const fluidCanvas = document.getElementById('fluid-canvas') as HTMLCanvasElement;
-    if (fluidCanvas) {
-      try { new FluidBackground(fluidCanvas); } catch(e) { /* silent */ }
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const fluidCanvas = document.getElementById('fluid-canvas');
+    const loader = document.getElementById('stage-loader');
+    let fluidInstance;
+    const accentFrames = [
+      ['#36f4ff', '#c77dff', '#ff4da6', '#23f6a5', '#ffb84d'],
+      ['#23f6a5', '#00d2ff', '#c77dff', '#ff4da6', '#ffb84d'],
+      ['#ff4da6', '#c77dff', '#36f4ff', '#23f6a5', '#ffb84d'],
+    ];
+
+    function hexToRgb(hex) {
+      const value = hex.replace('#', '');
+      return [
+        parseInt(value.slice(0, 2), 16),
+        parseInt(value.slice(2, 4), 16),
+        parseInt(value.slice(4, 6), 16),
+      ];
     }
 
-    // Custom cursor
+    function mixHex(a, b, t) {
+      const ar = hexToRgb(a);
+      const br = hexToRgb(b);
+      const mixed = ar.map((channel, index) => Math.round(channel + (br[index] - channel) * t));
+      return `rgb(${mixed[0]}, ${mixed[1]}, ${mixed[2]})`;
+    }
+
+    function animateAccent(now) {
+      const phase = (Math.sin(now * 0.00018) + 1) / 2;
+      const segment = phase < 0.5 ? [0, 1, phase * 2] : [1, 2, (phase - 0.5) * 2];
+      const [from, to, t] = segment;
+      const root = document.documentElement;
+      root.style.setProperty('--nebula-accent', mixHex(accentFrames[from][0], accentFrames[to][0], t));
+      root.style.setProperty('--nebula-accent-2', mixHex(accentFrames[from][1], accentFrames[to][1], t));
+      root.style.setProperty('--nebula-accent-3', mixHex(accentFrames[from][2], accentFrames[to][2], t));
+      root.style.setProperty('--nebula-accent-4', mixHex(accentFrames[from][3], accentFrames[to][3], t));
+      root.style.setProperty('--nebula-accent-5', mixHex(accentFrames[from][4], accentFrames[to][4], t));
+      if (!reduceMotion.matches) requestAnimationFrame(animateAccent);
+    }
+
+    requestAnimationFrame(animateAccent);
+
+    async function bootFluid() {
+      if (!fluidCanvas || reduceMotion.matches) {
+        document.documentElement.classList.add('is-reduced-motion');
+        return;
+      }
+
+      try {
+        const FluidBackground = await import('../scripts/FluidBackground.js');
+        fluidInstance = new FluidBackground.default(fluidCanvas, {
+          flowScale: window.innerWidth < 720 ? 0.9 : 1.12,
+        });
+        document.documentElement.classList.add('fluid-ready');
+      } catch (error) {
+        document.documentElement.classList.add('fluid-fallback');
+        console.warn('Fluid background failed to start', error);
+      }
+    }
+
+    requestAnimationFrame(bootFluid);
+
+    window.addEventListener('load', () => {
+      window.setTimeout(() => {
+        document.documentElement.classList.add('loader-done');
+        window.setTimeout(() => loader?.remove(), 1050);
+      }, 650);
+    });
+
+    reduceMotion.addEventListener?.('change', () => {
+      if (reduceMotion.matches && fluidInstance?.destroy) {
+        fluidInstance.destroy();
+        document.documentElement.classList.add('is-reduced-motion');
+      }
+    });
+
     const cursor = document.getElementById('cursor');
     const follower = document.getElementById('cursor-follower');
-    let fx = 0, fy = 0, mx = 0, my = 0;
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    let fx = 0;
+    let fy = 0;
+    let mx = 0;
+    let my = 0;
 
-    document.addEventListener('mousemove', (e) => {
-      mx = e.clientX; my = e.clientY;
-      if (cursor) { cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; }
-    });
+    if (finePointer) {
+      document.addEventListener('mousemove', (event) => {
+        mx = event.clientX;
+        my = event.clientY;
+        if (cursor) {
+          cursor.style.left = `${mx}px`;
+          cursor.style.top = `${my}px`;
+        }
+      });
 
-    function animateCursor() {
-      fx += (mx - fx) * 0.12;
-      fy += (my - fy) * 0.12;
-      if (follower) { follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
-      requestAnimationFrame(animateCursor);
+      function animateCursor() {
+        fx += (mx - fx) * 0.12;
+        fy += (my - fy) * 0.12;
+        if (follower) {
+          follower.style.left = `${fx}px`;
+          follower.style.top = `${fy}px`;
+        }
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
     }
-    animateCursor();
 
-    // Cursor hover effects
-    document.querySelectorAll('a, button, [data-cursor]').forEach(el => {
+    document.querySelectorAll('a, button, [data-cursor]').forEach((el) => {
       el.addEventListener('mouseenter', () => {
-        if (cursor) { cursor.style.width = '20px'; cursor.style.height = '20px'; cursor.style.opacity = '0.5'; }
-        if (follower) { follower.style.width = '52px'; follower.style.height = '52px'; }
+        if (cursor) {
+          cursor.style.width = '20px';
+          cursor.style.height = '20px';
+          cursor.style.opacity = '0.5';
+        }
+        if (follower) {
+          follower.style.width = '52px';
+          follower.style.height = '52px';
+        }
       });
       el.addEventListener('mouseleave', () => {
-        if (cursor) { cursor.style.width = '10px'; cursor.style.height = '10px'; cursor.style.opacity = '1'; }
-        if (follower) { follower.style.width = '32px'; follower.style.height = '32px'; }
+        if (cursor) {
+          cursor.style.width = '10px';
+          cursor.style.height = '10px';
+          cursor.style.opacity = '1';
+        }
+        if (follower) {
+          follower.style.width = '32px';
+          follower.style.height = '32px';
+        }
       });
     });
 
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // Hide cursor on mobile
-    if ('ontouchstart' in window) {
-      const c = document.getElementById('cursor');
-      const cf = document.getElementById('cursor-follower');
-      if (c) c.style.display = 'none';
-      if (cf) cf.style.display = 'none';
+    document.querySelectorAll('.fade-up').forEach((el) => revealObserver.observe(el));
+
+    const progress = document.getElementById('page-progress');
+    function updateProgress() {
+      if (!progress) return;
+      const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      progress.style.transform = `scaleX(${Math.min(Math.max(window.scrollY / max, 0), 1)})`;
     }
+    updateProgress();
+    document.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress, { passive: true });
   </script>
 </body>
 </html>

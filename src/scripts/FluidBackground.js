@@ -1,216 +1,175 @@
-/**
- * FluidBackground — Full-screen aurora/plasma shader using domain-warping FBM.
- * Generated with Codex assistance. Requires window.THREE (Three.js) pre-set.
- */
+const vertexShader = `
+  attribute vec2 aPosition;
+  varying vec2 vUv;
+
+  void main() {
+    vUv = aPosition * 0.5 + 0.5;
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+  }
+`;
+
+const fragmentShader = `
+  precision highp float;
+
+  varying vec2 vUv;
+  uniform float uTime;
+  uniform vec2 uResolution;
+  uniform vec2 uMouse;
+  uniform vec2 uMouseVelocity;
+  uniform float uMouseStrength;
+  uniform float uFlowScale;
+
+  mat2 rot(float a) {
+    float s = sin(a), c = cos(a);
+    return mat2(c, -s, s, c);
+  }
+
+  float hash(vec2 p) {
+    p = fract(p * vec2(127.1, 311.7));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+
+  float noise(vec2 p) {
+    vec2 i = floor(p), f = fract(p);
+    vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+    float a = hash(i), b = hash(i + vec2(1.0, 0.0));
+    float c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+  }
+
+  float fbm(vec2 p) {
+    float v = 0.0, amp = 0.52;
+    for (int i = 0; i < 7; i++) {
+      v += amp * noise(p);
+      p = rot(0.48) * p * 1.98 + vec2(13.5, 4.7);
+      amp *= 0.48;
+    }
+    return v;
+  }
+
+  vec3 paletteA(float t) {
+    vec3 base = vec3(0.015, 0.0, 0.025);
+    vec3 c1 = mix(base, vec3(0.55, 0.22, 0.9), smoothstep(0.08, 0.62, t));
+    c1 = mix(c1, vec3(1.0, 0.0, 0.44), smoothstep(0.46, 0.82, t) * 0.78);
+    c1 = mix(c1, vec3(0.0, 0.86, 1.0), pow(smoothstep(0.65, 1.0, t), 1.55) * 0.92);
+    c1 = mix(c1, vec3(0.0, 1.0, 0.62), smoothstep(0.78, 1.0, t) * 0.24);
+    return c1;
+  }
+
+  vec3 paletteB(float t) {
+    vec3 base = vec3(0.0, 0.01, 0.03);
+    vec3 c2 = mix(base, vec3(0.0, 0.45, 0.75), smoothstep(0.08, 0.60, t));
+    c2 = mix(c2, vec3(0.0, 0.9, 1.0), smoothstep(0.38, 0.72, t) * 0.88);
+    c2 = mix(c2, vec3(0.75, 0.0, 0.9), pow(smoothstep(0.60, 1.0, t), 1.7) * 0.7);
+    c2 = mix(c2, vec3(1.0, 0.62, 0.18), pow(smoothstep(0.74, 1.0, t), 2.0) * 0.28);
+    return c2;
+  }
+
+  vec3 paletteC(float t) {
+    vec3 base = vec3(0.02, 0.0, 0.02);
+    vec3 c3 = mix(base, vec3(0.55, 0.0, 0.38), smoothstep(0.08, 0.58, t));
+    c3 = mix(c3, vec3(1.0, 0.0, 0.56), smoothstep(0.40, 0.80, t) * 0.85);
+    c3 = mix(c3, vec3(1.0, 0.72, 1.0), pow(smoothstep(0.68, 1.0, t), 1.4) * 0.65);
+    c3 = mix(c3, vec3(0.1, 0.98, 0.72), smoothstep(0.52, 0.9, t) * 0.22);
+    return c3;
+  }
+
+  vec3 palette(float t, float shift) {
+    float s1 = smoothstep(0.0, 0.5, shift) * (1.0 - smoothstep(0.5, 1.0, shift));
+    float s2 = smoothstep(0.33, 0.83, shift) * (1.0 - smoothstep(0.83, 1.0, shift));
+    vec3 col = paletteA(t);
+    col = mix(col, paletteB(t), s1 * 1.2);
+    col = mix(col, paletteC(t), s2 * 1.1);
+    return col;
+  }
+
+  void main() {
+    vec2 uv = vUv;
+    vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
+    vec2 p = (uv - 0.5) * aspect;
+    float time = uTime * 0.052;
+
+    vec2 wind = vec2(time * 0.32, sin(time * 0.92) * 0.18);
+    vec2 q = vec2(
+      fbm(p * 1.55 * uFlowScale + wind),
+      fbm(p * 1.55 * uFlowScale - wind + 5.23)
+    );
+    vec2 r = vec2(
+      fbm(p * 2.35 + 5.2 * q + vec2(1.7, 9.2) + time * vec2(0.22, 0.13)),
+      fbm(p * 2.35 + 5.2 * q + vec2(8.3, 2.8) - time * vec2(0.15, 0.2))
+    );
+    vec2 s = vec2(
+      fbm(p * 1.35 + 2.75 * r + vec2(3.1, 5.7) + time * vec2(0.1, -0.08)),
+      fbm(p * 1.35 + 2.75 * r + vec2(6.4, 1.2) - time * vec2(0.07, 0.12))
+    );
+
+    vec2 warped = p + 1.18 * q + 0.9 * r + 0.5 * s;
+    warped.x += sin(warped.y * 4.7 + time * 4.4) * 0.1;
+    warped.y += sin(warped.x * 3.6 - time * 2.8) * 0.085;
+
+    float flow = fbm(warped * vec2(1.28, 3.35) + vec2(time * 0.42, -time * 0.14));
+    float silk = fbm(warped * vec2(3.4, 1.25) - vec2(time * 0.2, time * 0.16));
+    float blobs = sin((warped.y + flow * 0.75 + silk * 0.25) * 7.4 + warped.x * 3.6 + time * 4.8);
+    blobs = smoothstep(-0.06, 1.0, blobs * 0.5 + 0.5);
+
+    float aurora = smoothstep(0.22, 0.88, flow) * blobs;
+    float verticalPresence = 0.72 + 0.28 * smoothstep(-1.25, 0.95, p.y);
+    float edgePresence = 1.0 - smoothstep(0.86, 1.48, abs(p.y));
+    aurora *= verticalPresence * (0.68 + 0.32 * edgePresence);
+
+    float specular = pow(max(0.0, flow - 0.52), 2.65) * 1.65 + pow(max(0.0, silk - 0.64), 2.3) * 0.58;
+    vec2 mouseDelta = (uv - uMouse) * aspect;
+    float mouseGlow = exp(-dot(mouseDelta, mouseDelta) * 24.0) * uMouseStrength;
+    float mouseWake = fbm((p - uMouseVelocity * 0.14) * 5.2 + time * 2.0) * mouseGlow;
+
+    float energy = 0.045 + aurora * 0.82 + mouseGlow * 0.34 + mouseWake * 0.22 + specular * 0.28;
+    energy += pow(max(0.0, flow), 2.55) * 0.18;
+    energy = clamp(energy, 0.0, 1.0);
+
+    float colorShift = sin(uTime * 0.058) * 0.5 + 0.5;
+    vec3 color = palette(energy, colorShift);
+    vec3 specColor = mix(vec3(0.65, 0.95, 1.0), vec3(1.0, 0.72, 0.95), colorShift);
+    color += specColor * specular * 0.24;
+    color += vec3(0.0, 0.7, 1.0) * mouseGlow * 0.16;
+    color += vec3(1.0, 0.18, 0.48) * mouseWake * 0.1;
+    color += vec3(0.0, 0.045, 0.065);
+
+    float vignette = smoothstep(1.42, 0.08, length((uv - 0.5) * vec2(1.18, 0.9)));
+    color *= (0.56 + 0.34 * vignette);
+    color += vec3(0.014, 0.003, 0.022) * 0.46;
+
+    gl_FragColor = vec4(color, 1.0);
+  }
+`;
+
 export default class FluidBackground {
   constructor(canvas, options = {}) {
     if (!canvas) throw new Error('FluidBackground requires a canvas element.');
-    if (!window.THREE) throw new Error('FluidBackground requires window.THREE before instantiation.');
 
-    this.THREE = window.THREE;
     this.canvas = canvas;
-    this.running = true;
-    this.clock = new this.THREE.Clock();
-    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-
-    this.mouse = new this.THREE.Vector2(0.5, 0.5);
-    this.mouseTarget = new this.THREE.Vector2(0.5, 0.5);
-    this.mouseVelocity = new this.THREE.Vector2();
-    this.mouseStrength = 0;
-
-    this.renderer = new this.THREE.WebGLRenderer({
-      canvas,
-      antialias: false,
+    this.gl = canvas.getContext('webgl', {
       alpha: false,
+      antialias: false,
       depth: false,
       stencil: false,
       powerPreference: 'high-performance',
     });
+    if (!this.gl) throw new Error('WebGL is not available.');
 
-    this.renderer.setPixelRatio(this.pixelRatio);
-    this.renderer.setClearColor(0x050005, 1);
+    this.running = true;
+    this.flowScale = options.flowScale ?? 1.0;
+    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    this.startTime = performance.now();
+    this.lastTime = this.startTime;
+    this.mouse = [0.5, 0.5];
+    this.mouseTarget = [0.5, 0.5];
+    this.mouseVelocity = [0, 0];
+    this.mouseStrength = 0;
 
-    this.scene = new this.THREE.Scene();
-    this.camera = new this.THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-    this.uniforms = {
-      uTime: { value: 0 },
-      uResolution: { value: new this.THREE.Vector2(1, 1) },
-      uMouse: { value: this.mouse.clone() },
-      uMouseVelocity: { value: this.mouseVelocity.clone() },
-      uMouseStrength: { value: 0 },
-      uFlowScale: { value: options.flowScale ?? 1.0 },
-    };
-
-    this.geometry = new this.THREE.PlaneGeometry(2, 2);
-    this.material = new this.THREE.ShaderMaterial({
-      uniforms: this.uniforms,
-      depthTest: false,
-      depthWrite: false,
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = vec4(position.xy, 0.0, 1.0);
-        }
-      `,
-      fragmentShader: `
-        precision highp float;
-
-        varying vec2 vUv;
-        uniform float uTime;
-        uniform vec2 uResolution;
-        uniform vec2 uMouse;
-        uniform vec2 uMouseVelocity;
-        uniform float uMouseStrength;
-        uniform float uFlowScale;
-
-        mat2 rot(float a) {
-          float s = sin(a), c = cos(a);
-          return mat2(c, -s, s, c);
-        }
-
-        float hash(vec2 p) {
-          p = fract(p * vec2(127.1, 311.7));
-          p += dot(p, p + 45.32);
-          return fract(p.x * p.y);
-        }
-
-        float noise(vec2 p) {
-          vec2 i = floor(p), f = fract(p);
-          // Quintic interpolation for smoother blobs
-          vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-          float a = hash(i), b = hash(i + vec2(1,0));
-          float c = hash(i + vec2(0,1)), d = hash(i + vec2(1,1));
-          return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
-        }
-
-        float fbm(vec2 p) {
-          float v = 0.0, amp = 0.52;
-          for (int i = 0; i < 7; i++) {
-            v += amp * noise(p);
-            p = rot(0.48) * p * 1.98 + vec2(13.5, 4.7);
-            amp *= 0.48;
-          }
-          return v;
-        }
-
-        // Two palettes that blend based on a slow time-driven shift
-        vec3 paletteA(float t) {
-          // Violet-dominant: deep space → violet → hot pink → electric cyan
-          vec3 base   = vec3(0.015, 0.0, 0.025);
-          vec3 c1 = mix(base, vec3(0.55, 0.22, 0.9),  smoothstep(0.08, 0.62, t));
-          c1 = mix(c1,  vec3(1.0,  0.0,  0.44), smoothstep(0.46, 0.82, t) * 0.78);
-          c1 = mix(c1,  vec3(0.0,  0.86, 1.0),  pow(smoothstep(0.65, 1.0, t), 1.55) * 0.92);
-          return c1;
-        }
-
-        vec3 paletteB(float t) {
-          // Cyan-dominant: dark teal → electric cyan → violet → magenta
-          vec3 base   = vec3(0.0,  0.01, 0.03);
-          vec3 c2 = mix(base, vec3(0.0,  0.45, 0.75), smoothstep(0.08, 0.60, t));
-          c2 = mix(c2,  vec3(0.0,  0.9,  1.0),  smoothstep(0.38, 0.72, t) * 0.88);
-          c2 = mix(c2,  vec3(0.75, 0.0,  0.9),  pow(smoothstep(0.60, 1.0, t), 1.7)  * 0.7);
-          return c2;
-        }
-
-        vec3 paletteC(float t) {
-          // Pink-flame: dark → deep magenta → vivid pink → warm white
-          vec3 base   = vec3(0.02, 0.0, 0.02);
-          vec3 c3 = mix(base, vec3(0.55, 0.0,  0.38), smoothstep(0.08, 0.58, t));
-          c3 = mix(c3,  vec3(1.0,  0.0,  0.56), smoothstep(0.40, 0.80, t) * 0.85);
-          c3 = mix(c3,  vec3(1.0,  0.72, 1.0),  pow(smoothstep(0.68, 1.0, t), 1.4)  * 0.65);
-          return c3;
-        }
-
-        vec3 palette(float t, float shift) {
-          // shift cycles 0→1 slowly; bell functions peak at 0.5 and 0.85
-          float s1 = smoothstep(0.0, 0.5, shift) * (1.0 - smoothstep(0.5, 1.0, shift));
-          float s2 = smoothstep(0.33, 0.83, shift) * (1.0 - smoothstep(0.83, 1.0, shift));
-          vec3 col  = paletteA(t);
-          col       = mix(col, paletteB(t), s1 * 1.2);
-          col       = mix(col, paletteC(t), s2 * 1.1);
-          return col;
-        }
-
-        void main() {
-          vec2 uv = vUv;
-          vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
-          vec2 p = (uv - 0.5) * aspect;
-
-          // Slow, majestic time — like loudsrl.com
-          float time = uTime * 0.068;
-
-          // Heavy multi-layer domain warping for organic 3D-liquid feel
-          vec2 wind = vec2(time * 0.38, sin(time * 1.1) * 0.14);
-          vec2 q = vec2(
-            fbm(p * 1.8 * uFlowScale + wind),
-            fbm(p * 1.8 * uFlowScale - wind + 5.23)
-          );
-          vec2 r = vec2(
-            fbm(p * 2.8 + 4.5 * q + vec2(1.7, 9.2) + time * vec2(0.28, 0.15)),
-            fbm(p * 2.8 + 4.5 * q + vec2(8.3, 2.8) - time * vec2(0.18, 0.24))
-          );
-          // Third warp pass for the liquid-metal depth
-          vec2 s = vec2(
-            fbm(p * 1.6 + 2.2 * r + vec2(3.1, 5.7) + time * vec2(0.12, -0.09)),
-            fbm(p * 1.6 + 2.2 * r + vec2(6.4, 1.2) - time * vec2(0.08, 0.14))
-          );
-
-          vec2 warped = p + 1.0 * q + 0.72 * r + 0.38 * s;
-          // Subtle high-frequency ripple on surface (specular shimmer)
-          warped.x += sin(warped.y * 5.5  + time * 5.8) * 0.07;
-          warped.y += sin(warped.x * 4.0  - time * 3.5) * 0.06;
-
-          // Blobby flow — low freq so we get large organic shapes not strands
-          float flow = fbm(warped * vec2(1.6, 4.2) + vec2(time * 0.55, -time * 0.18));
-
-          // Smooth blobby shapes (fewer, wider strands vs old aurora)
-          float blobs = sin((warped.y + flow * 0.55) * 9.0 + warped.x * 4.5 + time * 6.5);
-          blobs = smoothstep(0.05, 1.0, blobs * 0.5 + 0.5);
-
-          float aurora = smoothstep(0.22, 0.88, flow) * blobs;
-          // Full-screen (no y-clipping like old aurora bands)
-          aurora *= smoothstep(-1.2, 0.9, p.y) * (1.0 - smoothstep(0.45, 1.2, abs(p.y)));
-
-          // Specular-like bright peaks where flow is at maximum
-          float specular = pow(max(0.0, flow - 0.58), 2.8) * 1.8;
-
-          // Mouse interaction
-          vec2 mouseDelta = (uv - uMouse) * aspect;
-          float mouseGlow = exp(-dot(mouseDelta, mouseDelta) * 28.0) * uMouseStrength;
-          float mouseWake = fbm((p - uMouseVelocity * 0.1) * 6.0 + time * 2.5) * mouseGlow;
-
-          float energy = aurora + mouseGlow * 0.4 + mouseWake * 0.25 + specular * 0.35;
-          energy += pow(max(0.0, flow), 2.8) * 0.22;
-          energy = clamp(energy, 0.0, 1.0);
-
-          // Slow color cycle — completes full rotation ~every 40s
-          float colorShift = sin(uTime * 0.058) * 0.5 + 0.5;
-
-          vec3 color = palette(energy, colorShift);
-
-          // Specular highlight brightens toward white at peaks
-          vec3 specColor = mix(vec3(0.7, 0.5, 1.0), vec3(0.9, 0.8, 1.0), colorShift);
-          color += specColor * specular * 0.28;
-
-          color += vec3(0.0, 0.5, 1.0) * mouseGlow * 0.2;
-          color += vec3(1.0, 0.0, 0.45) * mouseWake * 0.12;
-
-          // Vignette — deep edges pull to near-black for depth
-          float vignette = smoothstep(1.25, 0.12, length((uv - 0.5) * vec2(1.3, 1.0)));
-          color *= vignette;
-
-          // Very dark base so only fluid blooms are visible (loudsrl approach)
-          color += vec3(0.012, 0.0, 0.018) * 0.35;
-
-          gl_FragColor = vec4(color, 1.0);
-        }
-      `,
-    });
-
-    this.mesh = new this.THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.mesh);
+    this.program = this.createProgram(vertexShader, fragmentShader);
+    this.locations = this.getLocations();
+    this.buffer = this.createBuffer();
 
     this.onPointerMove = this.onPointerMove.bind(this);
     this.onResize = this.resize.bind(this);
@@ -220,14 +179,79 @@ export default class FluidBackground {
     window.addEventListener('resize', this.onResize, { passive: true });
 
     this.resize();
-    this.render();
+    this.render(performance.now());
+  }
+
+  createProgram(vsSource, fsSource) {
+    const gl = this.gl;
+    const vertex = this.compile(gl.VERTEX_SHADER, vsSource);
+    const fragment = this.compile(gl.FRAGMENT_SHADER, fsSource);
+    const program = gl.createProgram();
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, fragment);
+    gl.linkProgram(program);
+    gl.deleteShader(vertex);
+    gl.deleteShader(fragment);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      const error = gl.getProgramInfoLog(program);
+      gl.deleteProgram(program);
+      throw new Error(`Fluid shader link failed: ${error}`);
+    }
+    return program;
+  }
+
+  compile(type, source) {
+    const gl = this.gl;
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      const error = gl.getShaderInfoLog(shader);
+      gl.deleteShader(shader);
+      throw new Error(`Fluid shader compile failed: ${error}`);
+    }
+    return shader;
+  }
+
+  getLocations() {
+    const gl = this.gl;
+    return {
+      aPosition: gl.getAttribLocation(this.program, 'aPosition'),
+      uTime: gl.getUniformLocation(this.program, 'uTime'),
+      uResolution: gl.getUniformLocation(this.program, 'uResolution'),
+      uMouse: gl.getUniformLocation(this.program, 'uMouse'),
+      uMouseVelocity: gl.getUniformLocation(this.program, 'uMouseVelocity'),
+      uMouseStrength: gl.getUniformLocation(this.program, 'uMouseStrength'),
+      uFlowScale: gl.getUniformLocation(this.program, 'uFlowScale'),
+    };
+  }
+
+  createBuffer() {
+    const gl = this.gl;
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        -1, -1,
+        1, -1,
+        -1, 1,
+        -1, 1,
+        1, -1,
+        1, 1,
+      ]),
+      gl.STATIC_DRAW
+    );
+    return buffer;
   }
 
   onPointerMove(event) {
     const rect = this.canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) / Math.max(rect.width, 1);
     const y = 1 - (event.clientY - rect.top) / Math.max(rect.height, 1);
-    this.mouseTarget.set(Math.min(Math.max(x, 0), 1), Math.min(Math.max(y, 0), 1));
+    this.mouseTarget[0] = Math.min(Math.max(x, 0), 1);
+    this.mouseTarget[1] = Math.min(Math.max(y, 0), 1);
     this.mouseStrength = 0.45;
   }
 
@@ -235,25 +259,47 @@ export default class FluidBackground {
     const width = this.canvas.clientWidth || window.innerWidth;
     const height = this.canvas.clientHeight || window.innerHeight;
     this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-    this.renderer.setPixelRatio(this.pixelRatio);
-    this.renderer.setSize(width, height, false);
-    this.uniforms.uResolution.value.set(width * this.pixelRatio, height * this.pixelRatio);
+    const renderWidth = Math.max(1, Math.round(width * this.pixelRatio));
+    const renderHeight = Math.max(1, Math.round(height * this.pixelRatio));
+
+    if (this.canvas.width !== renderWidth || this.canvas.height !== renderHeight) {
+      this.canvas.width = renderWidth;
+      this.canvas.height = renderHeight;
+    }
+    this.gl.viewport(0, 0, renderWidth, renderHeight);
   }
 
-  render() {
+  render(now) {
     if (!this.running) return;
-    // Delta-time smoothing — frame-rate independent lerp
-    const delta = this.clock.getDelta();
+
+    const gl = this.gl;
+    const elapsed = (now - this.startTime) / 1000;
+    const delta = Math.min((now - this.lastTime) / 1000, 0.1);
+    this.lastTime = now;
+
     const smooth = 1.0 - Math.pow(0.915, delta * 60.0);
-    const prev = this.mouse.clone();
-    this.mouse.lerp(this.mouseTarget, smooth);
-    this.mouseVelocity.copy(this.mouse).sub(prev).multiplyScalar(18);
+    const prevX = this.mouse[0];
+    const prevY = this.mouse[1];
+    this.mouse[0] += (this.mouseTarget[0] - this.mouse[0]) * smooth;
+    this.mouse[1] += (this.mouseTarget[1] - this.mouse[1]) * smooth;
+    this.mouseVelocity[0] = (this.mouse[0] - prevX) * 18;
+    this.mouseVelocity[1] = (this.mouse[1] - prevY) * 18;
     this.mouseStrength *= Math.pow(0.91, delta * 60.0);
-    this.uniforms.uTime.value = this.clock.elapsedTime;
-    this.uniforms.uMouse.value.copy(this.mouse);
-    this.uniforms.uMouseVelocity.value.copy(this.mouseVelocity);
-    this.uniforms.uMouseStrength.value = this.mouseStrength;
-    this.renderer.render(this.scene, this.camera);
+
+    this.resize();
+    gl.useProgram(this.program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.enableVertexAttribArray(this.locations.aPosition);
+    gl.vertexAttribPointer(this.locations.aPosition, 2, gl.FLOAT, false, 0, 0);
+
+    gl.uniform1f(this.locations.uTime, elapsed);
+    gl.uniform2f(this.locations.uResolution, this.canvas.width, this.canvas.height);
+    gl.uniform2f(this.locations.uMouse, this.mouse[0], this.mouse[1]);
+    gl.uniform2f(this.locations.uMouseVelocity, this.mouseVelocity[0], this.mouseVelocity[1]);
+    gl.uniform1f(this.locations.uMouseStrength, this.mouseStrength);
+    gl.uniform1f(this.locations.uFlowScale, this.flowScale);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
     this.raf = requestAnimationFrame(this.render);
   }
 
@@ -262,8 +308,7 @@ export default class FluidBackground {
     if (this.raf) cancelAnimationFrame(this.raf);
     window.removeEventListener('pointermove', this.onPointerMove);
     window.removeEventListener('resize', this.onResize);
-    this.geometry.dispose();
-    this.material.dispose();
-    this.renderer.dispose();
+    this.gl.deleteBuffer(this.buffer);
+    this.gl.deleteProgram(this.program);
   }
 }

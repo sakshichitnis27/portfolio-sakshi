@@ -1,675 +1,369 @@
 ---
+import { journey } from '../data/portfolio';
 ---
 
-<section id="experience" class="experience-shell" aria-labelledby="experience-title">
-  <div class="experience-copy">
-    <p class="experience-kicker">02 — EXPERIENCE</p>
-    <h2 id="experience-title">Backend systems measured<br/>by production impact.</h2>
-    <p>Selected production systems and the outcomes they moved.</p>
+<section id="journey" class="journey-section" aria-labelledby="journey-title">
+  <div class="journey-heading fade-up">
+    <p class="journey-kicker mono">02 / SIGNAL PATH</p>
+    <h2 id="journey-title">Career <span>signal path.</span></h2>
+    <p class="journey-sub">A compact path from systems foundation to revenue scale, quiet AI agent builds, and the next serious problem.</p>
   </div>
 
-  <div class="experience-stage" data-experience>
-    <div class="experience-controls" aria-label="Experience filter">
-      <button class="job-filter is-active" type="button" data-filter="all" aria-pressed="true">All systems</button>
-      <button class="job-filter" type="button" data-filter="pocket" aria-pressed="false">Pocket FM</button>
-      <button class="job-filter" type="button" data-filter="gammastack" aria-pressed="false">Gammastack</button>
-    </div>
+  <div class="journey-map fade-up" aria-label="Career signal path">
+    <svg class="journey-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="journeyGlow" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffb84d" />
+          <stop offset="25%" stop-color="#c77dff" />
+          <stop offset="52%" stop-color="#00d2ff" />
+          <stop offset="75%" stop-color="#23f6a5" />
+          <stop offset="100%" stop-color="#ff4da6" />
+        </linearGradient>
+      </defs>
+      <path class="journey-path-base" d="M7 35 C 21 72, 30 74, 42 38 S 66 18, 76 61 S 91 59, 96 31" />
+      <path class="journey-path-flow" d="M7 35 C 21 72, 30 74, 42 38 S 66 18, 76 61 S 91 59, 96 31" />
+    </svg>
 
-    <div class="experience-workspace">
-      <div class="experience-map" data-map>
-        <canvas class="constellation-canvas" data-canvas aria-hidden="true"></canvas>
-
-        <button class="job-star" type="button" data-job-star="gammastack"></button>
-        <button class="job-star" type="button" data-job-star="pocket"></button>
-
-        <div class="metric-layer" data-metric-layer></div>
-        <div class="hover-preview" data-preview hidden></div>
-
-        <div class="job-card" data-job-card aria-live="polite">
-          <button class="job-card-close" data-job-card-close aria-label="Close">×</button>
-          <p class="job-card-eyebrow" data-jc-company></p>
-          <h3 class="job-card-title" data-jc-title></h3>
-          <div class="job-card-metric">
-            <strong data-jc-number></strong>
-            <span data-jc-label></span>
-          </div>
-          <p class="job-card-outcome" data-jc-outcome></p>
-          <div class="job-card-stack" data-jc-stack></div>
+    {journey.map((item, index) => (
+      <article
+        class="journey-card"
+        style={`--accent:${item.accent};--i:${index};`}
+      >
+        <div class="journey-card-top">
+          <span class="journey-index mono">{String(index + 1).padStart(2, '0')}</span>
+          <p class="journey-status mono">{item.status}</p>
         </div>
-      </div>
-    </div>
+        <div class="journey-body">
+          <h3>{item.label}</h3>
+          <strong>{item.title}</strong>
+          <p>{item.line}</p>
+          <div class="journey-proof" aria-label={`${item.label} proof`}>
+            {item.proof.map((proof) => <span>{proof}</span>)}
+          </div>
+        </div>
+      </article>
+    ))}
   </div>
 </section>
 
-<style is:global>
-  .experience-shell {
+<style>
+  .journey-section {
     position: relative;
-    z-index: 2;
-    padding: clamp(72px, 9vw, 128px) clamp(18px, 4vw, 56px);
-    color: rgba(255,255,255,0.94);
-    isolation: isolate;
-  }
-
-  .experience-copy {
-    max-width: 880px;
-    margin: 0 auto 28px;
-  }
-
-  .experience-kicker {
-    margin: 0 0 10px;
-    color: #00d2ff;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  .experience-copy h2 {
-    margin: 0;
-    max-width: 760px;
-    font-size: clamp(2rem, 5vw, 4.6rem);
-    line-height: 0.98;
-    letter-spacing: -0.03em;
+    z-index: 10;
+    padding: clamp(5.5rem, 7vw, 7rem) var(--page-pad) clamp(5.5rem, 7vw, 6.5rem);
     color: #fff;
+    overflow: clip;
   }
 
-  .experience-copy p:last-child {
-    max-width: 680px;
-    margin: 18px 0 0;
-    color: rgba(255,255,255,0.5);
-    font-size: clamp(1rem, 1.5vw, 1.1rem);
-    line-height: 1.7;
-  }
-
-  .experience-stage {
-    max-width: 1180px;
-    margin: 0 auto;
-  }
-
-  .experience-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .job-filter {
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 999px;
-    padding: 10px 18px;
-    color: rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.04);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.82rem;
-    transition: all 0.2s;
-  }
-
-  .job-filter.is-active {
-    color: white;
-    border-color: rgba(0,210,255,0.52);
-    box-shadow: 0 0 24px rgba(0,210,255,0.18);
-  }
-
-  .experience-map {
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(15,10,24,0.55);
-    -webkit-backdrop-filter: blur(22px) saturate(130%);
-    backdrop-filter: blur(22px) saturate(130%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 24px 80px rgba(0,0,0,0.4);
-    border-radius: 12px;
-    position: relative;
-    min-height: 720px;
-    overflow: hidden;
-    background-image: radial-gradient(rgba(157,78,221,0.07) 1px, transparent 1px);
-    background-size: 36px 36px;
-  }
-
-  .constellation-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-
-  .metric-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .job-star,
-  .metric-node {
-    position: absolute;
-    border: 0;
-    color: white;
-    cursor: pointer;
-    transform: translate(-50%, -50%);
-    pointer-events: auto;
-    background: none;
-    font-family: inherit;
-  }
-
-  .job-star {
-    width: clamp(128px, 14vw, 158px);
-    height: clamp(128px, 14vw, 158px);
-    border-radius: 50%;
-    background:
-      radial-gradient(circle at 50% 42%, rgba(255,255,255,0.9), rgba(255,255,255,0.08) 16%, transparent 30%),
-      radial-gradient(circle, rgba(157,78,221,0.32), rgba(255,0,110,0.1) 42%, transparent 68%);
-    box-shadow: 0 0 38px rgba(157,78,221,0.36), 0 0 88px rgba(255,0,110,0.14);
-    transition: opacity 0.2s, transform 0.2s;
-  }
-
-  .job-star::before {
+  .journey-section::before {
     content: "";
     position: absolute;
-    inset: 10px;
-    border: 1px solid rgba(255,255,255,0.16);
-    border-radius: 50%;
+    inset: 10% -18% auto;
+    height: min(520px, 56vw);
+    background:
+      radial-gradient(circle at 18% 30%, rgba(0,210,255,0.08), transparent 24rem),
+      radial-gradient(circle at 72% 18%, rgba(199,125,255,0.12), transparent 24rem),
+      radial-gradient(circle at 46% 82%, rgba(255,77,166,0.08), transparent 18rem);
+    pointer-events: none;
   }
 
-  .job-star__inner {
-    position: absolute;
-    inset: 22px;
+  .journey-heading {
+    max-width: 1280px;
+    margin: 0 auto clamp(1.4rem, 3vw, 2.2rem);
+  }
+
+  .journey-kicker {
+    margin: 0 0 0.9rem;
+    color: var(--nebula-accent);
+    font-size: 0.74rem;
+    letter-spacing: 0.18em;
+  }
+
+  .journey-heading h2 {
+    max-width: 980px;
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.8rem, 5vw, 5.25rem);
+    line-height: 0.96;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+
+  .journey-heading h2 span {
+    display: block;
+    background: var(--nebula-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .journey-sub {
+    max-width: 780px;
+    margin: 1rem 0 0;
+    color: rgba(255,255,255,0.9);
+    font-size: clamp(0.98rem, 1.25vw, 1.12rem);
+    line-height: 1.65;
+  }
+
+  .journey-map {
+    position: relative;
     display: grid;
-    place-content: center;
-    gap: 4px;
-    text-align: center;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: center;
+    gap: clamp(0.7rem, 1vw, 1rem);
+    max-width: 1400px;
+    min-height: clamp(500px, 39vw, 590px);
+    margin: 0 auto;
+    padding: clamp(1rem, 1.4vw, 1.35rem);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    background:
+      linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px),
+      radial-gradient(circle at 52% 50%, rgba(199,125,255,0.13), transparent 28rem),
+      rgba(5,0,10,0.34);
+    background-size: 48px 48px, 48px 48px, auto, auto;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 30px 100px rgba(0,0,0,0.28);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
 
-  .job-star__company {
-    font-size: clamp(0.82rem, 1.2vw, 1rem);
-    font-weight: 800;
-    line-height: 1.1;
+  .journey-line {
+    position: absolute;
+    inset: 9% 2.6%;
+    width: 94%;
+    height: 82%;
+    overflow: visible;
+    pointer-events: none;
+    filter: drop-shadow(0 0 18px rgba(0,210,255,0.32));
   }
 
-  .job-star__role,
-  .job-star__years {
-    color: rgba(255,255,255,0.55);
-    font-size: 0.66rem;
+  .journey-line path {
+    fill: none;
+    stroke: url(#journeyGlow);
+    stroke-linecap: round;
+  }
+
+  .journey-path-base {
+    stroke-width: 0.5;
+    opacity: 0.32;
+    filter: drop-shadow(0 0 14px rgba(199,125,255,0.24));
+  }
+
+  .journey-path-flow {
+    stroke-width: 0.7;
+    stroke-dasharray: 5 9;
+    opacity: 0.72;
+    filter: drop-shadow(0 0 22px rgba(0,210,255,0.54));
+    animation: signal-flow 5.5s linear infinite;
+  }
+
+  @keyframes signal-flow {
+    to { stroke-dashoffset: -120; }
+  }
+
+  .journey-card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    min-height: clamp(230px, 20vw, 275px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding: clamp(1.05rem, 1.2vw, 1.25rem) clamp(1.15rem, 1.6vw, 1.55rem);
+    border: 0;
+    border-radius: 0;
+    clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+    background: transparent;
+    color: #fff;
+    filter: drop-shadow(0 20px 58px rgba(0,0,0,0.34)) drop-shadow(0 0 26px color-mix(in srgb, var(--accent) 12%, transparent));
+    isolation: isolate;
+    overflow: hidden;
+    transition: transform 0.28s ease, filter 0.28s ease;
+    animation: card-float 4.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.45s);
+  }
+
+  .journey-card::before,
+  .journey-card::after {
+    content: "";
+    position: absolute;
+    clip-path: inherit;
+    pointer-events: none;
+  }
+
+  .journey-card::before {
+    inset: 0;
+    z-index: -2;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent) 72%, white), rgba(255,255,255,0.18) 42%, color-mix(in srgb, var(--accent) 48%, transparent));
+  }
+
+  .journey-card::after {
+    inset: 1px;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 18% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 11rem),
+      linear-gradient(145deg, rgba(255,255,255,0.075), rgba(255,255,255,0.02)),
+      rgba(7,1,14,0.74);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  .journey-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .journey-card:hover {
+    transform: translateY(-8px) scale(1.025);
+    filter: drop-shadow(0 24px 76px rgba(0,0,0,0.38)) drop-shadow(0 0 48px color-mix(in srgb, var(--accent) 24%, transparent));
+  }
+
+  @keyframes card-float {
+    50% { translate: 0 -7px; }
+  }
+
+  .journey-card:nth-of-type(1) { align-self: start; margin-top: 1.8rem; }
+  .journey-card:nth-of-type(2) { align-self: end; margin-bottom: 1.2rem; }
+  .journey-card:nth-of-type(3) { align-self: start; min-height: clamp(265px, 22vw, 310px); }
+  .journey-card:nth-of-type(4) { align-self: end; margin-bottom: 1.55rem; }
+  .journey-card:nth-of-type(5) { align-self: start; margin-top: 2.15rem; }
+
+  .journey-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.62rem;
+    min-width: 0;
+  }
+
+  .journey-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.65rem;
+    height: 1.65rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 60%, rgba(255,255,255,0.18));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 12%, rgba(255,255,255,0.04));
+    color: var(--accent);
+    font-size: 0.58rem;
+    letter-spacing: 0;
+  }
+
+  .journey-status {
+    min-width: 0;
+    margin: 0;
+    color: var(--accent);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     line-height: 1.3;
   }
 
-  .metric-node {
-    --node-accent: #00d2ff;
-    width: clamp(84px, 7.5vw, 110px);
-    min-height: 72px;
-    display: grid;
-    gap: 3px;
-    place-content: center;
-    padding: 10px 8px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.18);
-    background:
-      radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06), transparent 60%),
-      rgba(10,7,20,0.82);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 28px color-mix(in srgb, var(--node-accent) 18%, transparent);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-    text-align: center;
-    transition: opacity 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+  .journey-body {
+    margin-top: auto;
   }
 
-  .metric-node[data-job="pocket"] { --node-accent: #00d2ff; }
-  .metric-node[data-job="gammastack"] { --node-accent: #ff006e; }
-
-  .metric-node.is-active {
-    border-color: color-mix(in srgb, var(--node-accent) 80%, white);
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--node-accent) 38%, transparent),
-      0 0 36px color-mix(in srgb, var(--node-accent) 55%, transparent),
-      inset 0 0 18px color-mix(in srgb, var(--node-accent) 12%, transparent);
+  .journey-card h3 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(1.25rem, 1.9vw, 2rem);
+    line-height: 0.96;
+    letter-spacing: 0;
   }
 
-  .metric-node.is-muted,
-  .job-star.is-muted { opacity: 0.22; }
-
-  .metric-node:hover, .metric-node:focus-visible,
-  .job-star:hover, .job-star:focus-visible {
-    outline: none;
-    transform: translate(-50%, -50%) scale(1.05);
-  }
-
-  .metric-number {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(0.9rem, 1.5vw, 1.3rem);
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .metric-label {
-    color: rgba(255,255,255,0.5);
-    font-size: 0.65rem;
-    line-height: 1.25;
-  }
-
-  .hover-preview {
-    position: absolute;
-    z-index: 6;
-    min-width: 180px;
-    max-width: 240px;
-    padding: 10px 12px;
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 8px;
-    background: rgba(7,5,12,0.92);
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 18px 50px rgba(0,0,0,0.4);
-    pointer-events: none;
-  }
-
-  .hover-preview strong { display: block; font-size: 0.95rem; }
-  .hover-preview span { display: block; margin-top: 4px; color: rgba(255,255,255,0.5); font-size: 0.75rem; line-height: 1.35; }
-
-  .system-pill {
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 999px;
-    padding: 5px 10px;
-    color: rgba(255,255,255,0.68);
-    background: rgba(255,255,255,0.045);
-    font-size: 0.72rem;
-  }
-
-  /* ── In-map detail card ────────────────────────────── */
-  .job-card {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    width: min(320px, calc(100% - 32px));
-    padding: 16px 18px 18px;
-    border: 1px solid rgba(255,255,255,0.13);
-    background: rgba(6, 3, 13, 0.92);
-    -webkit-backdrop-filter: blur(28px) saturate(150%);
-    backdrop-filter: blur(28px) saturate(150%);
-    border-radius: 12px;
-    box-shadow: 0 24px 72px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
-    z-index: 8;
-    opacity: 0;
-    transform: translateY(14px);
-    pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .job-card.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  .job-card-close {
-    position: absolute;
-    top: 10px; right: 10px;
-    width: 22px; height: 22px;
-    border: 0;
-    background: rgba(255,255,255,0.07);
-    border-radius: 50%;
-    color: rgba(255,255,255,0.5);
-    font-size: 13px;
-    cursor: pointer;
-    display: grid;
-    place-content: center;
-    font-family: inherit;
-    transition: background 0.2s;
-  }
-  .job-card-close:hover { background: rgba(255,255,255,0.16); color: #fff; }
-
-  .job-card-eyebrow {
-    margin: 0 0 6px;
-    color: #00d2ff;
-    font-size: 0.65rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .job-card-title {
-    margin: 0 0 11px;
+  .journey-card strong {
+    display: block;
+    margin-top: 0.8rem;
+    color: #fff;
     font-size: 0.98rem;
-    line-height: 1.22;
-    letter-spacing: -0.02em;
-    color: #fff;
-    padding-right: 18px;
+    line-height: 1.2;
   }
 
-  .job-card-metric {
+  .journey-card p:not(.journey-status) {
+    margin: 0.65rem 0 0;
+    color: rgba(255,255,255,0.86);
+    font-size: 0.9rem;
+    line-height: 1.48;
+  }
+
+  .journey-proof {
     display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1rem;
   }
-  .job-card-metric strong {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.5rem;
-    font-weight: 900;
-    line-height: 1;
+
+  .journey-proof span {
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, rgba(255,255,255,0.14));
+    border-radius: 999px;
+    padding: 0.36rem 0.54rem;
     color: #fff;
-  }
-  .job-card-metric span { color: rgba(255,255,255,0.5); font-size: 0.75rem; }
-
-  .job-card-outcome {
-    margin: 0 0 12px;
-    color: rgba(255,255,255,0.64);
-    font-size: 0.79rem;
-    line-height: 1.6;
+    background: color-mix(in srgb, var(--accent) 10%, rgba(255,255,255,0.05));
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    line-height: 1;
   }
 
-  .job-card-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+  @media (max-width: 1180px) {
+    .journey-map {
+      min-height: auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
 
-  @media (max-width: 720px) {
-    .experience-map { min-height: 560px; }
-    .job-card { right: 10px; bottom: 10px; }
+    .journey-line {
+      display: none;
+    }
+
+    .journey-card,
+    .journey-card:nth-of-type(n) {
+      position: relative;
+      inset: auto;
+      width: auto;
+      margin: 0;
+      min-height: 260px;
+    }
+
+    .journey-card:nth-of-type(3) {
+      grid-column: 1 / -1;
+      min-height: 280px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .journey-section {
+      padding: 5rem var(--page-pad);
+    }
+
+    .journey-heading h2 {
+      font-size: clamp(2.45rem, 11.5vw, 3.6rem);
+    }
+
+    .journey-map {
+      grid-template-columns: 1fr;
+    }
+
+    .journey-card:nth-of-type(3) {
+      grid-column: auto;
+    }
+
+    .journey-card {
+      clip-path: none;
+      border-radius: 8px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .journey-line path,
+    .journey-card {
+      animation: none !important;
+    }
   }
 </style>
-
-<script>
-(() => {
-  const root = document.querySelector('[data-experience]');
-  if (!root) return;
-
-  const map = root.querySelector('[data-map]');
-  const canvas = root.querySelector('[data-canvas]') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d')!;
-  const layer = root.querySelector('[data-metric-layer]')!;
-  const preview = root.querySelector('[data-preview]') as HTMLElement;
-  const jobCard = root.querySelector('[data-job-card]') as HTMLElement;
-  const filters = [...root.querySelectorAll('[data-filter]')] as HTMLButtonElement[];
-
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const jobs: any[] = [
-    { id: 'gammastack', company: 'Gammastack', role: 'Software Engineer', years: '2021–2022',
-      pos: { desktop: { x: 0.24, y: 0.50 }, mobile: { x: 0.5, y: 0.24 } } },
-    { id: 'pocket', company: 'Pocket FM', role: 'Senior Software Engineer', years: '2022–2025',
-      pos: { desktop: { x: 0.70, y: 0.46 }, mobile: { x: 0.5, y: 0.66 } } }
-  ];
-
-  const metrics: any[] = [
-    { id: 'p-users',     job: 'pocket',     value: '200M',  label: 'users served',
-      title: 'Scaled subscription backend',
-      outcome: 'Served a 200M user base across subscription, entitlement, and monetization paths.',
-      system: 'Designed idempotent flows, data consistency guarantees, and operational visibility for revenue-critical services.',
-      stack: ['API', 'Payments', 'DB', 'Observability'], angle: -128, radius: 210, mobileAngle: -160, mobileRadius: 148 },
-    { id: 'p-tx',        job: 'pocket',     value: '250K',  label: 'transactions/day',
-      title: 'Payment and billing throughput',
-      outcome: 'Supported daily transaction volume across billing, confirmation, subscription state, and reconciliation.',
-      system: 'Hardened transactional boundaries, retry behavior, and event-driven payment updates.',
-      stack: ['Payments', 'Queues', 'DB Transactions'], angle: -82, radius: 188, mobileAngle: -115, mobileRadius: 148 },
-    { id: 'p-locks',     job: 'pocket',     value: '-60%',  label: 'DB lock contention',
-      title: 'Database contention reduction',
-      outcome: 'Reduced lock contention by redesigning query shape, transaction scope, and write ordering.',
-      system: 'Moved hot paths away from broad locks and shortened critical sections in transactional flows.',
-      stack: ['PostgreSQL', 'Query Plans', 'Transactions'], angle: -34, radius: 186, mobileAngle: -70, mobileRadius: 148 },
-    { id: 'p-redis',     job: 'pocket',     value: '-30%',  label: 'Redis memory cost',
-      title: 'Cache memory optimization',
-      outcome: 'Lowered Redis memory cost by tuning TTL strategy, key cardinality, and access patterns.',
-      system: 'Aligned cache lifetimes with real usage — stopped keeping expensive data resident by default.',
-      stack: ['Redis', 'Caching', 'Cost Control'], angle: 12, radius: 190, mobileAngle: -25, mobileRadius: 148 },
-    { id: 'p-retention', job: 'pocket',     value: '+6%',   label: 'user retention',
-      title: 'Backend A/B experimentation impact',
-      outcome: 'Improved retention through server-side experimentation infrastructure used by product and growth.',
-      system: 'Built assignment, bucketing, exposure logging, and metric wiring for reliable backend experiments.',
-      stack: ['Experimentation', 'Events', 'Analytics'], angle: 58, radius: 192, mobileAngle: 25, mobileRadius: 148 },
-    { id: 'p-llm',       job: 'pocket',     value: '-22%',  label: 'LLM inference cost',
-      title: 'LLM routing and prompt caching',
-      outcome: 'Reduced inference spend while preserving product behavior via routing and cache-aware prompt reuse.',
-      system: 'Separated repeatable prompt work from dynamic calls and routed requests by cost and quality needs.',
-      stack: ['LLM', 'Prompt Cache', 'Routing'], angle: 104, radius: 198, mobileAngle: 70, mobileRadius: 148 },
-    { id: 'p-search',    job: 'pocket',     value: '+15%',  label: 'search CTR',
-      title: 'Search ranking improvements',
-      outcome: 'Improved click-through by tuning backend ranking and retrieval behavior.',
-      system: 'Adjusted Elasticsearch scoring, query composition, and ranking signals for discovery paths.',
-      stack: ['Elasticsearch', 'Ranking', 'Search APIs'], angle: 150, radius: 206, mobileAngle: 115, mobileRadius: 148 },
-    { id: 'p-exp',       job: 'pocket',     value: '1000+', label: 'concurrent experiments',
-      title: 'Internal experimentation framework',
-      outcome: 'Enabled 1000+ concurrent A/B experiments through a backend framework built for scale.',
-      system: 'Handled deterministic assignment, config delivery, guardrails, and experiment isolation.',
-      stack: ['Framework', 'Config', 'Bucketing'], angle: 205, radius: 204, mobileAngle: 160, mobileRadius: 148 },
-    { id: 'g-latency',   job: 'gammastack', value: '<5ms',  label: 'API latency',
-      title: 'Low-latency transactional APIs',
-      outcome: 'Built service paths where response time mattered at transaction speed.',
-      system: 'Kept request paths narrow, avoided unnecessary IO, and optimized hot backend operations.',
-      stack: ['API', 'Low Latency', 'Transactions'], angle: -128, radius: 148, mobileAngle: -145, mobileRadius: 128 },
-    { id: 'g-crypto',    job: 'gammastack', value: '10+',   label: 'crypto chains',
-      title: 'Crypto payment integration',
-      outcome: 'Integrated payment flows across 10+ chains with confirmation and state management.',
-      system: 'Handled chain-specific behavior, confirmation windows, and payment state transitions.',
-      stack: ['Crypto', 'Payments', 'Integrations'], angle: 0, radius: 152, mobileAngle: 0, mobileRadius: 128 },
-    { id: 'g-pipes',     job: 'gammastack', value: 'Live',  label: 'odds/event pipelines',
-      title: 'Real-time event data pipelines',
-      outcome: 'Built real-time data movement for odds and event updates with sub-second delivery.',
-      system: 'Handled stream ingestion, normalization, and backend delivery for changing event state.',
-      stack: ['Streams', 'Pipelines', 'Realtime'], angle: 128, radius: 148, mobileAngle: 145, mobileRadius: 128 }
-  ];
-
-  const jobById = Object.fromEntries(jobs.map(j => [j.id, j]));
-  const metricById = Object.fromEntries(metrics.map(m => [m.id, m]));
-  const starEls = new Map<string, HTMLElement>();
-  const nodeEls = new Map<string, HTMLElement>();
-  const points = { jobs: new Map<string, {x:number,y:number}>(), metrics: new Map<string, {x:number,y:number}>() };
-  const state = { filter: 'all', selectedId: '' };
-
-  let dpr = 1, frameId = 0;
-  const clamp = (a: number, v: number, b: number) => Math.min(b, Math.max(a, v));
-
-  // Build job stars
-  root.querySelectorAll('[data-job-star]').forEach((star: any) => {
-    const job = jobById[star.dataset.jobStar];
-    star.setAttribute('aria-label', `${job.company}, ${job.role}, ${job.years}`);
-    star.innerHTML = `<span class="job-star__inner"><span class="job-star__company">${job.company}</span><span class="job-star__role">${job.role}</span><span class="job-star__years">${job.years}</span></span>`;
-    star.addEventListener('click', () => setFilter(job.id));
-    starEls.set(job.id, star);
-  });
-
-  // Build metric nodes
-  metrics.forEach(metric => {
-    const node = document.createElement('button');
-    node.type = 'button';
-    node.className = 'metric-node';
-    node.dataset.metric = metric.id;
-    node.dataset.job = metric.job;
-    node.setAttribute('aria-label', `${metric.value} ${metric.label}, ${jobById[metric.job].company}`);
-    node.innerHTML = `<span class="metric-number">${metric.value}</span><span class="metric-label">${metric.label}</span>`;
-    node.addEventListener('click', () => selectMetric(metric.id));
-    node.addEventListener('mouseenter', () => showPreview(metric, node));
-    node.addEventListener('focus', () => showPreview(metric, node));
-    node.addEventListener('mouseleave', hidePreview);
-    node.addEventListener('blur', hidePreview);
-    layer.appendChild(node);
-    nodeEls.set(metric.id, node);
-  });
-
-  filters.forEach(btn => btn.addEventListener('click', () => setFilter(btn.dataset.filter!)));
-
-  // Close card on × button click
-  root.querySelector('[data-job-card-close]')?.addEventListener('click', () => {
-    state.selectedId = '';
-    updateUI();
-  });
-
-  function setFilter(filter: string) {
-    state.filter = filter;
-    if (filter === 'all') {
-      state.selectedId = '';
-    } else {
-      const first = metrics.find(m => m.job === filter);
-      if (first) state.selectedId = first.id;
-    }
-    updateUI();
-  }
-
-  function selectMetric(id: string) {
-    const metric = metricById[id];
-    state.selectedId = id;
-    if (state.filter !== 'all' && state.filter !== metric.job) state.filter = metric.job;
-    updateUI();
-  }
-
-  function updateUI() {
-    const selected = state.selectedId ? metricById[state.selectedId] : null;
-
-    filters.forEach(btn => {
-      const active = btn.dataset.filter === state.filter;
-      btn.classList.toggle('is-active', active);
-      btn.setAttribute('aria-pressed', String(active));
-    });
-
-    jobs.forEach(job => {
-      const muted = state.filter !== 'all' && state.filter !== job.id;
-      starEls.get(job.id)!.classList.toggle('is-muted', muted);
-    });
-
-    metrics.forEach(metric => {
-      const node = nodeEls.get(metric.id)!;
-      const muted = state.filter !== 'all' && state.filter !== metric.job;
-      node.classList.toggle('is-active', metric.id === selected?.id);
-      node.classList.toggle('is-muted', muted);
-    });
-
-    if (selected) showCard(selected);
-    else hideCard();
-  }
-
-  function showCard(metric: any) {
-    const job = jobById[metric.job];
-    jobCard.querySelector('[data-jc-company]')!.textContent = `${job.company}  ·  ${job.years}`;
-    jobCard.querySelector('[data-jc-title]')!.textContent = metric.title;
-    jobCard.querySelector('[data-jc-number]')!.textContent = metric.value;
-    jobCard.querySelector('[data-jc-label]')!.textContent = metric.label;
-    jobCard.querySelector('[data-jc-outcome]')!.textContent = metric.outcome;
-    jobCard.querySelector('[data-jc-stack]')!.innerHTML =
-      metric.stack.map((t: string) => `<span class="system-pill">${t}</span>`).join('');
-    jobCard.classList.add('visible');
-  }
-
-  function hideCard() { jobCard.classList.remove('visible'); }
-
-  function showPreview(metric: any, node: HTMLElement) {
-    const nr = node.getBoundingClientRect(), mr = (map as HTMLElement).getBoundingClientRect();
-    preview.hidden = false;
-    preview.innerHTML = `<strong>${metric.value}</strong><span>${metric.title}</span>`;
-    preview.style.left = `${clamp(10, nr.left - mr.left + nr.width / 2 - 90, mr.width - 200)}px`;
-    preview.style.top = `${clamp(10, nr.top - mr.top - 72, mr.height - 80)}px`;
-  }
-
-  function hidePreview() { preview.hidden = true; }
-
-  function layout() {
-    const rect = (map as HTMLElement).getBoundingClientRect();
-    const mobile = rect.width < 760;
-    const scale = clamp(0.78, rect.width / 980, 1.08);
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(rect.width * dpr);
-    canvas.height = Math.round(rect.height * dpr);
-    canvas.style.width = `${rect.width}px`;
-    canvas.style.height = `${rect.height}px`;
-
-    jobs.forEach(job => {
-      const pos = job.pos[mobile ? 'mobile' : 'desktop'];
-      const point = { x: rect.width * pos.x, y: rect.height * pos.y };
-      points.jobs.set(job.id, point);
-      const star = starEls.get(job.id)!;
-      (star as HTMLElement).style.left = `${point.x}px`;
-      (star as HTMLElement).style.top = `${point.y}px`;
-    });
-
-    metrics.forEach(metric => {
-      const origin = points.jobs.get(metric.job)!;
-      const angle = ((mobile ? metric.mobileAngle : metric.angle) * Math.PI) / 180;
-      const radius = (mobile ? metric.mobileRadius : metric.radius) * (mobile ? 1 : scale);
-      const x = clamp(58, origin.x + Math.cos(angle) * radius, rect.width - 58);
-      const y = clamp(58, origin.y + Math.sin(angle) * radius, rect.height - 58);
-      points.metrics.set(metric.id, { x, y });
-      const node = nodeEls.get(metric.id)!;
-      (node as HTMLElement).style.left = `${x}px`;
-      (node as HTMLElement).style.top = `${y}px`;
-    });
-
-    draw(performance.now());
-  }
-
-  function draw(now: number) {
-    const rect = (map as HTMLElement).getBoundingClientRect();
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, rect.width, rect.height);
-    ctx.lineCap = 'round';
-    drawTimeline(now);
-    metrics.forEach((metric, i) => drawEdge(metric, i, now));
-    if (!reduced) frameId = requestAnimationFrame(draw);
-  }
-
-  function drawTimeline(now: number) {
-    const a = points.jobs.get('gammastack'), b = points.jobs.get('pocket');
-    if (!a || !b) return;
-    ctx.save();
-    ctx.globalAlpha = 0.45;
-    ctx.strokeStyle = 'rgba(255,255,255,0.45)';
-    ctx.lineWidth = 1.4;
-    ctx.setLineDash([5, 11]);
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.bezierCurveTo(a.x + 120, a.y - 80, b.x - 120, b.y + 80, b.x, b.y);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    if (!reduced) {
-      const t = (now / 6200) % 1;
-      const p = cubicPt(a, {x: a.x+120, y: a.y-80}, {x: b.x-120, y: b.y+80}, b, t);
-      ctx.globalAlpha = 0.9;
-      ctx.fillStyle = 'rgba(0,210,255,0.95)';
-      ctx.shadowColor = 'rgba(0,210,255,0.8)'; ctx.shadowBlur = 12;
-      ctx.beginPath(); ctx.arc(p.x, p.y, 2.8, 0, Math.PI*2); ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  function drawEdge(metric: any, index: number, now: number) {
-    const origin = points.jobs.get(metric.job), target = points.metrics.get(metric.id);
-    if (!origin || !target) return;
-    const selected = metric.id === state.selectedId;
-    const muted = state.filter !== 'all' && state.filter !== metric.job;
-    const color = metric.job === 'pocket' ? 'rgba(0,210,255,0.9)' : 'rgba(255,0,110,0.9)';
-    const dx = target.x - origin.x, dy = target.y - origin.y;
-    const bend = metric.job === 'pocket' ? 0.1 : -0.12;
-    const ctrl = { x: (origin.x+target.x)/2 - dy*bend, y: (origin.y+target.y)/2 + dx*bend };
-    ctx.save();
-    ctx.globalAlpha = muted ? 0.08 : selected ? 0.95 : 0.55;
-    ctx.strokeStyle = selected ? color : 'rgba(157,78,221,0.55)';
-    ctx.lineWidth = selected ? 2.2 : 1.4;
-    ctx.shadowColor = color; ctx.shadowBlur = selected ? 20 : 4;
-    ctx.beginPath(); ctx.moveTo(origin.x, origin.y);
-    ctx.quadraticCurveTo(ctrl.x, ctrl.y, target.x, target.y);
-    ctx.stroke();
-    if (!reduced && !muted) {
-      const t = ((now / (3900 + index * 170)) + index * 0.113) % 1;
-      const p = quadPt(origin, ctrl, target, smooth(t));
-      ctx.globalAlpha = selected ? 0.95 : 0.62;
-      ctx.fillStyle = color; ctx.shadowBlur = 10;
-      ctx.beginPath(); ctx.arc(p.x, p.y, selected ? 3.2 : 2.4, 0, Math.PI*2); ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  function quadPt(a: any, b: any, c: any, t: number) {
-    const i = 1-t;
-    return { x: i*i*a.x + 2*i*t*b.x + t*t*c.x, y: i*i*a.y + 2*i*t*b.y + t*t*c.y };
-  }
-  function cubicPt(a: any, b: any, c: any, d: any, t: number) {
-    const i = 1-t;
-    return { x: i**3*a.x + 3*i**2*t*b.x + 3*i*t**2*c.x + t**3*d.x, y: i**3*a.y + 3*i**2*t*b.y + 3*i*t**2*c.y + t**3*d.y };
-  }
-  function smooth(t: number) { return t*t*(3-2*t); }
-
-  const ro = new ResizeObserver(layout);
-  ro.observe(map as Element);
-  layout();
-
-  if (!reduced) { cancelAnimationFrame(frameId); frameId = requestAnimationFrame(draw); }
-})();
-</script>

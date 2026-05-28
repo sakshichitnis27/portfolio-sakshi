@@ -1,0 +1,421 @@
+---
+import { projects } from '../data/portfolio';
+---
+
+<section id="lab" class="lab-section" aria-labelledby="lab-title">
+  <div class="lab-container">
+    <div class="lab-heading fade-up">
+      <p class="lab-kicker mono">04 / LAB</p>
+      <h2 id="lab-title">Side <span>systems</span> with real edges.</h2>
+      <p>
+        Projects that prove visual engineering, local-first product thinking, secure transfer flows,
+        and static deployment discipline outside company work.
+      </p>
+    </div>
+
+    <div class="lab-stage fade-up" aria-label="Project lightning tree">
+      <svg class="lab-bolts" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="labBolt" x1="0%" x2="100%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffb84d" />
+            <stop offset="42%" stop-color="#36f4ff" />
+            <stop offset="100%" stop-color="#23f6a5" />
+          </linearGradient>
+        </defs>
+        <path class="lab-bolt-base" d="M50 17 L47 34 L52 42 L33 60 L27 79" />
+        <path class="lab-bolt-base" d="M50 17 L54 33 L49 43 L69 58 L77 79" />
+        <path class="lab-bolt-flow" d="M50 17 L47 34 L52 42 L33 60 L27 79" />
+        <path class="lab-bolt-flow lab-bolt-flow-b" d="M50 17 L54 33 L49 43 L69 58 L77 79" />
+      </svg>
+
+      <div class="lab-core">
+        <span class="mono">SIDE SYSTEMS</span>
+        <strong>Built after hours, shipped like product.</strong>
+      </div>
+
+      {projects.map((project, index) => (
+        <a
+          class={`lab-node lab-node-${index + 1}`}
+          href={project.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={`--delay:${index * 90}ms;`}
+          data-cursor
+        >
+          <div class="lab-node-top">
+            <span class="lab-card-index mono">{String(index + 1).padStart(2, '0')}</span>
+            <p class="lab-kind mono">{project.kind}</p>
+          </div>
+          <div>
+            <h3>{project.title}</h3>
+            <p class="lab-description">{project.description}</p>
+          </div>
+
+          <div class="lab-proof">
+            {project.proof.map((item) => <span>{item}</span>)}
+          </div>
+
+          <div class="lab-stack" aria-label={`${project.title} stack`}>
+            {project.stack.map((item) => <span>{item}</span>)}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .lab-section {
+    position: relative;
+    z-index: 10;
+    padding: clamp(5.5rem, 7vw, 7rem) var(--page-pad);
+    color: #fff;
+    overflow: clip;
+  }
+
+  .lab-section::before {
+    content: "";
+    position: absolute;
+    inset: 8% -12% auto;
+    height: min(620px, 60vw);
+    background:
+      radial-gradient(circle at 22% 26%, rgba(255,184,77,0.13), transparent 22rem),
+      radial-gradient(circle at 74% 42%, rgba(0,210,255,0.15), transparent 24rem),
+      radial-gradient(circle at 50% 82%, rgba(35,246,165,0.12), transparent 19rem);
+    filter: blur(6px);
+    pointer-events: none;
+  }
+
+  .lab-container {
+    position: relative;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .lab-heading {
+    max-width: 980px;
+    margin-bottom: clamp(1.25rem, 2.4vw, 1.8rem);
+  }
+
+  .lab-kicker {
+    margin: 0 0 0.9rem;
+    color: var(--amber);
+    font-size: 0.74rem;
+    letter-spacing: 0.18em;
+  }
+
+  .lab-heading h2 {
+    margin: 0;
+    max-width: 920px;
+    font-size: clamp(2.8rem, 5vw, 5.25rem);
+    line-height: 0.96;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+
+  .lab-heading h2 span {
+    background: var(--nebula-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .lab-heading p:last-child {
+    max-width: 760px;
+    margin: 1rem 0 0;
+    color: rgba(255,255,255,0.9);
+    font-size: clamp(0.98rem, 1.15vw, 1.08rem);
+    line-height: 1.65;
+  }
+
+  .lab-stage {
+    position: relative;
+    min-height: clamp(540px, 40vw, 620px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    background:
+      linear-gradient(rgba(255,255,255,0.042) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.042) 1px, transparent 1px),
+      radial-gradient(circle at 50% 36%, rgba(255,184,77,0.14), transparent 17rem),
+      radial-gradient(circle at 24% 72%, rgba(0,210,255,0.12), transparent 24rem),
+      radial-gradient(circle at 78% 78%, rgba(35,246,165,0.11), transparent 22rem),
+      rgba(5,0,10,0.34);
+    background-size: 46px 46px, 46px 46px, auto, auto, auto, auto;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 30px 100px rgba(0,0,0,0.3);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .lab-bolts {
+    position: absolute;
+    inset: 4%;
+    width: 92%;
+    height: 92%;
+    overflow: visible;
+    pointer-events: none;
+    filter: drop-shadow(0 0 18px rgba(0,210,255,0.34));
+  }
+
+  .lab-bolts path {
+    fill: none;
+    stroke: url(#labBolt);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .lab-bolt-base {
+    stroke-width: 0.5;
+    opacity: 0.34;
+  }
+
+  .lab-bolt-flow {
+    stroke-width: 0.88;
+    stroke-dasharray: 4 8;
+    opacity: 0.82;
+    animation: lab-current 4.8s linear infinite;
+  }
+
+  .lab-bolt-flow-b {
+    animation-delay: -1.8s;
+  }
+
+  @keyframes lab-current {
+    to { stroke-dashoffset: -96; }
+  }
+
+  .lab-core,
+  .lab-node {
+    clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+  }
+
+  .lab-core {
+    position: absolute;
+    left: 50%;
+    top: 8%;
+    z-index: 2;
+    width: min(320px, 30vw);
+    min-height: 128px;
+    display: grid;
+    place-items: center;
+    gap: 0.55rem;
+    padding: 1.25rem 2rem;
+    text-align: center;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255,184,77,0.2), transparent 11rem),
+      rgba(7,1,14,0.76);
+    border: 1px solid rgba(255,184,77,0.34);
+    transform: translateX(-50%);
+    box-shadow: 0 0 52px rgba(255,184,77,0.16), inset 0 1px 0 rgba(255,255,255,0.1);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+
+  .lab-core span {
+    color: var(--amber);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+  }
+
+  .lab-core strong {
+    color: #fff;
+    font-size: clamp(1.3rem, 2vw, 1.9rem);
+    line-height: 1.05;
+  }
+
+  .lab-node {
+    position: absolute;
+    z-index: 3;
+    width: min(430px, 37vw);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.1rem;
+    padding: clamp(1.15rem, 1.8vw, 1.7rem) clamp(1.35rem, 2.2vw, 2rem);
+    color: #fff;
+    text-decoration: none;
+    background:
+      radial-gradient(circle at 12% 12%, rgba(255,184,77,0.18), transparent 17rem),
+      radial-gradient(circle at 84% 20%, rgba(0,210,255,0.16), transparent 18rem),
+      linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.024)),
+      rgba(8,2,18,0.78);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 30px 100px rgba(0,0,0,0.34);
+    -webkit-backdrop-filter: blur(22px);
+    backdrop-filter: blur(22px);
+    transition: transform 0.26s ease, filter 0.26s ease;
+    transition-delay: var(--delay);
+  }
+
+  .lab-node::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at 50% 44%, black, transparent 78%);
+    opacity: 0.62;
+    pointer-events: none;
+  }
+
+  .lab-node-1 {
+    left: 5.5%;
+    bottom: 6%;
+    border: 1px solid rgba(0,210,255,0.25);
+    filter: drop-shadow(0 0 32px rgba(0,210,255,0.12));
+  }
+
+  .lab-node-2 {
+    right: 5.5%;
+    bottom: 6%;
+    border: 1px solid rgba(35,246,165,0.24);
+    filter: drop-shadow(0 0 32px rgba(35,246,165,0.12));
+  }
+
+  .lab-node:hover,
+  .lab-node:focus-visible {
+    transform: translateY(-8px) scale(1.015);
+    filter: drop-shadow(0 24px 76px rgba(0,0,0,0.38)) drop-shadow(0 0 44px rgba(0,210,255,0.18));
+  }
+
+  .lab-node-top {
+    display: flex;
+    align-items: center;
+    gap: 0.62rem;
+    min-width: 0;
+  }
+
+  .lab-card-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.65rem;
+    height: 1.65rem;
+    border: 1px solid rgba(255,184,77,0.5);
+    border-radius: 999px;
+    color: var(--amber);
+    background: rgba(255,184,77,0.1);
+    font-size: 0.58rem;
+    letter-spacing: 0;
+  }
+
+  .lab-kind {
+    min-width: 0;
+    margin: 0;
+    color: var(--amber);
+    font-size: 0.58rem;
+    letter-spacing: 0.13em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .lab-node h3 {
+    margin: 0;
+    font-size: clamp(2.35rem, 3.7vw, 3.9rem);
+    line-height: 0.9;
+    letter-spacing: 0;
+  }
+
+  .lab-description {
+    max-width: 620px;
+    margin: 1rem 0 0;
+    color: rgba(255,255,255,0.9);
+    font-size: 1rem;
+    line-height: 1.64;
+  }
+
+  .lab-proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .lab-proof span {
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 0.46rem 0.68rem;
+    color: #fff;
+    background: rgba(255,255,255,0.052);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem;
+  }
+
+  .lab-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.46rem;
+  }
+
+  .lab-stack span {
+    color: rgba(255,255,255,0.78);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+  }
+
+  .lab-stack span:not(:last-child)::after {
+    content: "/";
+    margin-left: 0.46rem;
+    color: rgba(255,255,255,0.55);
+  }
+
+  @media (max-width: 980px) {
+    .lab-stage {
+      min-height: auto;
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .lab-bolts {
+      display: none;
+    }
+
+    .lab-core,
+    .lab-node {
+      position: relative;
+      inset: auto;
+      width: auto;
+      min-height: auto;
+      transform: none;
+    }
+
+    .lab-core {
+      padding: 1.35rem;
+    }
+
+    .lab-node {
+      min-height: 360px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .lab-heading h2 {
+      font-size: clamp(2.45rem, 11.5vw, 3.6rem);
+    }
+
+    .lab-core,
+    .lab-node {
+      clip-path: none;
+      border-radius: 8px;
+    }
+
+    .lab-node {
+      min-height: auto;
+      padding: 1.1rem;
+    }
+
+    .lab-node h3 {
+      font-size: clamp(2.1rem, 10vw, 3rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lab-bolt-flow {
+      animation: none !important;
+    }
+  }
+</style>
