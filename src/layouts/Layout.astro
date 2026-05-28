@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Vismay Tiwari — Backend Engineer', description = 'Backend-heavy Full Stack Engineer with 5+ years building distributed systems at consumer scale. Python, Go, Kafka, Redis, Kubernetes, AWS.' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <meta name="keywords" content="backend engineer, distributed systems, python, golang, kafka, redis, aws, portfolio" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <title>{title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Full-page fluid aurora background -->
+  <canvas id="fluid-canvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
+  <!-- Custom cursor (desktop only) -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"></div>
+
+  <slot />
+
+  <script>
+    // Full-page aurora background
+    import * as THREE from 'three';
+    import FluidBackground from '../scripts/FluidBackground.js';
+    (window as any).THREE = THREE;
+    const fluidCanvas = document.getElementById('fluid-canvas') as HTMLCanvasElement;
+    if (fluidCanvas) {
+      try { new FluidBackground(fluidCanvas); } catch(e) { /* silent */ }
+    }
+
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const follower = document.getElementById('cursor-follower');
+    let fx = 0, fy = 0, mx = 0, my = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      if (cursor) { cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; }
+    });
+
+    function animateCursor() {
+      fx += (mx - fx) * 0.12;
+      fy += (my - fy) * 0.12;
+      if (follower) { follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Cursor hover effects
+    document.querySelectorAll('a, button, [data-cursor]').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        if (cursor) { cursor.style.width = '20px'; cursor.style.height = '20px'; cursor.style.opacity = '0.5'; }
+        if (follower) { follower.style.width = '52px'; follower.style.height = '52px'; }
+      });
+      el.addEventListener('mouseleave', () => {
+        if (cursor) { cursor.style.width = '10px'; cursor.style.height = '10px'; cursor.style.opacity = '1'; }
+        if (follower) { follower.style.width = '32px'; follower.style.height = '32px'; }
+      });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Hide cursor on mobile
+    if ('ontouchstart' in window) {
+      const c = document.getElementById('cursor');
+      const cf = document.getElementById('cursor-follower');
+      if (c) c.style.display = 'none';
+      if (cf) cf.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

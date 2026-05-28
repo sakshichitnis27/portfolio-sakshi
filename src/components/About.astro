@@ -1,0 +1,216 @@
+---
+---
+
+<section id="about" class="section about-section">
+  <div class="about-container">
+    <div class="section-header fade-up">
+      <div class="section-num">01 — ABOUT</div>
+      <h2 class="section-title">Backend Systems, <span class="text-gradient">Owned End to End</span></h2>
+    </div>
+
+    <div class="about-layout fade-up" style="transition-delay:0.1s">
+      <div class="about-bio">
+        <p class="bio-lead">
+          <span class="bio-accent">Senior backend engineer focused on reliability, cost, and scale.</span>
+        </p>
+        <p>
+          I've spent 5+ years building revenue-critical systems across subscriptions, payments, experimentation, search, caching, and LLM tooling, where latency, correctness, and cost all show up in production.
+        </p>
+        <p>
+          I've partnered with PMs and data teams on 30+ experiments, from assignment and exposure logging to measurement and rollout decisions.
+        </p>
+        <p>
+          I'm strongest in ambiguous systems work: defining the failure modes, tightening the data model, and making the operational path explicit before the first deploy.
+        </p>
+        <p class="bio-closing">
+          Distributed systems, payments infra, LLM tooling, real-time pipelines. Built for production, instrumented for feedback, and owned after launch.
+        </p>
+      </div>
+
+      <div class="about-meta">
+        <div class="quick-facts">
+          <div class="qf-item">
+            <span class="qf-label mono">Location</span>
+            <span class="qf-value">Bengaluru, India</span>
+          </div>
+          <div class="qf-item">
+            <span class="qf-label mono">Experience</span>
+            <span class="qf-value">5+ Years</span>
+          </div>
+          <div class="qf-item">
+            <span class="qf-label mono">Focus</span>
+            <span class="qf-value">Distributed Systems · Scale</span>
+          </div>
+          <div class="qf-item">
+            <span class="qf-label mono">Systems</span>
+            <span class="qf-value">Payments · Kafka · Redis</span>
+          </div>
+        </div>
+
+        <div class="about-traits">
+          <div class="trait-item">
+            <span class="trait-icon">⬡</span>
+            <span>Turns product goals into reliable backend systems</span>
+          </div>
+          <div class="trait-item">
+            <span class="trait-icon">⬡</span>
+            <span>Partnered with PMs and data teams on experiment design and measurement</span>
+          </div>
+          <div class="trait-item">
+            <span class="trait-icon">⬡</span>
+            <span>Owns reliability — from DB query to on-call runbook</span>
+          </div>
+          <div class="trait-item">
+            <span class="trait-icon">⬡</span>
+            <span>Built LLM tooling with cost, latency, and quality constraints</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-section { background: transparent; }
+
+  .about-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-top: 0.75rem;
+    color: #fff;
+    line-height: 1.1;
+  }
+
+  .about-layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(280px, 360px);
+    gap: 4rem;
+    align-items: start;
+    margin-top: 3rem;
+  }
+
+  .about-bio {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .bio-lead {
+    font-size: 1.15rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .bio-accent {
+    font-weight: 700;
+    font-size: 1.15rem;
+    background: linear-gradient(90deg, #c77dff, #ff006e 55%, #00d2ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.01em;
+  }
+
+  .about-bio p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.8;
+  }
+
+  .bio-highlight {
+    color: #c77dff;
+    font-weight: 600;
+  }
+
+  .bio-closing {
+    font-size: 0.88rem !important;
+    color: rgba(255,255,255,0.38) !important;
+    letter-spacing: 0.02em;
+    border-left: 2px solid rgba(157,78,221,0.4);
+    padding-left: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .text-highlight {
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+  }
+
+  .about-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .quick-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .qf-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+  }
+
+  .qf-label {
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .qf-value {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.75);
+    font-weight: 500;
+  }
+
+  .about-traits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .trait-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.55;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.055);
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .trait-item:hover {
+    background: rgba(157,78,221,0.06);
+    border-color: rgba(157,78,221,0.18);
+    color: rgba(255,255,255,0.72);
+  }
+
+  .trait-icon {
+    color: #9d4edd;
+    font-size: 0.65rem;
+    margin-top: 0.18em;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 900px) {
+    .about-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+</style>

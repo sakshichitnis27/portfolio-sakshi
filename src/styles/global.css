@@ -1,0 +1,293 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #050005;
+  --surface: #0d000d;
+  --card: #130013;
+  --violet: #9d4edd;
+  --violet-light: #c77dff;
+  --pink: #ff006e;
+  --cyan: #00d2ff;
+  --text: #f8fafc;
+  --muted: rgba(248,250,252,0.4);
+  --border: rgba(157, 78, 221, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  width: 10px;
+  height: 10px;
+  background: var(--violet);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  mix-blend-mode: screen;
+}
+
+.cursor-follower {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(157, 78, 221, 0.5);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s ease, height 0.15s ease;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 2px; }
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Section base */
+.section {
+  min-height: 100vh;
+  padding: 8rem 2rem 6rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Corner mark decoration */
+.corner-mark {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: rgba(157, 78, 221, 0.5);
+  border-style: solid;
+}
+.corner-mark.tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
+.corner-mark.tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
+.corner-mark.bl { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
+.corner-mark.br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+
+/* Fade in animation */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.75s cubic-bezier(.16,1,.3,1), transform 0.75s cubic-bezier(.16,1,.3,1);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(13, 0, 13, 0.75);
+  border: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(157, 78, 221, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(157, 78, 221, 0.1);
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(157, 78, 221, 0.6), transparent);
+}
+
+/* Mono text */
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* Gradient text — violet → cyan */
+.text-gradient {
+  background: linear-gradient(135deg, var(--violet-light), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient text — pink variant */
+.text-gradient-pink {
+  background: linear-gradient(135deg, var(--pink), var(--violet-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Divider line */
+.h-line {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Scrolling marquee */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 30s linear infinite;
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* Stats pulse */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Section number */
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--violet);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-num::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 1px;
+  background: var(--border);
+  flex: 0 0 auto;
+}
+
+/* ─── 3D Skill Ring (JS-injected elements) ─── */
+.skill-ring__stage {
+  width: 560px;
+  height: 420px;
+  margin: 0 auto;
+  perspective: 1200px;
+  position: relative;
+}
+
+.skill-ring__track {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.skill-ring__item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -32px;
+  margin-left: -32px;
+  width: 64px;
+  height: 64px;
+  background: rgba(13, 0, 19, 0.85);
+  border: 1px solid rgba(157, 78, 221, 0.2);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 0;
+  outline: none;
+  text-align: center;
+}
+
+.skill-ring__item img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: brightness(0) invert(0.8);
+  pointer-events: none;
+  display: block;
+}
+
+.skill-ring__label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.48rem;
+  color: rgba(248,250,252,0.45);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.skill-ring__item.is-hovered {
+  background: rgba(157, 78, 221, 0.18);
+  border-color: rgba(157, 78, 221, 0.7);
+  box-shadow: 0 0 24px rgba(157, 78, 221, 0.35), 0 0 48px rgba(157, 78, 221, 0.12);
+}
+
+.skill-ring__item.is-hovered .skill-ring__label {
+  color: var(--violet-light);
+}
+
+.skill-ring__item.is-hovered img {
+  filter: none;
+}
+
+/* Orbital ring animations */
+@keyframes ring-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes ring-spin-r {
+  from { transform: translate(-50%, -50%) rotate(0deg) rotateX(55deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg) rotateX(55deg); }
+}
+@keyframes ring-spin2 {
+  from { transform: translate(-50%, -50%) rotate(0deg) rotateY(30deg); }
+  to   { transform: translate(-50%, -50%) rotate(-360deg) rotateY(30deg); }
+}

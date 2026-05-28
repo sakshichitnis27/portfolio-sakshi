@@ -1,0 +1,560 @@
+---
+---
+
+<section id="skills" class="skills-section" aria-labelledby="skills-title">
+  <div class="skills-copy">
+    <p class="skills-kicker">03 — SKILLS</p>
+    <h2 id="skills-title">Backend systems, data pipelines,<br/>cloud infrastructure.</h2>
+    <p class="skills-hint">Core backend stack, data infrastructure, observability, and LLM tooling.</p>
+  </div>
+  <div class="sk-universe" id="sk-universe"></div>
+</section>
+
+<style is:global>
+  .skills-section {
+    position: relative;
+    min-height: 100vh;
+    padding: clamp(72px, 8vw, 120px) clamp(20px, 5vw, 80px) clamp(72px, 8vw, 120px);
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .skills-copy {
+    position: relative;
+    z-index: 3;
+    max-width: 760px;
+    margin-bottom: clamp(28px, 4vw, 56px);
+  }
+
+  .skills-kicker {
+    color: #00d2ff;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  .skills-copy h2 {
+    font-size: clamp(2rem, 5vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin: 0 0 14px;
+    color: #fff;
+  }
+
+  .skills-hint {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.52);
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+
+  /* ── Universe container ──────────────────────────── */
+  .sk-universe {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .sk-universe { height: 940px; }
+  }
+
+  /* ── Hub buttons ─────────────────────────────────── */
+  .sk-hub {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 99px;
+    padding: 5px 13px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    border: 1.5px solid var(--color);
+    color: var(--color);
+    background: rgba(5, 0, 5, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
+    white-space: nowrap;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.55s ease var(--rd, 0ms),
+      background 0.35s ease,
+      color 0.35s ease,
+      box-shadow 0.35s ease,
+      transform 0.25s ease;
+  }
+
+  .sk-universe.revealed .sk-hub {
+    opacity: 1;
+    pointer-events: auto;
+    animation: hub-glow 3.5s ease-in-out infinite, hub-ping 2.8s ease-out var(--rd, 0ms) 1;
+  }
+
+  .sk-hub:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .sk-hub.active {
+    background: var(--color) !important;
+    color: #05000a !important;
+    box-shadow: 0 0 30px var(--color) !important;
+    animation: none !important;
+    transform: translate(-50%, -50%) scale(1.06) !important;
+  }
+
+  /* Hub radar-ping pulse */
+  @keyframes hub-ping {
+    0%   { box-shadow: 0 0 0 0 var(--color), 0 0 7px var(--color); opacity: 0.6; }
+    60%  { box-shadow: 0 0 0 22px transparent, 0 0 7px var(--color); opacity: 1; }
+    100% { box-shadow: 0 0 0 22px transparent, 0 0 20px var(--color); opacity: 1; }
+  }
+
+  @keyframes hub-glow {
+    0%, 100% { box-shadow: 0 0 7px var(--color); }
+    50%       { box-shadow: 0 0 20px var(--color); }
+  }
+
+  /* ── Orbit rings ─────────────────────────────────── */
+  .sk-orbit {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px dashed rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.6s ease var(--rd, 0ms), border-color 0.4s ease;
+    box-shadow: 0 0 0 0 var(--color, transparent);
+  }
+
+  .sk-universe.revealed .sk-orbit { opacity: 1; }
+
+  /* Colored ring when its cluster is active */
+  .sk-orbit.active {
+    border-color: color-mix(in srgb, var(--color) 35%, transparent);
+    box-shadow: 0 0 14px -4px var(--color);
+  }
+
+  /* ── Focus dim: non-active clusters fade when one is open ── */
+  .sk-universe.focused .sk-hub:not(.active) {
+    opacity: 0.22;
+    filter: grayscale(0.7);
+    transition: opacity 0.4s ease, filter 0.4s ease,
+                background 0.35s ease, color 0.35s ease,
+                box-shadow 0.35s ease, transform 0.25s ease;
+  }
+
+  .sk-universe.focused .sk-node:not(.expanded) {
+    opacity: 0.1 !important;
+  }
+
+  .sk-universe.focused .sk-orbit:not(.active) {
+    opacity: 0.3;
+  }
+
+  /* ── Skill nodes ─────────────────────────────────── */
+  .sk-node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: transform;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease var(--rd, 0ms);
+  }
+
+  .sk-universe.revealed .sk-node {
+    opacity: 0.45;
+    pointer-events: auto;
+  }
+
+  .sk-universe.revealed .sk-node.expanded { opacity: 1; }
+
+  .sk-node-icon {
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition:
+      width        0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+      height       0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding      0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background   0.35s ease,
+      border-color 0.35s ease,
+      box-shadow   0.35s ease;
+  }
+
+  .sk-node-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .sk-node-label {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    text-align: center;
+    font-weight: 500;
+    transition:
+      opacity    0.3s ease 0.08s,
+      max-height 0.3s ease 0.04s,
+      font-size  0.3s ease;
+  }
+
+  /* — Expanded state — */
+  .sk-node.expanded .sk-node-icon {
+    width: 62px;
+    height: 62px;
+    padding: 12px;
+    border-radius: 50%;
+    background: rgba(20, 10, 36, 0.92);
+    border-color: var(--color, rgba(255,255,255,0.35));
+    border-width: 2px;
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--color, #9d4edd) 18%, transparent),
+      0 0 28px color-mix(in srgb, var(--color, #9d4edd) 45%, transparent),
+      inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+
+  .sk-node.expanded .sk-node-label {
+    opacity: 1;
+    max-height: 20px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .sk-node:hover .sk-node-icon {
+    border-color: rgba(255, 255, 255, 0.32);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Icon text fallback (when CDN image fails) */
+  .sk-icon-text {
+    font-size: 9px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.82);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    text-align: center;
+    font-family: inherit;
+    transition: font-size 0.4s ease;
+  }
+
+  .sk-node.expanded .sk-icon-text { font-size: 14px; }
+
+  /* ── Mobile: smaller expanded icons so nodes don't collide ── */
+  @media (max-width: 768px) {
+    .sk-node.expanded .sk-node-icon {
+      width: 42px;
+      height: 42px;
+      padding: 8px;
+      border-radius: 50%;
+    }
+    .sk-node.expanded .sk-node-label { font-size: 9px; }
+    .sk-node.expanded .sk-icon-text  { font-size: 11px; }
+  }
+</style>
+
+<script>
+(function () {
+  const CLUSTERS = [
+    {
+      id: 'lang', label: 'LANGUAGES', color: '#a855f7',
+      dp: [12, 26], mp: [24, 11],
+      skills: [
+        { name: 'Python',     slug: 'python',     url: 'https://python.org' },
+        { name: 'Go',         slug: 'go',         url: 'https://go.dev' },
+        { name: 'JavaScript', slug: 'javascript', url: 'https://developer.mozilla.org/docs/Web/JavaScript' },
+        { name: 'TypeScript', slug: 'typescript', url: 'https://typescriptlang.org' },
+        { name: 'Ruby',       slug: 'ruby',       url: 'https://ruby-lang.org' },
+        { name: 'SQL',        slug: 'mysql',      url: 'https://en.wikipedia.org/wiki/SQL' },
+      ]
+    },
+    {
+      id: 'fw', label: 'FRAMEWORKS', color: '#7c3aed',
+      dp: [32, 26], mp: [74, 19],
+      skills: [
+        { name: 'Django',  slug: 'django',      url: 'https://djangoproject.com' },
+        { name: 'FastAPI', slug: 'fastapi',     url: 'https://fastapi.tiangolo.com' },
+        { name: 'Flask',   slug: 'flask',       url: 'https://flask.palletsprojects.com' },
+        { name: 'Gin',     slug: 'gin',         url: 'https://gin-gonic.com' },
+        { name: 'React',   slug: 'react',       url: 'https://react.dev' },
+        { name: 'Rails',   slug: 'rubyonrails', url: 'https://rubyonrails.org' },
+        { name: 'Pandas',  slug: 'pandas',      url: 'https://pandas.pydata.org' },
+        { name: 'NumPy',   slug: 'numpy',       url: 'https://numpy.org' },
+      ]
+    },
+    {
+      id: 'db', label: 'DATABASES', color: '#ec4899',
+      dp: [58, 26], mp: [30, 31],
+      skills: [
+        { name: 'Redis',         slug: 'redis',           url: 'https://redis.io' },
+        { name: 'PostgreSQL',    slug: 'postgresql',      url: 'https://postgresql.org' },
+        { name: 'MySQL',         slug: 'mysql',           url: 'https://mysql.com' },
+        { name: 'MongoDB',       slug: 'mongodb',         url: 'https://mongodb.com' },
+        { name: 'Cassandra',     slug: 'apachecassandra', url: 'https://cassandra.apache.org' },
+        { name: 'Elasticsearch', slug: 'elasticsearch',   url: 'https://elastic.co' },
+        { name: 'DynamoDB',      slug: 'amazondynamodb',  url: 'https://aws.amazon.com/dynamodb' },
+      ]
+    },
+    {
+      id: 'msg', label: 'MESSAGING', color: '#f97316',
+      dp: [88, 28], mp: [74, 41],
+      skills: [
+        { name: 'Kafka',    slug: 'apachekafka', url: 'https://kafka.apache.org' },
+        { name: 'RabbitMQ', slug: 'rabbitmq',    url: 'https://rabbitmq.com' },
+        { name: 'GraphQL',  slug: 'graphql',     url: 'https://graphql.org' },
+        { name: 'gRPC',     slug: 'grpc',        url: 'https://grpc.io' },
+        { name: 'Pub/Sub',  slug: 'googlepubsub', url: 'https://cloud.google.com/pubsub' },
+      ]
+    },
+    {
+      id: 'infra', label: 'CLOUD & DEVOPS', color: '#06b6d4',
+      dp: [62, 72], mp: [24, 53],
+      skills: [
+        { name: 'AWS',        slug: 'amazonaws',      url: 'https://aws.amazon.com' },
+        { name: 'GCP',        slug: 'googlecloud',    url: 'https://cloud.google.com' },
+        { name: 'Azure',      slug: 'microsoftazure', url: 'https://azure.microsoft.com' },
+        { name: 'Docker',     slug: 'docker',         url: 'https://docker.com' },
+        { name: 'Kubernetes', slug: 'kubernetes',     url: 'https://kubernetes.io' },
+        { name: 'Terraform',  slug: 'terraform',      url: 'https://terraform.io' },
+        { name: 'Jenkins',    slug: 'jenkins',        url: 'https://jenkins.io' },
+      ]
+    },
+    {
+      id: 'analytics', label: 'DATA & ANALYTICS', color: '#8b5cf6',
+      dp: [40, 80], mp: [72, 62],
+      skills: [
+        { name: 'Spark',    slug: 'apachespark',    url: 'https://spark.apache.org' },
+        { name: 'Airflow',  slug: 'apacheairflow',  url: 'https://airflow.apache.org' },
+        { name: 'BigQuery', slug: 'googlebigquery', url: 'https://cloud.google.com/bigquery' },
+        { name: 'Redshift', slug: 'amazonredshift', url: 'https://aws.amazon.com/redshift' },
+        { name: 'Metabase', slug: 'metabase',       url: 'https://metabase.com' },
+      ]
+    },
+    {
+      id: 'obs', label: 'OBSERVABILITY', color: '#10b981',
+      dp: [14, 70], mp: [26, 74],
+      skills: [
+        { name: 'Grafana',    slug: 'grafana',    url: 'https://grafana.com' },
+        { name: 'Prometheus', slug: 'prometheus', url: 'https://prometheus.io' },
+        { name: 'Kibana',     slug: 'kibana',     url: 'https://elastic.co/kibana' },
+        { name: 'Datadog',    slug: 'datadog',    url: 'https://datadoghq.com' },
+        { name: 'CloudWatch', slug: 'amazoncloudwatch', url: 'https://aws.amazon.com/cloudwatch' },
+      ]
+    },
+    {
+      id: 'ai', label: 'AI & LLM', color: '#f59e0b',
+      dp: [82, 60], mp: [70, 84],
+      skills: [
+        { name: 'LangChain', slug: 'langchain',     url: 'https://langchain.com' },
+        { name: 'Langfuse',  slug: 'langfuse',      url: 'https://langfuse.com' },
+        { name: 'Copilot',   slug: 'githubcopilot', url: 'https://github.com/features/copilot' },
+        { name: 'OpenAI',    slug: 'openai',        url: 'https://openai.com' },
+        { name: 'Anthropic', slug: 'anthropic',     url: 'https://anthropic.com' },
+      ]
+    },
+  ];
+
+  // Target radians-per-second at 60fps equivalent
+  const SPEEDS = [0.0014, 0.0017, 0.0011, 0.0019, 0.0016, 0.0013, 0.0015, 0.0020].map(s => s * 60);
+
+  const univ = document.getElementById('sk-universe');
+  if (!univ) return;
+
+  const hubEls   = {};
+  const nodeEls  = {};
+  const orbitEls = {};
+  const angles   = {};
+  let activeId   = null;
+  let revealed   = false;
+  let lastTime   = 0;
+
+  /* ── Build DOM ─────────────────────────────────── */
+  CLUSTERS.forEach((c, ci) => {
+    const n = c.skills.length;
+    angles[c.id] = c.skills.map((_, i) => (2 * Math.PI * i) / n);
+
+    // Orbit ring
+    const ring = document.createElement('div');
+    ring.className = 'sk-orbit';
+    ring.style.setProperty('--rd', ci * 90 + 'ms');
+    ring.style.setProperty('--color', c.color);
+    univ.appendChild(ring);
+    orbitEls[c.id] = ring;
+
+    // Hub
+    const hub = document.createElement('button');
+    hub.className = 'sk-hub';
+    hub.dataset.cluster = c.id;
+    hub.style.cssText = `--color:${c.color};--rd:${ci * 90}ms`;
+    hub.textContent = c.label;
+    hub.addEventListener('click', () => toggle(c.id));
+    univ.appendChild(hub);
+    hubEls[c.id] = hub;
+
+    // Skill nodes
+    nodeEls[c.id] = [];
+    c.skills.forEach((sk, si) => {
+      const el = document.createElement('div');
+      el.className = 'sk-node';
+      el.title = sk.name + (sk.url ? ' ↗' : '');
+      el.style.setProperty('--rd', (ci * 90 + si * 28 + 80) + 'ms');
+      const img = document.createElement('img');
+      img.src = `https://cdn.simpleicons.org/${sk.slug}/ffffff`;
+      img.alt = sk.name;
+      img.loading = 'lazy';
+      img.width = 15; img.height = 15;
+      // Fallback: show text abbreviation if icon CDN 404s
+      img.addEventListener('error', function () {
+        const fb = document.createElement('span');
+        fb.className = 'sk-icon-text';
+        fb.textContent = sk.name.length <= 3 ? sk.name.toUpperCase() : sk.name.slice(0, 3).toUpperCase();
+        this.replaceWith(fb);
+      });
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'sk-node-icon';
+      iconDiv.appendChild(img);
+      const label = document.createElement('span');
+      label.className = 'sk-node-label';
+      label.textContent = sk.name;
+      el.appendChild(iconDiv);
+      el.appendChild(label);
+      // Pass cluster color so expanded circle ring uses it
+      el.style.setProperty('--color', c.color);
+      // Click: open skill URL in new tab (hub click handles expand/collapse)
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (sk.url) window.open(sk.url, '_blank', 'noopener,noreferrer');
+      });
+      univ.appendChild(el);
+      nodeEls[c.id].push(el);
+    });
+  });
+
+  /* ── Toggle cluster ────────────────────────────── */
+  function toggle(id) {
+    const closing = activeId === id;
+    if (activeId) setExpanded(activeId, false);
+    activeId = closing ? null : id;
+    if (!closing) setExpanded(id, true);
+    // Focus dim: highlight active cluster, fade rest
+    univ.classList.toggle('focused', !closing);
+  }
+
+  function setExpanded(id, on) {
+    hubEls[id]?.classList.toggle('active', on);
+    orbitEls[id]?.classList.toggle('active', on);
+    nodeEls[id]?.forEach(n => n.classList.toggle('expanded', on));
+  }
+
+  /* ── Orbit radius — capped by nearest neighbour + container edges ── */
+  function getRadius(cluster, W, H, mob) {
+    const [px, py] = mob ? cluster.mp : cluster.dp;
+    const cx = W * px / 100;
+    const cy = H * py / 100;
+    // How far we can orbit before hitting a container edge (18 px clearance for icon half-size)
+    const clearance = 18;
+    const distToEdge = Math.min(cx - clearance, W - cx - clearance, cy - clearance, H - cy - clearance);
+    // Minimum distance to any other cluster center
+    let minDist = Infinity;
+    CLUSTERS.forEach(other => {
+      if (other.id === cluster.id) return;
+      const [ox, oy] = mob ? other.mp : other.dp;
+      minDist = Math.min(minDist, Math.hypot(W * ox / 100 - cx, H * oy / 100 - cy));
+    });
+    // Desired radius based on skill count
+    const base    = mob ? 70 : Math.max(68, W * 0.085);
+    const desired = Math.max(50, base * Math.sqrt(cluster.skills.length / 4));
+    // Cap at nearest-neighbour gap AND container edge — whichever is smaller
+    return Math.min(desired, minDist * 0.44, Math.max(30, distToEdge));
+  }
+
+  /* ── RAF loop ──────────────────────────────────── */
+  function frame(ts) {
+    const now = ts * 0.001; // seconds
+    const delta = lastTime ? Math.min(now - lastTime, 0.1) : 0;
+    lastTime = now;
+
+    const W = univ.offsetWidth;
+    const H = univ.offsetHeight;
+    if (!W || !H) { requestAnimationFrame(frame); return; }
+    const mob = W < 768;
+
+    CLUSTERS.forEach((c, ci) => {
+      const [px, py] = mob ? c.mp : c.dp;
+      const cx = W * px / 100;
+      const cy = H * py / 100;
+      const r  = getRadius(c, W, H, mob);
+      const ang = angles[c.id];
+
+      // Hub position
+      const hub = hubEls[c.id];
+      if (hub) { hub.style.left = cx + 'px'; hub.style.top = cy + 'px'; }
+
+      // Orbit ring
+      const ring = orbitEls[c.id];
+      if (ring) {
+        ring.style.left   = cx + 'px';
+        ring.style.top    = cy + 'px';
+        ring.style.width  = r * 2 + 'px';
+        ring.style.height = r * 2 + 'px';
+      }
+
+      // Radius breathing — ±4% organic pulse, unique phase per cluster
+      const breathe = 1.0 + 0.04 * Math.sin(now * 0.7 + ci * 1.3);
+      const rLive = r * breathe;
+
+      // Skill node positions — GPU-composited transform, delta-time angle step
+      const dir = ci % 2 === 0 ? 1 : -1;
+      ang.forEach((a, i) => {
+        ang[i] = a + dir * SPEEDS[ci] * delta;
+        const el = nodeEls[c.id]?.[i];
+        if (el) {
+          const nx = cx + rLive * Math.cos(ang[i]);
+          const ny = cy + rLive * Math.sin(ang[i]);
+          el.style.transform = `translate3d(${nx}px,${ny}px,0) translate(-50%,-50%)`;
+        }
+      });
+    });
+
+    requestAnimationFrame(frame);
+  }
+
+  /* ── Scroll reveal ─────────────────────────────── */
+  new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !revealed) {
+      revealed = true;
+      univ.classList.add('revealed');
+      // Auto-open Languages only if user hasn't already clicked something
+      setTimeout(() => { if (!activeId) toggle('lang'); }, 1200);
+    }
+  }, { threshold: 0.15 }).observe(univ);
+
+  requestAnimationFrame(frame);
+})();
+</script>

@@ -1,0 +1,447 @@
+---
+const stats = [
+  { label: 'Active Users', value: '200M+' },
+  { label: 'Requests/min', value: '2.5M' },
+  { label: 'QPS Peak', value: '11K' },
+  { label: 'Transactions/day', value: '250K' },
+  { label: 'A/B Experiments', value: '30+' },
+  { label: 'DB Lock Reduction', value: '60%' },
+  { label: 'Redis Savings', value: '30%' },
+  { label: 'LLM Cost Reduction', value: '22%' },
+  { label: 'Search CTR Lift', value: '15%' },
+];
+
+const techScroll = [
+  'Python', 'Golang', 'TypeScript', 'Kafka', 'Redis', 'Kubernetes',
+  'Django', 'FastAPI', 'PostgreSQL', 'Elasticsearch', 'AWS', 'GCP',
+  'Docker', 'gRPC', 'LangChain', 'Terraform', 'Spark', 'Airflow',
+];
+---
+
+<section id="hero" class="hero-section">
+  <!-- Gradient overlay (ensures text is readable) -->
+  <div class="hero-overlay"></div>
+
+  <!-- Top bar -->
+  <div class="hero-top">
+    <span class="logo mono" id="nav-logo" aria-label="Vismay Tiwari"></span>
+    <div class="status-badge">
+      <span class="pulse-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#c77dff;box-shadow:0 0 8px #c77dff,0 0 16px rgba(199,125,255,0.5);"></span>
+      <span class="mono" style="font-size:0.7rem;letter-spacing:0.15em;color:rgba(255,255,255,0.85);">AVAILABLE NOW</span>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="hero-body">
+    <div class="hero-tag fade-up">
+      <span class="mono" style="font-size:0.72rem;color:#9d4edd;letter-spacing:0.22em;">Backend systems · Payments · Subscriptions · Kafka · Redis · LLM tooling</span>
+    </div>
+
+    <h1 class="hero-h1 fade-up" style="transition-delay:0.1s">
+      <span class="hero-line"><span class="text-gradient">Distributed systems</span></span>
+      <span class="hero-line">for <span class="text-gradient-pink">revenue-critical</span> products.</span>
+      <span class="hero-line hero-line-last">Payments, subscriptions, search, and LLM tooling.</span>
+      <span class="hero-line hero-line-4">Designed for scale. Owned in production.</span>
+    </h1>
+
+    <p class="hero-sub fade-up" style="transition-delay:0.2s">
+      5+ years building distributed systems across payments, subscriptions, experimentation, search, and LLM tooling.
+    </p>
+
+    <div class="hero-cta fade-up visible" style="transition-delay:0.3s">
+      <a href="mailto:hire.vtiwari@gmail.com?subject=Hey%20Vismay%20%E2%80%94%20Let%27s%20connect" class="btn-v" data-cursor>
+        Get in touch
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+      </a>
+      <a href="https://linkedin.com/in/vismaytiwari/" target="_blank" rel="noopener noreferrer" class="btn-ghost" data-cursor>LinkedIn</a>
+      <a href="https://github.com/vismaytiwari" target="_blank" rel="noopener noreferrer" class="btn-ghost" data-cursor>GitHub</a>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar fade-up" style="transition-delay:0.4s">
+    <div class="stats-track">
+      {[...stats, ...stats].map(s => (
+        <div class="stat-chip">
+          <span class="stat-val">{s.value}</span>
+          <span class="stat-lbl">{s.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Tech ticker strip -->
+  <div class="tech-strip">
+    <div class="tech-scroll">
+      {[...techScroll, ...techScroll].map(t => (
+        <span class="tech-chip">{t}<span class="sep"> ✦ </span></span>
+      ))}
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="scroll-cue" aria-hidden="true">
+    <div class="scroll-mouse">
+      <div class="scroll-wheel"></div>
+    </div>
+    <div class="scroll-beam"></div>
+    <span class="mono" style="font-size:0.62rem;letter-spacing:0.2em;color:rgba(255,255,255,0.5);">SCROLL</span>
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 640px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  /* Overlay keeps text crisp */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, transparent 20%, rgba(5,0,5,0.6) 80%),
+      linear-gradient(to bottom, rgba(5,0,5,0.3) 0%, transparent 30%, transparent 70%, rgba(5,0,5,0.8) 100%);
+    pointer-events: none;
+  }
+
+  /* ── Top bar ────────────────── */
+  .hero-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 3rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #9d4edd;
+    letter-spacing: 0.05em;
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid rgba(157,78,221,0.2);
+    border-radius: 999px;
+    background: rgba(13,0,13,0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  /* ── Hero body ────────────────── */
+  .hero-body {
+    position: relative;
+    z-index: 20;
+    padding: 0 3rem;
+    max-width: 860px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .hero-tag { letter-spacing: 0.22em; }
+
+  .hero-h1 {
+    font-size: clamp(2.2rem, 6vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.06em;
+    color: #fff;
+  }
+
+  .hero-line { display: block; }
+
+  .hero-line-last { margin-top: 0.1em; }
+
+  /* Outlined text for "can't" */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255,255,255,0.7);
+    text-stroke: 2px rgba(255,255,255,0.7);
+  }
+
+  /* 4th line — accent/close */
+  .hero-line-4 {
+    margin-top: 0.2em;
+    font-size: 0.62em;
+    opacity: 0.72;
+    letter-spacing: 0.01em;
+  }
+
+  .text-gradient-mute {
+    background: linear-gradient(90deg, rgba(157,78,221,0.7), rgba(255,0,110,0.6));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-v {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    background: linear-gradient(135deg, #9d4edd, #7b2fd9);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 24px rgba(157,78,221,0.25);
+  }
+
+  .btn-v:hover {
+    background: linear-gradient(135deg, #c77dff, #9d4edd);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(157,78,221,0.4);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.65);
+    font-size: 0.9rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-ghost:hover {
+    border-color: rgba(157,78,221,0.5);
+    color: #c77dff;
+    background: rgba(157,78,221,0.07);
+  }
+
+  /* ── Stats bar ─────────────── */
+  .stats-bar {
+    position: absolute;
+    bottom: 3rem;
+    left: 0; right: 0;
+    z-index: 20;
+    overflow: hidden;
+    border-top: 1px solid rgba(157,78,221,0.1);
+    border-bottom: 1px solid rgba(157,78,221,0.1);
+    background: rgba(5,0,5,0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .stats-track {
+    display: flex;
+    white-space: nowrap;
+    padding: 0.65rem 0;
+    animation: marquee 40s linear infinite;
+  }
+
+  .stat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 2rem;
+    border-right: 1px solid rgba(157,78,221,0.1);
+  }
+
+  .stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #9d4edd;
+  }
+
+  .stat-lbl {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Scroll cue ─────────────── */
+  .scroll-cue {
+    position: absolute;
+    bottom: 3.5rem;
+    right: 3rem;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .scroll-mouse {
+    width: 20px;
+    height: 30px;
+    border: 2px solid rgba(157,78,221,0.7);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    box-shadow: 0 0 12px rgba(157,78,221,0.3);
+  }
+
+  .scroll-wheel {
+    width: 3px;
+    height: 7px;
+    background: #c77dff;
+    border-radius: 3px;
+    animation: wheel-drop 1.8s ease-in-out infinite;
+  }
+
+  @keyframes wheel-drop {
+    0%   { opacity: 1; transform: translateY(0); }
+    55%  { opacity: 0; transform: translateY(10px); }
+    56%  { opacity: 0; transform: translateY(0); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .scroll-beam {
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(157,78,221,0.8), transparent);
+    animation: beam 2.2s ease-in-out infinite;
+  }
+
+  @keyframes beam {
+    0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    51%  { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0.4; }
+  }
+
+  /* ── Tech strip ─────────────── */
+  .tech-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    z-index: 20;
+    overflow: hidden;
+    border-top: 1px solid rgba(157,78,221,0.08);
+    background: rgba(5,0,5,0.85);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    padding: 0.85rem 0;
+  }
+
+  .tech-scroll {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 22s linear infinite;
+  }
+
+  .tech-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.28);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 0.75rem;
+    transition: color 0.2s;
+  }
+
+  .tech-chip:hover { color: #9d4edd; }
+  .sep { color: rgba(157,78,221,0.4); }
+
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @media (max-width: 768px) {
+    .hero-top { padding: 1.5rem; }
+    .hero-body { padding: 0 1.5rem; }
+    .scroll-cue { right: 1.5rem; }
+    .ring-b { display: none; }
+    .ring { left: 75%; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-h1 { font-size: clamp(2rem, 11vw, 2.8rem); }
+    .hero-body { padding: 0 1.25rem; gap: 1.25rem; }
+    .ring { display: none; }
+    .ring-dot { display: none; }
+  }
+</style>
+
+<script>
+  // Fluid typed logo animation
+  const logoEl = document.getElementById('nav-logo');
+  if (logoEl) {
+    const text = 'Vismay Tiwari';
+    let i = 0;
+    // Show blinking cursor while typing
+    logoEl.innerHTML = '<span class="logo-cursor"></span>';
+    logoEl.style.cssText = 'position:relative;';
+    const cursorStyle = document.createElement('style');
+    cursorStyle.textContent = `
+      #nav-logo { display: inline-flex; align-items: center; gap: 1px; }
+      .logo-cursor { display:inline-block; width:2px; height:1.1em; background:#9d4edd;
+        border-radius:1px; animation:logo-blink 1s step-end infinite;
+        box-shadow:0 0 8px rgba(157,78,221,0.8); vertical-align:middle; }
+      @keyframes logo-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+      .logo-char { display:inline-block; opacity:0; transform:translateY(4px);
+        transition:opacity 0.18s ease, transform 0.22s ease; }
+      .logo-char.show { opacity:1; transform:translateY(0); }
+    `;
+    document.head.appendChild(cursorStyle);
+
+    setTimeout(() => {
+      function typeNext() {
+        if (i >= text.length) {
+          // Done typing — stop cursor blink after 1.5s
+          setTimeout(() => {
+            const cur = logoEl.querySelector('.logo-cursor');
+            if (cur) cur.style.animation = 'none';
+          }, 1500);
+          return;
+        }
+        const span = document.createElement('span');
+        span.className = 'logo-char';
+        span.textContent = text[i] === ' ' ? '\u00a0' : text[i];
+        // Insert before the cursor
+        const cursor = logoEl.querySelector('.logo-cursor');
+        logoEl.insertBefore(span, cursor);
+        requestAnimationFrame(() => requestAnimationFrame(() => span.classList.add('show')));
+        i++;
+        setTimeout(typeNext, 85 + Math.random() * 55);
+      }
+      typeNext();
+    }, 600);
+  }
+</script>
+
+
+
