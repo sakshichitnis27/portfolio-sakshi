@@ -160,21 +160,21 @@
     box-shadow: 0 0 14px -4px var(--color);
   }
 
-  /* ── Focus dim: non-active clusters fade when one is open ── */
+  /* ── Focus dim: subtle only ── */
   .sk-universe.focused .sk-hub:not(.active) {
-    opacity: 0.22;
-    filter: grayscale(0.7);
+    opacity: 0.75;
+    filter: grayscale(0.05);
     transition: opacity 0.4s ease, filter 0.4s ease,
                 background 0.35s ease, color 0.35s ease,
                 box-shadow 0.35s ease, transform 0.25s ease;
   }
 
   .sk-universe.focused .sk-node:not(.expanded) {
-    opacity: 0.1 !important;
+    opacity: 0.82 !important;
   }
 
   .sk-universe.focused .sk-orbit:not(.active) {
-    opacity: 0.3;
+    opacity: 0.6;
   }
 
   /* ── Skill nodes ─────────────────────────────────── */
@@ -195,7 +195,7 @@
   }
 
   .sk-universe.revealed .sk-node {
-    opacity: 0.45;
+    opacity: 0.88;
     pointer-events: auto;
   }
 
@@ -205,9 +205,9 @@
     width: 28px;
     height: 28px;
     padding: 5px;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -468,6 +468,7 @@
       el.appendChild(label);
       // Pass cluster color so expanded circle ring uses it
       el.style.setProperty('--color', c.color);
+      el.addEventListener('click', () => toggle(c.id));
       univ.appendChild(el);
       nodeEls[c.id].push(el);
     });
@@ -570,8 +571,7 @@
     if (entries[0].isIntersecting && !revealed) {
       revealed = true;
       univ.classList.add('revealed');
-      // Auto-open Languages only if user hasn't already clicked something
-      setTimeout(() => { if (!activeId) toggle('lang'); }, 1200);
+      setTimeout(() => { if (!activeId) toggle('lang'); }, 3000);
     }
   }, { threshold: 0.15 }).observe(univ);
 

@@ -47,7 +47,7 @@ export const techTicker = [
 export const journey = [
   {
     id: 'medicaps',
-    label: 'Medicaps',
+    label: 'Medicaps Uni',
     status: 'Origin',
     title: 'Computer science base',
     line: 'The foundation: algorithms, systems thinking, and the habit of building.',
@@ -57,7 +57,7 @@ export const journey = [
   {
     id: 'gammastack',
     label: 'Gammastack',
-    status: 'Realtime work',
+    status: 'Realtime Betting',
     title: 'Live data and fraud paths',
     line: 'Realtime feeds, payment-risk signals, cloud pipelines, and production delivery.',
     proof: ['RabbitMQ', 'WebSocket', 'GCP pipelines'],
@@ -65,8 +65,8 @@ export const journey = [
   },
   {
     id: 'past-consumer',
-    label: 'Pocket FM - past work',
-    status: 'Past consumer scale',
+    label: 'Pocket FM',
+    status: 'Million user scale',
     title: 'Revenue, DB, events, AI',
     line: 'Built payments, retention loops, DB optimizations, search, LLM cost control, MCP workflows, and agent evals.',
     proof: ['250K/day', '10B events', '-60% DB load', '-22% LLM cost'],
@@ -74,8 +74,8 @@ export const journey = [
   },
   {
     id: 'somewhere',
-    label: 'Somewhere',
-    status: 'Quiet AI build',
+    label: 'Stealth',
+    status: 'Building Agents at scale',
     title: 'Working quietly on AI agents',
     line: 'Working quietly on agent workflows, MCP experiments, eval loops, and small systems that make software feel faster.',
     proof: ['AI agents', 'MCP', 'Evals'],
