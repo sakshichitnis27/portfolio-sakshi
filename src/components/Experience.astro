@@ -92,56 +92,93 @@ const briefs = [
     })}
   </div>
 
-  <!-- Detail modal -->
-  <div id="exp-modal" class="exp-modal" role="dialog" aria-modal="true" aria-labelledby="exp-modal-name" hidden>
-    <div class="exp-modal-backdrop"></div>
-    <div class="exp-modal-box">
-      <button class="exp-modal-close mono" aria-label="Close details">✕</button>
-      <p class="exp-modal-status mono" id="exp-modal-status"></p>
-      <h3 id="exp-modal-name"></h3>
-      <strong id="exp-modal-title"></strong>
-      <p id="exp-modal-line"></p>
-      <div class="exp-modal-proof" id="exp-modal-proof"></div>
-    </div>
+  <!-- Detail popover -->
+  <div id="exp-pop" class="exp-pop" hidden role="tooltip">
+    <button class="exp-pop-close mono" aria-label="Close">✕</button>
+    <p class="exp-pop-status mono" id="exp-pop-status"></p>
+    <h3 id="exp-pop-name"></h3>
+    <strong id="exp-pop-title"></strong>
+    <p id="exp-pop-line"></p>
+    <div class="exp-pop-proof" id="exp-pop-proof"></div>
   </div>
 </section>
 
 <script define:vars={{ journey }}>
-  const modal   = document.getElementById('exp-modal');
-  const mStatus = document.getElementById('exp-modal-status');
-  const mName   = document.getElementById('exp-modal-name');
-  const mTitle  = document.getElementById('exp-modal-title');
-  const mLine   = document.getElementById('exp-modal-line');
-  const mProof  = document.getElementById('exp-modal-proof');
+  const pop     = document.getElementById('exp-pop');
+  // Move out of career-section to avoid overflow:clip clipping fixed children
+  document.body.appendChild(pop);
+  const pStatus = document.getElementById('exp-pop-status');
+  const pName   = document.getElementById('exp-pop-name');
+  const pTitle  = document.getElementById('exp-pop-title');
+  const pLine   = document.getElementById('exp-pop-line');
+  const pProof  = document.getElementById('exp-pop-proof');
+  const GAP = 10; // px gap between button and popover
 
-  function openModal(idx) {
+  function openPop(btn, idx) {
     const c = journey[idx];
-    mStatus.textContent = c.status;
-    mName.textContent   = c.label;
-    mTitle.textContent  = c.title;
-    mLine.textContent   = c.line;
-    mProof.innerHTML    = c.proof.map(p => `<span>${p}</span>`).join('');
-    modal.style.setProperty('--accent', c.accent);
-    modal.hidden = false;
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => modal.classList.add('is-open'));
+    pStatus.textContent = c.status;
+    pName.textContent   = c.label;
+    pTitle.textContent  = c.title;
+    pLine.textContent   = c.line;
+    pProof.innerHTML    = c.proof.map(p => `<span class="pop-tag">${p}</span>`).join('');
+    pop.style.setProperty('--accent', c.accent);
+    pop.hidden = false;
+    pop.dataset.active = idx;
+
+    // Position after paint so we know pop dimensions
+    requestAnimationFrame(() => {
+      const br   = btn.getBoundingClientRect();
+      const pw   = pop.offsetWidth;
+      const ph   = pop.offsetHeight;
+      const vw   = window.innerWidth;
+      const vh   = window.innerHeight;
+
+      // Horizontal: align left edge of pop to left edge of button, flip if overflows
+      let left = br.left;
+      if (left + pw > vw - 12) left = br.right - pw;
+      left = Math.max(12, left);
+
+      // Vertical: prefer below button, flip above if not enough room
+      let top = br.bottom + GAP;
+      if (top + ph > vh - 12) top = br.top - ph - GAP;
+      top = Math.max(12, top);
+
+      pop.style.left = `${left}px`;
+      pop.style.top  = `${top}px`;
+
+      requestAnimationFrame(() => pop.classList.add('is-open'));
+    });
   }
 
-  function closeModal() {
-    modal.classList.remove('is-open');
-    modal.addEventListener('transitionend', () => {
-      modal.hidden = true;
-      document.body.style.overflow = '';
+  function closePop() {
+    pop.classList.remove('is-open');
+    pop.addEventListener('transitionend', () => {
+      pop.hidden = true;
+      delete pop.dataset.active;
     }, { once: true });
   }
 
   document.querySelectorAll('.chapter').forEach(btn => {
-    btn.addEventListener('click', () => openModal(Number(btn.dataset.index)));
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.index);
+      // Toggle: clicking the same dot again closes it
+      if (!pop.hidden && pop.dataset.active === String(idx)) {
+        closePop();
+      } else {
+        openPop(btn, idx);
+      }
+    });
   });
-  document.querySelector('.exp-modal-backdrop')?.addEventListener('click', closeModal);
-  document.querySelector('.exp-modal-close')?.addEventListener('click', closeModal);
+
+  document.querySelector('.exp-pop-close')?.addEventListener('click', closePop);
+
+  // Close on outside click — but not when clicking a chapter button (that handler toggles)
+  document.addEventListener('click', e => {
+    if (!pop.hidden && !pop.contains(e.target) && !e.target.closest('.chapter')) closePop();
+  });
+
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && !modal?.hidden) closeModal();
+    if (e.key === 'Escape' && !pop.hidden) closePop();
   });
 </script>
 
@@ -416,120 +453,103 @@ const briefs = [
     line-height: 1.4;
   }
 
-  /* ── Modal ────────────────────────────────────────── */
-  .exp-modal {
+  /* ── Popover ─────────────────────────────────────── */
+  .exp-pop {
     position: fixed;
-    inset: 0;
     z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    opacity: 0;
-    transition: opacity 0.28s ease;
-  }
-
-  .exp-modal.is-open {
-    opacity: 1;
-  }
-
-  .exp-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(2,0,8,0.72);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-  }
-
-  .exp-modal-box {
-    position: relative;
-    z-index: 1;
-    width: min(520px, 90vw);
-    padding: 2.2rem 2rem 2rem;
+    width: 280px;
+    padding: 1.1rem 1.2rem;
     border-radius: 12px;
-    border: 1px solid color-mix(in srgb, var(--accent, #00d2ff) 35%, rgba(255,255,255,0.1));
+    border: 1px solid color-mix(in srgb, var(--accent, #00d2ff) 30%, rgba(255,255,255,0.1));
     background:
-      radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent, #00d2ff) 14%, transparent), transparent 14rem),
-      rgba(6,1,16,0.88);
-    -webkit-backdrop-filter: blur(28px);
-    backdrop-filter: blur(28px);
+      radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent, #00d2ff) 10%, transparent), transparent 10rem),
+      rgba(6,1,16,0.92);
+    -webkit-backdrop-filter: blur(22px);
+    backdrop-filter: blur(22px);
     box-shadow:
-      0 0 80px color-mix(in srgb, var(--accent, #00d2ff) 12%, transparent),
-      0 32px 80px rgba(0,0,0,0.5),
-      inset 0 1px 0 rgba(255,255,255,0.1);
-    transform: translateY(12px);
-    transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
+      0 8px 32px rgba(0,0,0,0.45),
+      0 0 40px color-mix(in srgb, var(--accent, #00d2ff) 8%, transparent),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+    opacity: 0;
+    scale: 0.95;
+    transition: opacity 0.16s ease, scale 0.16s ease;
+    pointer-events: none;
   }
 
-  .exp-modal.is-open .exp-modal-box {
-    transform: translateY(0);
+  .exp-pop.is-open {
+    opacity: 1;
+    scale: 1;
+    pointer-events: auto;
   }
 
-  .exp-modal-close {
+  .exp-pop-close {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 2rem;
-    height: 2rem;
+    top: 0.6rem;
+    right: 0.6rem;
+    width: 1.6rem;
+    height: 1.6rem;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.7);
-    font-size: var(--fs-xs);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.65rem;
     cursor: pointer;
     display: grid;
     place-items: center;
-    transition: background 0.18s ease, color 0.18s ease;
+    transition: background 0.15s ease, color 0.15s ease;
+    line-height: 1;
   }
 
-  .exp-modal-close:hover {
+  .exp-pop-close:hover {
     background: rgba(255,255,255,0.14);
     color: #fff;
   }
 
-  .exp-modal-status {
-    margin: 0 0 0.6rem;
+  .exp-pop-status {
+    margin: 0 0 0.45rem;
+    padding-right: 1.8rem;
     color: var(--accent, #00d2ff);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.16em;
+    font-size: var(--fs-2xs);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-  }
-
-  .exp-modal-box h3 {
-    margin: 0;
-    font-size: var(--fs-xl);
-    line-height: 0.96;
-    color: #fff;
-  }
-
-  .exp-modal-box strong {
-    display: block;
-    margin-top: 0.75rem;
-    color: rgba(255,255,255,0.9);
-    font-size: var(--fs-base);
     line-height: 1.3;
   }
 
-  .exp-modal-box p:last-of-type {
-    margin: 0.7rem 0 0;
-    color: rgba(255,255,255,0.78);
-    font-size: var(--fs-sm);
-    line-height: 1.6;
+  .exp-pop h3 {
+    margin: 0 0 0.35rem;
+    font-size: var(--fs-base);
+    line-height: 1.1;
+    color: #fff;
   }
 
-  .exp-modal-proof {
+  .exp-pop strong {
+    display: block;
+    color: rgba(255,255,255,0.82);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .exp-pop p:last-of-type {
+    margin: 0.5rem 0 0;
+    color: rgba(255,255,255,0.65);
+    font-size: var(--fs-xs);
+    line-height: 1.55;
+  }
+
+  .exp-pop-proof {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-top: 1.1rem;
+    gap: 0.3rem;
+    margin-top: 0.75rem;
   }
 
-  .exp-modal-proof span {
-    border: 1px solid color-mix(in srgb, var(--accent, #00d2ff) 30%, rgba(255,255,255,0.12));
+  .exp-pop-proof :global(.pop-tag) {
+    border: 1px solid color-mix(in srgb, var(--accent, #00d2ff) 25%, rgba(255,255,255,0.1));
     border-radius: 999px;
-    padding: 0.38rem 0.62rem;
-    color: #fff;
-    background: color-mix(in srgb, var(--accent, #00d2ff) 10%, rgba(255,255,255,0.04));
+    padding: 0.28rem 0.5rem;
+    color: rgba(255,255,255,0.88);
+    background: color-mix(in srgb, var(--accent, #00d2ff) 8%, rgba(255,255,255,0.03));
     font-family: 'JetBrains Mono', monospace;
     font-size: var(--fs-2xs);
     line-height: 1;
@@ -598,18 +618,14 @@ const briefs = [
       font-size: var(--fs-2xs);
     }
 
-    .exp-modal-box {
-      padding: 1.6rem 1.25rem 1.5rem;
-    }
-
-    .exp-modal-box h3 {
-      font-size: clamp(1.8rem, 7vw, 2.8rem);
+    .exp-pop {
+      width: min(260px, calc(100vw - 24px));
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .career-aura, .ray-spark, .chapter,
     .chapter-dot, .chapter-dot::after { animation: none !important; }
-    .exp-modal, .exp-modal-box { transition: none !important; }
+    .exp-pop { transition: none !important; }
   }
 </style>
