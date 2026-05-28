@@ -29,13 +29,7 @@ const {
 </head>
 <body>
   <div class="stage-loader" id="stage-loader" aria-hidden="true">
-    <div class="loader-curtain loader-curtain-left"></div>
-    <div class="loader-curtain loader-curtain-right"></div>
-    <div class="loader-galaxy"></div>
-    <div class="loader-copy">
-      <span class="mono">VISMAY TIWARI</span>
-      <strong>systems coming online</strong>
-    </div>
+    <canvas id="ldr-canvas"></canvas>
   </div>
 
   <canvas id="fluid-canvas" aria-hidden="true"></canvas>
@@ -126,12 +120,446 @@ const {
     }
 
     if (document.readyState === 'complete') {
-      scheduleLoaderFinish();
+      scheduleLoaderFinish(12200);
     } else {
-      window.addEventListener('load', () => scheduleLoaderFinish(), { once: true });
+      window.addEventListener('load', () => scheduleLoaderFinish(12200), { once: true });
     }
-    document.addEventListener('DOMContentLoaded', () => scheduleLoaderFinish(1400), { once: true });
-    window.setTimeout(finishLoader, 2800);
+    document.addEventListener('DOMContentLoaded', () => scheduleLoaderFinish(12400), { once: true });
+    window.setTimeout(finishLoader, 14500);
+
+    // ── Solar system → black hole canvas loader ──────────
+    (function () {
+      const canvas = document.getElementById('ldr-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H, CX, CY, raf;
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        CX = W / 2; CY = H / 2;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Quote pool — one picked randomly each page load
+      const QUOTES = [
+        ['\u201cEven the darkest night will end', 'and the sun will rise.\u201d \u2014 Victor Hugo'],
+        ['\u201cPatience is bitter,', 'but its fruit is sweet.\u201d \u2014 Rousseau'],
+        ['\u201cIn the middle of difficulty', 'lies opportunity.\u201d \u2014 Einstein'],
+        ['\u201cThe darker the night,', 'the brighter the stars.\u201d \u2014 Dostoevsky'],
+        ['\u201cAfter every storm', 'the sun will smile.\u201d \u2014 William Cullen Bryant'],
+      ];
+      const QUOTE = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+
+      // Stars — dense field, bright pinpoints
+      const stars = Array.from({ length: 420 }, () => ({
+        x:    Math.random(),
+        y:    Math.random(),
+        r:    Math.random() * 0.85 + 0.18,
+        a:    Math.random() * 0.30 + 0.70,
+        tw:   Math.random() * Math.PI * 2,
+        twS:  0.4 + Math.random() * 1.8,
+      }));
+
+      // 4 planets — uneven spacing, inner falls first, last one late
+      const PLANETS = [
+        { r:3.8, oR:68,  spd:2.2,  ang:0.8,  col:'#d0d0d0', glo:'#909090', tc:'208,208,208', delay:    0 },
+        { r:5.5, oR:112, spd:1.35, ang:2.4,  col:'#5bc8ff', glo:'#0096dd', tc:'91,200,255',  delay:  600 },
+        { r:5,   oR:150, spd:0.92, ang:3.9,  col:'#ff7755', glo:'#dd3311', tc:'255,119,85',  delay: 1100 },
+        { r:9,   oR:205, spd:0.52, ang:5.2,  col:'#ffb347', glo:'#dd7700', tc:'255,179,71',  delay: 2100, ring:true },
+      ];
+      const trails = PLANETS.map(() => []);
+      const MAX_TRAIL = 32;
+
+      // Corona ray seed table (fixed random per session)
+      const CORONA = Array.from({ length: 60 }, (_, i) => ({
+        ph0: Math.random() * Math.PI * 2,  // low-freq phase
+        ph1: Math.random() * Math.PI * 2,  // mid-freq phase
+        ph2: Math.random() * Math.PI * 2,  // high-freq phase
+        w:   0.5 + Math.random(),           // base width
+      }));
+
+      // Timeline (ms)
+      const T_SOLAR      = 4800;   // free orbit phase ends
+      const T_PULL_START = T_SOLAR; // first planet starts falling in
+      const T_PULL_END   = 8400;   // last planet fully consumed
+      const T_BH_START   = T_PULL_END;
+      const T_BH_FULL    = 12200;  // BH warp phase lasts ~3.8s
+      const T_FLASH      = 13200;  // white flash
+
+      // Easing
+      function ease5(t) { return t*t*t*(t*(6*t-15)+10); }
+      function easeOut3(t) { return 1 - Math.pow(1-t,3); }
+      function clamp(v,a,b) { return Math.max(a,Math.min(b,v)); }
+      function lerp(a,b,t) { return a+(b-a)*t; }
+
+      // ── Draw helpers ──────────────────────────────────────
+
+      function drawStars(t, pull) {
+        const p = ease5(pull);
+        for (const s of stars) {
+          // Stars stay at their original screen positions throughout warp —
+          // never lerp toward center, so every edge of the screen stays populated.
+          const sx = s.x * W, sy = s.y * H;
+          const twk  = 0.5 + 0.5 * Math.sin(s.tw + t * 0.001 * s.twS);
+          // Remain bright right up to the flash — only slight fade at peak
+          const alpha = s.a * twk * (1 - p * 0.18);
+          if (alpha < 0.01) continue;
+
+          if (p > 0.04) {
+            // Very slow drift toward center gives the sense of motion during warp.
+            // Factor kept tiny (0.12) so stars never bunch up and edges stay filled.
+            const drift = p * 0.12 + p * 0.018 * Math.sin(s.tw + t * 0.0006 * s.twS);
+            const x = lerp(sx, CX, drift);
+            const y = lerp(sy, CY, drift);
+            const dx = x - CX, dy = y - CY;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            const nx = dx / dist, ny = dy / dist;   // unit vec away from center (= tail dir)
+            const streak = p * p * 175 * (0.5 + s.r); // long enough to reach off-screen
+            const x2 = x + nx * streak;
+            const y2 = y + ny * streak;
+            const gl = ctx.createLinearGradient(x, y, x2, y2);
+            gl.addColorStop(0, `rgba(255,255,255,${alpha.toFixed(3)})`);
+            gl.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = gl;
+            ctx.lineWidth   = s.r * 1.6;
+            ctx.stroke();
+          } else {
+            ctx.beginPath();
+            ctx.arc(sx, sy, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
+            ctx.fill();
+          }
+        }
+      }
+
+      function drawSun(t, pull) {
+        const p     = ease5(pull);
+        const scale = 1 - p * 0.97;
+        const R     = 28 * scale;
+        if (R < 0.5) return;
+        const pulse = 1 + 0.04 * Math.sin(t * 0.0018);
+        const a     = clamp(1 - p * 1.15, 0, 1);
+        if (a <= 0) return;
+
+        // Deep atmospheric glow layers
+        for (const [hr, op, rv, gv, bv] of [
+          [220, 0.010, 255, 145, 35],
+          [145, 0.022, 255, 165, 45],
+          [92,  0.052, 255, 140, 20],
+          [60,  0.10,  255, 115, 10],
+          [38,  0.20,  255,  95,  5],
+        ]) {
+          const gr = hr * scale;
+          const grd = ctx.createRadialGradient(CX, CY, R * 0.45, CX, CY, gr);
+          grd.addColorStop(0,   `rgba(${rv},${gv},${bv},${op * a})`);
+          grd.addColorStop(0.6, `rgba(${rv},${Math.round(gv*0.6)},0,${op * 0.15 * a})`);
+          grd.addColorStop(1,   'rgba(0,0,0,0)');
+          ctx.beginPath(); ctx.arc(CX, CY, gr, 0, Math.PI * 2);
+          ctx.fillStyle = grd; ctx.fill();
+        }
+
+        // Corona rays — 60 thin radial streaks with noise-like length variation
+        ctx.save();
+        ctx.filter = 'blur(1.2px)';
+        ctx.globalAlpha = a * 0.6;
+        for (let i = 0; i < CORONA.length; i++) {
+          const ang = (i / CORONA.length) * Math.PI * 2 + t * 0.000055;
+          const cr  = CORONA[i];
+          // Multi-frequency noise: mimics turbulent corona without Perlin
+          const nz  = 0.55
+            + 0.24 * Math.sin(cr.ph0 + t * 0.00038)
+            + 0.14 * Math.sin(cr.ph1 + t * 0.00065)
+            + 0.07 * Math.sin(cr.ph2 + t * 0.00027);
+          const len = R * (1.9 + 2.6 * clamp(nz, 0, 1)) * scale;
+          const x1  = CX + Math.cos(ang) * R * 1.01;
+          const y1  = CY + Math.sin(ang) * R * 1.01;
+          const x2  = CX + Math.cos(ang) * len;
+          const y2  = CY + Math.sin(ang) * len;
+          const gl  = ctx.createLinearGradient(x1, y1, x2, y2);
+          gl.addColorStop(0,    'rgba(255,230,110,0.9)');
+          gl.addColorStop(0.3,  'rgba(255,160,40,0.35)');
+          gl.addColorStop(1,    'rgba(255,80,0,0)');
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.strokeStyle = gl;
+          ctx.lineWidth   = cr.w;
+          ctx.stroke();
+        }
+        ctx.filter = 'none';
+        ctx.restore();
+
+        // Chromosphere — thin pink/magenta ring just outside photosphere
+        ctx.save();
+        ctx.globalAlpha = a * 0.65;
+        ctx.beginPath(); ctx.arc(CX, CY, R * 1.055 * pulse, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,195,170,0.95)';
+        ctx.lineWidth   = R * 0.075;
+        ctx.shadowColor = '#ff9060'; ctx.shadowBlur = R * 0.55;
+        ctx.stroke(); ctx.shadowBlur = 0;
+        ctx.restore();
+
+        // Photosphere — limb-darkened sphere
+        ctx.globalAlpha = a;
+        const sg = ctx.createRadialGradient(
+          CX - R * 0.30, CY - R * 0.32, 0,
+          CX, CY, R * pulse
+        );
+        sg.addColorStop(0,    '#fffff0');
+        sg.addColorStop(0.11, '#fff4a0');
+        sg.addColorStop(0.40, '#ffbf20');
+        sg.addColorStop(0.72, '#ff7800');
+        sg.addColorStop(0.90, '#ff3c00');
+        sg.addColorStop(1,    '#880e00');
+        ctx.beginPath(); ctx.arc(CX, CY, R * pulse, 0, Math.PI * 2);
+        ctx.fillStyle = sg; ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      function drawPlanet(pl, idx, t) {
+        // Each planet has its own pull timeline — inner planets fall first
+        const startT  = T_PULL_START + pl.delay;
+        const window_ = T_PULL_END - startT;
+        const p       = (window_ > 0 && t > startT) ? ease5(clamp((t - startT) / window_, 0, 1)) : 0;
+        // Extra angular velocity builds up gradually with pull
+        const ang = pl.ang + (t / 1000) * pl.spd + p * p * 11 * pl.spd;
+        const oR  = pl.oR * (1 - p * 0.985);
+        if (oR < 2) return;
+        const x     = CX + Math.cos(ang) * oR;
+        const y     = CY + Math.sin(ang) * oR;
+        // Stay fully visible until 88% in, then quick fade as it hits the sun
+        const alpha = p < 0.88 ? 1.0 : clamp((1 - p) / 0.12, 0, 1);
+
+        // Trail
+        const tr = trails[idx];
+        tr.push({ x, y });
+        if (tr.length > MAX_TRAIL) tr.shift();
+        if (tr.length > 2 && alpha > 0.01) {
+          for (let i = 1; i < tr.length; i++) {
+            const frac = i / tr.length;
+            ctx.beginPath();
+            ctx.moveTo(tr[i-1].x, tr[i-1].y);
+            ctx.lineTo(tr[i].x,   tr[i].y);
+            ctx.strokeStyle = `rgba(${pl.tc},${(frac * alpha * 0.3).toFixed(3)})`;
+            ctx.lineWidth   = pl.r * frac * 0.65;
+            ctx.stroke();
+          }
+        }
+
+        // Orbit ring fades as pull starts
+        if (p < 0.22) {
+          ctx.beginPath(); ctx.arc(CX, CY, oR, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255,255,255,${0.07 * (1 - p / 0.22)})`;
+          ctx.lineWidth   = 0.5; ctx.stroke();
+        }
+
+        if (alpha <= 0.01) return;
+
+        // Glow halo
+        const gg = ctx.createRadialGradient(x, y, 0, x, y, pl.r * 4);
+        gg.addColorStop(0, pl.glo); gg.addColorStop(1, 'transparent');
+        ctx.globalAlpha = alpha * 0.48;
+        ctx.beginPath(); ctx.arc(x, y, pl.r * 4, 0, Math.PI * 2);
+        ctx.fillStyle = gg; ctx.fill();
+
+        // Body (sphere-lit gradient)
+        ctx.globalAlpha = alpha;
+        const bg = ctx.createRadialGradient(x - pl.r * 0.35, y - pl.r * 0.38, 0, x, y, pl.r);
+        bg.addColorStop(0,   '#ffffff');
+        bg.addColorStop(0.2, pl.col);
+        bg.addColorStop(1,   pl.glo);
+        ctx.beginPath(); ctx.arc(x, y, pl.r, 0, Math.PI * 2);
+        ctx.fillStyle = bg; ctx.fill();
+
+        // Saturn ring
+        if (pl.ring && p < 0.5) {
+          ctx.globalAlpha = alpha * (1 - p / 0.5) * 0.85;
+          ctx.save();
+          ctx.translate(x, y); ctx.rotate(0.45); ctx.scale(1, 0.28);
+          const rg = ctx.createLinearGradient(-pl.r * 2.5, 0, pl.r * 2.5, 0);
+          rg.addColorStop(0,   'transparent');
+          rg.addColorStop(0.2, 'rgba(255,215,100,0.9)');
+          rg.addColorStop(0.5, 'rgba(255,235,145,0.6)');
+          rg.addColorStop(0.8, 'rgba(255,200,80,0.9)');
+          rg.addColorStop(1,   'transparent');
+          ctx.beginPath(); ctx.arc(0, 0, pl.r * 2.5, 0, Math.PI * 2);
+          ctx.strokeStyle = rg; ctx.lineWidth = 4; ctx.stroke();
+          ctx.restore();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // Accretion disk half — smooth radial gradient fill using translate+scale
+      // (scale y by tilt so ctx.arc circles become the correct ellipses in screen space)
+      function drawDiskHalf(bR, p, warm) {
+        const inner = bR * 1.08;
+        const outer = bR * 2.75;
+        ctx.save();
+        ctx.translate(CX, CY);
+        ctx.scale(1, 0.30);   // y-squash: circles → ellipses matching disk tilt
+        const g = ctx.createRadialGradient(0, 0, inner, 0, 0, outer);
+        if (warm) {
+          g.addColorStop(0,    `rgba(255,228,92,${0.95*p})`);
+          g.addColorStop(0.18, `rgba(255,162,38,${0.80*p})`);
+          g.addColorStop(0.45, `rgba(238,80,18,${0.42*p})`);
+          g.addColorStop(0.78, `rgba(155,30,5,${0.12*p})`);
+          g.addColorStop(1,    'rgba(0,0,0,0)');
+        } else {
+          g.addColorStop(0,    `rgba(228,112,255,${0.42*p})`);
+          g.addColorStop(0.35, `rgba(125,52,218,${0.22*p})`);
+          g.addColorStop(0.65, `rgba(72,22,172,${0.08*p})`);
+          g.addColorStop(1,    'rgba(0,0,0,0)');
+        }
+        ctx.beginPath();
+        ctx.arc(0, 0, outer, 0, Math.PI * 2, false); // outer boundary (cw)
+        ctx.arc(0, 0, inner, 0, Math.PI * 2, true);  // inner cutout (ccw)
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawBlackHole(pull, t) {
+        if (pull <= 0) return;
+        const p  = easeOut3(pull);
+        const bR = lerp(0, 62, p);
+
+        // Outer diffuse glow
+        const gOut = ctx.createRadialGradient(CX, CY, bR, CX, CY, bR * 4.5);
+        gOut.addColorStop(0,    `rgba(255,150,40,${0.10*p})`);
+        gOut.addColorStop(0.55, `rgba(140,60,255,${0.06*p})`);
+        gOut.addColorStop(1,    'rgba(0,0,0,0)');
+        ctx.beginPath(); ctx.arc(CX, CY, bR * 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = gOut; ctx.fill();
+
+        // Back half of disk (upper — cool, dim)
+        ctx.save();
+        ctx.beginPath(); ctx.rect(0, 0, W, CY); ctx.clip();
+        drawDiskHalf(bR, p, false);
+        ctx.restore();
+
+        // Event horizon occludes back disk
+        ctx.beginPath(); ctx.arc(CX, CY, bR, 0, Math.PI * 2);
+        ctx.fillStyle = '#000'; ctx.fill();
+
+        // Photon ring — outer halo glow
+        ctx.beginPath(); ctx.arc(CX, CY, bR * 1.24, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,195,80,${0.42*p})`;
+        ctx.lineWidth   = 6;
+        ctx.shadowColor = '#ff9400'; ctx.shadowBlur = 24 * p;
+        ctx.stroke(); ctx.shadowBlur = 0;
+        // Photon ring — sharp bright line
+        ctx.beginPath(); ctx.arc(CX, CY, bR * 1.15, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,245,170,${0.98*p})`;
+        ctx.lineWidth   = 2;
+        ctx.shadowColor = '#ffe060'; ctx.shadowBlur = 14 * p;
+        ctx.stroke(); ctx.shadowBlur = 0;
+
+        // Front half of disk (lower — warm, bright)
+        ctx.save();
+        ctx.beginPath(); ctx.rect(0, CY, W, H); ctx.clip();
+        drawDiskHalf(bR, p, true);
+        ctx.restore();
+
+        // Relativistic hot spot — bright glow at bottom where disk bends around
+        const hsY = CY + bR * 1.08;
+        const hsG = ctx.createRadialGradient(CX, hsY, 0, CX, hsY, bR * 1.1);
+        hsG.addColorStop(0,    `rgba(255,250,220,${0.92*p})`);
+        hsG.addColorStop(0.25, `rgba(255,175,55,${0.55*p})`);
+        hsG.addColorStop(0.7,  `rgba(200,80,20,${0.15*p})`);
+        hsG.addColorStop(1,    'rgba(0,0,0,0)');
+        ctx.beginPath(); ctx.arc(CX, hsY, bR * 1.1, 0, Math.PI * 2);
+        ctx.fillStyle = hsG; ctx.fill();
+
+        // Re-punch event horizon
+        ctx.beginPath(); ctx.arc(CX, CY, bR, 0, Math.PI * 2);
+        ctx.fillStyle = '#000'; ctx.fill();
+      }
+
+      function drawFlash(flash) {
+        if (flash <= 0) return;
+        const i = flash < 0.35 ? flash / 0.35 : 1 - (flash - 0.35) / 0.65;
+        const g = ctx.createRadialGradient(CX, CY, 0, CX, CY, Math.hypot(W, H) * 0.75);
+        g.addColorStop(0,    `rgba(255,255,255,${i})`);
+        g.addColorStop(0.28, `rgba(210,190,255,${i * 0.72})`);
+        g.addColorStop(0.65, `rgba(90,70,220,${i * 0.28})`);
+        g.addColorStop(1,    'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      function drawText(t, sunPull) {
+        const rs  = Math.max(10, Math.min(14, W * 0.018));
+        const qs  = Math.max(13, Math.min(18, W * 0.022));
+        // Anchor near the top of the screen
+        const by  = H * 0.14;
+        ctx.save();
+        ctx.textAlign = 'center';
+
+        // LOADING fades in fast, fades out when planets start falling
+        const ldA = clamp(t / 900, 0, 1) * clamp(1 - sunPull / 0.45, 0, 1);
+        // Quote fades in at 1.8s, fades out with loading text
+        const qA  = ldA * clamp((t - 1800) / 1200, 0, 1);
+
+        // Dark scrim behind loading + quote
+        if (ldA > 0.01) {
+          const scrimAlpha = Math.max(ldA, qA) * 0.72;
+          const padX = W * 0.44;
+          const topY = by - rs * 2.0;
+          const botY = qA > 0.01 ? by + qs * 3.4 : by + rs * 0.6;
+          ctx.save();
+          ctx.globalAlpha = scrimAlpha;
+          ctx.fillStyle   = '#000007';
+          const rx = CX - padX, rw = padX * 2, ry = topY, rh = botY - topY;
+          ctx.beginPath();
+          ctx.roundRect(rx, ry, rw, rh, 10);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        if (ldA > 0.01) {
+          const dots = '•'.repeat(1 + (Math.floor(t / 480) % 3));
+          ctx.globalAlpha = ldA;
+          ctx.fillStyle   = '#d0e4ff';
+          ctx.font        = `500 ${rs}px 'JetBrains Mono', monospace`;
+          ctx.fillText(`LOADING  ${dots}`, CX, by);
+        }
+
+        if (qA > 0.01) {
+          ctx.globalAlpha = qA;
+          ctx.fillStyle   = '#ffe9a0';
+          ctx.font        = `400 italic ${qs}px 'Space Grotesk', sans-serif`;
+          ctx.fillText(QUOTE[0], CX, by + qs * 1.6);
+          ctx.fillText(QUOTE[1], CX, by + qs * 2.9);
+        }
+
+        ctx.restore();
+      }
+
+      let t0 = null;
+      function frame(ts) {
+        if (!t0) t0 = ts;
+        const t       = ts - t0;
+        // sunPull: drives sun shrink + text fade as planets fall in
+        const sunPull = t > T_PULL_START ? clamp((t - T_PULL_START) / (T_PULL_END - T_PULL_START), 0, 1) : 0;
+        // bhPull: drives black hole formation, only starts AFTER all planets consumed
+        const bhPull  = t > T_BH_START   ? clamp((t - T_BH_START)  / (T_BH_FULL  - T_BH_START),  0, 1) : 0;
+        const flash   = t > T_BH_FULL    ? clamp((t - T_BH_FULL)   / (T_FLASH    - T_BH_FULL),   0, 1) : 0;
+        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+        drawStars(t, bhPull);
+        drawBlackHole(bhPull, t);
+        drawSun(t, sunPull);
+        for (let i = 0; i < PLANETS.length; i++) drawPlanet(PLANETS[i], i, t);
+        drawFlash(flash);
+        drawText(t, sunPull);
+        if (t < T_FLASH + 300) raf = requestAnimationFrame(frame);
+      }
+      raf = requestAnimationFrame(frame);
+    })();
 
     reduceMotion.addEventListener?.('change', () => {
       if (reduceMotion.matches && fluidInstance?.destroy) {
@@ -202,6 +630,69 @@ const {
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
 
     document.querySelectorAll('.fade-up').forEach((el) => revealObserver.observe(el));
+
+    // ── Directional scroll entry effects ────────────────
+    (function () {
+      const aboutDriver  = document.getElementById('about-driver');
+      const expDriver    = document.getElementById('exp-driver');
+      const skillsDriver = document.getElementById('skills-driver');
+      if (!aboutDriver && !expDriver && !skillsDriver) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      // Skip on narrow screens — 70vw translate is too jarring on mobile
+      if (window.innerWidth < 640) return;
+
+      const settled = { about: false, exp: false, skills: false };
+
+      // Starts late (section must be 28% into viewport) then finishes quickly
+      function entryP(el) {
+        const raw = Math.max(0, 1 - el.getBoundingClientRect().top / window.innerHeight);
+        const delay = 0.28;
+        if (raw < delay) return 0;
+        return Math.min(1, (raw - delay) * 3.2);
+      }
+
+      function updateEntries() {
+        if (aboutDriver && !settled.about) {
+          const p = entryP(aboutDriver);
+          const cont = aboutDriver.querySelector('.about-container');
+          if (p >= 1) {
+            if (cont) cont.style.transform = '';
+            settled.about = true;
+          } else if (p > 0) {
+            if (cont) cont.style.transform = `translateX(${(1 - p) * 70}vw)`;
+          }
+        }
+        if (expDriver && !settled.exp) {
+          const p = entryP(expDriver);
+          const river = expDriver.querySelector('.career-river');
+          if (p >= 1) {
+            if (river) river.style.transform = '';
+            settled.exp = true;
+          } else if (p > 0) {
+            if (river) river.style.transform = `rotate(${(1 - p) * -22}deg) scale(${0.84 + p * 0.16})`;
+          }
+        }
+        if (skillsDriver && !settled.skills) {
+          const p = entryP(skillsDriver);
+          const cont = skillsDriver.querySelector('.skills-section');
+          if (p >= 1) {
+            if (cont) cont.style.transform = '';
+            settled.skills = true;
+          } else if (p > 0) {
+            if (cont) cont.style.transform = `translateX(${-(1 - p) * 70}vw)`;
+          }
+        }
+        // Stop listening once all sections have settled
+        if (settled.about && settled.exp && settled.skills) {
+          window.removeEventListener('scroll', updateEntries);
+          window.removeEventListener('resize', updateEntries);
+        }
+      }
+
+      window.addEventListener('scroll', updateEntries, { passive: true });
+      window.addEventListener('resize', updateEntries, { passive: true });
+      updateEntries();
+    })();
 
     const progress = document.getElementById('page-progress');
     function updateProgress() {

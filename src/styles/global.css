@@ -134,103 +134,30 @@ select {
   opacity: 0.42;
 }
 
+/* ─── Loader ─────────────────────────────────────── */
 .stage-loader {
   position: fixed;
   inset: 0;
   z-index: 20000;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 48%, rgba(255,255,255,0.18), transparent 6rem),
-    radial-gradient(circle at 36% 42%, rgba(0,210,255,0.24), transparent 22rem),
-    radial-gradient(circle at 68% 56%, rgba(255,77,166,0.22), transparent 24rem),
-    #040006;
-  color: #fff;
+  background: #000;
   pointer-events: all;
+  overflow: hidden;
 }
-
-.loader-curtain {
+#ldr-canvas {
   position: absolute;
-  inset-block: 0;
-  width: 54vw;
-  background:
-    linear-gradient(90deg, rgba(255,77,166,0.24), rgba(5,0,9,0.92)),
-    radial-gradient(circle at 50% 40%, rgba(199,125,255,0.32), transparent 22rem);
-  filter: saturate(130%);
-  transform-origin: center;
-  transition: transform 0.95s cubic-bezier(.76,0,.24,1);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
-
-.loader-curtain-left {
-  left: 0;
-  box-shadow: inset -40px 0 90px rgba(0,0,0,0.46);
-}
-
-.loader-curtain-right {
-  right: 0;
-  transform: scaleX(-1);
-  box-shadow: inset -40px 0 90px rgba(0,0,0,0.46);
-}
-
-.loader-galaxy {
-  position: absolute;
-  width: min(78vw, 900px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    conic-gradient(from 90deg, transparent, rgba(255,255,255,0.38), rgba(0,210,255,0.28), rgba(255,77,166,0.36), transparent),
-    radial-gradient(circle, rgba(255,255,255,0.7) 0 1px, transparent 2px);
-  background-size: auto, 22px 22px;
-  filter: blur(0.2px) drop-shadow(0 0 40px rgba(199,125,255,0.28));
-  opacity: 0.68;
-  animation: loader-spin 7s linear infinite;
-}
-
-.loader-copy {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  gap: 0.75rem;
-  justify-items: center;
-  text-transform: uppercase;
-}
-
-.loader-copy span {
-  color: var(--nebula-accent);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.24em;
-}
-
-.loader-copy strong {
-  color: #fff;
-  font-size: clamp(1.5rem, 4vw, 4rem);
-  line-height: 0.95;
-  letter-spacing: 0;
-}
-
+/* Exit: canvas flash handles visual, this just removes the element */
 .loader-done .stage-loader {
   pointer-events: none;
-  background: transparent;
-  transition: background 0.35s ease;
+  animation: ldr-exit 0.7s ease forwards;
 }
-
-.loader-done .loader-curtain-left {
-  transform: translateX(-105%);
-}
-
-.loader-done .loader-curtain-right {
-  transform: translateX(105%) scaleX(-1);
-}
-
-.loader-done .loader-copy,
-.loader-done .loader-galaxy {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-@keyframes loader-spin {
-  to { transform: rotate(360deg); }
+@keyframes ldr-exit {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 .depth-ring {
@@ -464,6 +391,19 @@ body::before {
   height: 1px;
   background: var(--border);
   flex: 0 0 auto;
+}
+
+/* Scroll-entry driver wrappers */
+#about-driver {
+  overflow-x: hidden;
+}
+
+#exp-driver {
+  overflow: hidden;
+}
+
+#skills-driver {
+  overflow-x: hidden;
 }
 
 .page-progress {
