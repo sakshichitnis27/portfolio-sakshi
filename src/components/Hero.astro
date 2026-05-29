@@ -22,12 +22,12 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
         <span><em class="hero-name">Vismay</em> builds systems</span>
         <span class="hero-accent hero-rotator" aria-live="polite">
           <span class="hero-rotator-track">
-            <span class="hero-phrase active">that scale without drama.</span>
-            <span class="hero-phrase">that AI can't replace.</span>
-            <span class="hero-phrase">where uptime is religion.</span>
-            <span class="hero-phrase">that stay fast & cheap.</span>
-            <span class="hero-phrase">with backends that bite.</span>
-            <span class="hero-phrase">that print money at scale.</span>
+            <span class="hero-phrase active">that scale under real traffic.</span>
+            <span class="hero-phrase">that keep revenue systems reliable.</span>
+            <span class="hero-phrase">that make AI workflows production-ready.</span>
+            <span class="hero-phrase">that stay fast, observable, and cost-efficient.</span>
+            <span class="hero-phrase">that turn data-heavy products into systems.</span>
+            <span class="hero-phrase">that are owned well after launch.</span>
           </span>
         </span>
       </h1>
@@ -185,7 +185,7 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
     margin: 0;
     color: #fff;
     font-size: var(--fs-3xl);
-    line-height: 0.88;
+    line-height: 1.04;
     letter-spacing: 0;
     text-wrap: balance;
     overflow-x: clip;
@@ -214,7 +214,8 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
   /* ── Rotating phrase system ──────────────────── */
   .hero-rotator {
     /* height set dynamically by JS */
-    padding-bottom: 0.08em;
+    margin: 0.1em 0 0.18em;
+    padding: 0.16em 0 0.38em;
     transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -230,6 +231,7 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
     left: 0;
     width: 100%;
     display: block;
+    line-height: 1.08;
     background: var(--nebula-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -503,19 +505,26 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
 
   function measureRotator() {
     if (!rotator || !phrases.length) return;
-    // Temporarily make all visible to measure, then restore
+    const fontSize = parseFloat(window.getComputedStyle(rotator).fontSize) || 16;
+    const descenderGuard = Math.ceil(fontSize * 0.45);
     let maxH = 0;
     phrases.forEach(p => {
       const was = p.style.cssText;
-      p.style.cssText = 'position:relative;opacity:1;transform:none;';
-      maxH = Math.max(maxH, p.offsetHeight);
+      p.style.cssText = 'position:relative;opacity:1;transform:none;visibility:hidden;';
+      maxH = Math.max(maxH, p.getBoundingClientRect().height);
       p.style.cssText = was;
     });
-    rotator.style.height = maxH + 'px';
+    rotator.style.height = Math.ceil(maxH + descenderGuard) + 'px';
   }
 
   measureRotator();
-  window.addEventListener('resize', measureRotator, { passive: true });
+  document.fonts?.ready?.then(measureRotator);
+
+  let measureFrame = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(measureFrame);
+    measureFrame = requestAnimationFrame(measureRotator);
+  }, { passive: true });
 
   if (phrases.length > 1) {
     let current = 0;

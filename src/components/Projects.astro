@@ -377,7 +377,7 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
   .lab-section {
     position: relative;
     z-index: 10;
-    min-height: 185svh;
+    min-height: clamp(1020px, 125svh, 1260px);
     padding: clamp(5rem, 7vw, 7.5rem) var(--page-pad) clamp(1.5rem, 2.5vw, 2.5rem);
     color: #fff;
     overflow: clip;
@@ -424,11 +424,12 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
   }
 
   .lab-shell {
+    --lab-sticky-top: clamp(5.2rem, 9.5svh, 6.5rem);
     position: sticky;
-    top: clamp(1rem, 4svh, 3.25rem);
+    top: var(--lab-sticky-top);
     display: grid;
     grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.78fr);
-    min-height: min(780px, calc(100svh - 5rem));
+    min-height: min(780px, calc(100svh - var(--lab-sticky-top) - 1.25rem));
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 8px;
     overflow: hidden;
@@ -1046,7 +1047,7 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
   @media (max-width: 920px) {
     .lab-section {
       min-height: auto;
-      padding: clamp(4.6rem, 12vw, 6rem) var(--page-pad);
+      padding: clamp(4.6rem, 12vw, 6rem) var(--page-pad) clamp(2.4rem, 6vw, 3.6rem);
     }
 
     .lab-shell {

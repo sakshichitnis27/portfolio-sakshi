@@ -1,5 +1,14 @@
 ---
 import { profile } from '../data/portfolio';
+
+const aboutStats = [
+  { label: 'Experience', value: '5+ years' },
+  { label: 'Current role', value: 'Software Engineer 3' },
+  { label: 'Location', value: profile.location },
+  { label: 'Work scope', value: 'Global / remote' },
+  { label: 'Specialty', value: 'Backend-heavy full stack' },
+  { label: 'Systems', value: 'Payments / data / LLM' },
+];
 ---
 
 <section id="about" class="section about-section">
@@ -12,59 +21,30 @@ import { profile } from '../data/portfolio';
     <div class="about-layout fade-up" style="transition-delay:0.1s">
       <div class="about-bio">
         <p class="bio-lead">
-          <span class="bio-accent">Database-heavy backend engineer focused on reliability, AI cost, and scale.</span>
+          <span class="bio-accent">Backend-heavy full stack engineer for revenue, data, and AI systems.</span>
         </p>
         <p>
-          I have spent 5+ years building revenue-critical systems across subscriptions, payments, experimentation, search, caching, realtime data, LLM workflows, and AI-native developer tooling. The through-line is simple: latency, correctness, and cost all show up in production.
+          I build product systems where latency, correctness, and cost matter: payments, subscriptions, experimentation, search, caching, realtime data, and LLM workflows.
         </p>
         <p>
-          I am strongest where product ambition collides with backend reality: transaction scope, query plans, hot keys, event design, rollout controls, LLM routing, eval loops, observability, and the operational path after launch.
+          I am strongest at turning ambiguous product ideas into production paths: schema, APIs, queues, query plans, rollout controls, metrics, and operational follow-through.
         </p>
         <p>
-          I have partnered with PMs and data teams on 30+ experiments, from assignment and exposure logging to measurement and rollout decisions.
+          I work well with platform, product, and data teams when the problem needs both shipping speed and systems discipline.
         </p>
-        <p class="bio-closing">
-          Payments infra, database performance, LLM systems, MCP workflows, realtime pipelines. Built for production, instrumented for feedback, and owned after launch.
+        <p>
+          I have strong experience as an IC and in close collaboration with PMs, analysts, QA, and other engineers.
         </p>
       </div>
 
       <div class="about-meta">
-        <div class="quick-facts">
-          <div class="qf-item">
-            <span class="qf-label mono">Location</span>
-            <span class="qf-value">{profile.location}</span>
-          </div>
-          <div class="qf-item">
-            <span class="qf-label mono">Experience</span>
-            <span class="qf-value">5+ Years</span>
-          </div>
-          <div class="qf-item">
-            <span class="qf-label mono">Focus</span>
-            <span class="qf-value">Distributed Systems / AI</span>
-          </div>
-          <div class="qf-item">
-            <span class="qf-label mono">Systems</span>
-            <span class="qf-value">Payments / LLM / Redis</span>
-          </div>
-        </div>
-
-        <div class="about-traits">
-          <div class="trait-item">
-            <span class="trait-icon">⬡</span>
-            <span>Turns product goals into backend systems with clear failure modes</span>
-          </div>
-          <div class="trait-item">
-            <span class="trait-icon">⬡</span>
-            <span>Partnered with PMs and data teams on experiment design and measurement</span>
-          </div>
-          <div class="trait-item">
-            <span class="trait-icon">⬡</span>
-            <span>Owns reliability from DB query shape to on-call runbook</span>
-          </div>
-          <div class="trait-item">
-            <span class="trait-icon">⬡</span>
-            <span>Built LLM and agent tooling with cost, latency, eval, and quality constraints</span>
-          </div>
+        <div class="about-stats" aria-label="Profile facts">
+          {aboutStats.map((item) => (
+            <div class="stat-card">
+              <span class="stat-label mono">{item.label}</span>
+              <span class="stat-value">{item.value}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -99,16 +79,28 @@ import { profile } from '../data/portfolio';
 
   .about-layout {
     display: grid;
-    grid-template-columns: 1fr minmax(280px, 360px);
-    gap: 4rem;
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.48fr);
+    gap: clamp(1rem, 3vw, 2.2rem);
+    align-items: stretch;
     margin-top: 3rem;
   }
 
   .about-bio {
     display: flex;
     flex-direction: column;
-    gap: 1.35rem;
+    gap: 1rem;
+    padding: clamp(1.1rem, 2.2vw, 1.6rem);
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 8px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.07), rgba(255,255,255,0.018) 48%),
+      radial-gradient(circle at 8% 0%, rgba(0,210,255,0.08), transparent 18rem),
+      rgba(4, 1, 12, 0.34);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 24px 70px rgba(0,0,0,0.18);
+    -webkit-backdrop-filter: blur(14px) saturate(1.25);
+    backdrop-filter: blur(14px) saturate(1.25);
   }
 
   .bio-lead {
@@ -128,8 +120,8 @@ import { profile } from '../data/portfolio';
 
   .about-bio p {
     font-size: var(--fs-base);
-    color: rgba(255,255,255,0.62);
-    line-height: 1.8;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.72;
   }
 
   .bio-highlight {
@@ -137,95 +129,93 @@ import { profile } from '../data/portfolio';
     font-weight: 600;
   }
 
-  .bio-closing {
-    font-size: var(--fs-sm);
-    color: rgba(255,255,255,0.9) !important;
-    letter-spacing: 0.02em;
-    border-left: 2px solid rgba(157,78,221,0.4);
-    padding-left: 1rem;
-    margin-top: 0.25rem;
-  }
-
-  .text-highlight {
-    color: rgba(255,255,255,0.85);
-    font-weight: 500;
-  }
-
   .about-meta {
     display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    min-width: 0;
   }
 
-  .quick-facts {
+  .about-stats {
+    flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    height: 100%;
   }
 
-  .qf-item {
+  .stat-card {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
-    padding: 0.75rem;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
+    justify-content: space-between;
+    gap: 0.55rem;
+    min-height: 6.4rem;
+    padding: 0.9rem;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.075), rgba(255,255,255,0.018) 58%),
+      rgba(5, 0, 16, 0.32);
+    border: 1px solid rgba(255,255,255,0.115);
     border-radius: 8px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.11),
+      0 18px 48px rgba(0,0,0,0.14);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
   }
 
-  .qf-label {
+  .stat-label {
     font-size: var(--fs-2xs);
-    color: rgba(255,255,255,0.74);
-    letter-spacing: 0.12em;
+    color: var(--cyan);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
   }
 
-  .qf-value {
-    font-size: var(--fs-sm);
-    color: rgba(255,255,255,0.92);
-    font-weight: 500;
-  }
-
-  .about-traits {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .trait-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.65rem;
-    font-size: var(--fs-sm);
-    color: rgba(255,255,255,0.84);
-    line-height: 1.55;
-    padding: 0.55rem 0.75rem;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.055);
-    transition: background 0.2s, border-color 0.2s;
-  }
-
-  .trait-item:hover {
-    background: rgba(157,78,221,0.06);
-    border-color: rgba(157,78,221,0.18);
+  .stat-value {
+    font-size: clamp(1rem, 1.4vw, 1.18rem);
     color: #fff;
-  }
-
-  .trait-icon {
-    color: var(--nebula-accent);
-    font-size: var(--fs-2xs);
-    margin-top: 0.18em;
-    flex-shrink: 0;
+    font-weight: 700;
+    line-height: 1.32;
+    text-wrap: balance;
   }
 
   @media (max-width: 900px) {
-    .about-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .about-layout {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 1rem;
+    }
+
+    .about-meta {
+      display: block;
+    }
+
+    .about-stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: none;
+      height: auto;
+    }
   }
 
   @media (max-width: 640px) {
-    .quick-facts {
-      grid-template-columns: 1fr;
+    .about-layout {
+      margin-top: 2rem;
+    }
+
+    .about-bio {
+      padding: 1rem;
+    }
+
+    .about-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .stat-card {
+      min-height: 5.7rem;
+      padding: 0.75rem;
+    }
+
+    .stat-value {
+      font-size: var(--fs-sm);
     }
   }
 </style>
