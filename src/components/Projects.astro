@@ -433,18 +433,16 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
     border-radius: 8px;
     overflow: hidden;
     background:
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(rgba(255,255,255,0.026) 1px, transparent 1px),
-      radial-gradient(circle at 16% 16%, color-mix(in srgb, var(--active-accent-2) 14%, transparent), transparent 34rem),
-      radial-gradient(circle at 78% 24%, color-mix(in srgb, var(--active-accent) 12%, transparent), transparent 34rem),
-      rgba(5, 0, 12, 0.08);
+      linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+      transparent;
     background-size: 56px 56px, 56px 56px, auto;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.12),
-      0 28px 90px rgba(0,0,0,0.14),
+      inset 0 1px 0 rgba(255,255,255,0.14),
+      0 28px 90px rgba(0,0,0,0.08),
       0 0 70px color-mix(in srgb, var(--active-accent) 9%, transparent);
-    -webkit-backdrop-filter: blur(5px) saturate(1.18);
-    backdrop-filter: blur(5px) saturate(1.18);
+    -webkit-backdrop-filter: blur(14px) saturate(1.35);
+    backdrop-filter: blur(14px) saturate(1.35);
     isolation: isolate;
     transition: box-shadow 0.45s ease;
   }
@@ -478,10 +476,7 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
     position: absolute;
     inset: 0;
     z-index: 0;
-    background:
-      radial-gradient(circle at 18% 12%, rgba(199,125,255,0.08), transparent 26rem),
-      radial-gradient(circle at 76% 22%, rgba(255,77,166,0.07), transparent 28rem),
-      radial-gradient(circle at 44% 72%, rgba(35,246,165,0.05), transparent 30rem);
+    background: transparent;
   }
 
   .lab-canvas {
@@ -493,7 +488,7 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
   }
 
   .lab-webgl-ready .lab-canvas {
-    opacity: 0.68;
+    opacity: 1.0;
   }
 
   .lab-scene-fallback {
@@ -743,12 +738,12 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
     padding: clamp(1rem, 2.2vw, 1.55rem);
     border-left: 1px solid rgba(255,255,255,0.12);
     background:
-      radial-gradient(circle at 18% 4%, color-mix(in srgb, var(--active-accent-2) 9%, transparent), transparent 20rem),
-      linear-gradient(180deg, rgba(7,2,16,0.16), rgba(5,0,14,0.2)),
-      linear-gradient(135deg, color-mix(in srgb, var(--active-accent) 6%, transparent), transparent 56%);
-    box-shadow: -14px 0 60px rgba(0,0,0,0.1);
-    -webkit-backdrop-filter: blur(6px) saturate(1.18);
-    backdrop-filter: blur(6px) saturate(1.18);
+      radial-gradient(circle at 18% 4%, color-mix(in srgb, var(--active-accent-2) 7%, transparent), transparent 20rem),
+      linear-gradient(180deg, rgba(7,2,16,0.10), rgba(5,0,14,0.14)),
+      linear-gradient(135deg, color-mix(in srgb, var(--active-accent) 4%, transparent), transparent 56%);
+    box-shadow: -14px 0 60px rgba(0,0,0,0.06);
+    -webkit-backdrop-filter: blur(14px) saturate(1.35);
+    backdrop-filter: blur(14px) saturate(1.35);
   }
 
   .lab-console-top {

@@ -48,30 +48,33 @@ const fragmentShader = `
     return v;
   }
 
+  // Palette A — Royal Violet → Sapphire Blue → Electric Cyan
   vec3 paletteA(float t) {
-    vec3 base = vec3(0.015, 0.0, 0.025);
-    vec3 c1 = mix(base, vec3(0.55, 0.22, 0.9), smoothstep(0.08, 0.62, t));
-    c1 = mix(c1, vec3(1.0, 0.0, 0.44), smoothstep(0.46, 0.82, t) * 0.78);
-    c1 = mix(c1, vec3(0.0, 0.86, 1.0), pow(smoothstep(0.65, 1.0, t), 1.55) * 0.92);
-    c1 = mix(c1, vec3(0.0, 1.0, 0.62), smoothstep(0.78, 1.0, t) * 0.24);
+    vec3 base = vec3(0.01, 0.005, 0.04);
+    vec3 c1 = mix(base, vec3(0.22, 0.08, 0.72), smoothstep(0.08, 0.52, t));          // royal violet
+    c1 = mix(c1, vec3(0.06, 0.30, 0.92), smoothstep(0.34, 0.68, t) * 0.88);          // sapphire blue
+    c1 = mix(c1, vec3(0.0, 0.82, 1.0),   pow(smoothstep(0.56, 0.92, t), 1.4) * 0.92); // electric cyan
+    c1 = mix(c1, vec3(0.80, 0.96, 1.0),  pow(smoothstep(0.82, 1.0,  t), 2.2) * 0.32); // ice white
     return c1;
   }
 
+  // Palette B — Emerald → Liquid Gold (dominant, visible early)
   vec3 paletteB(float t) {
-    vec3 base = vec3(0.0, 0.01, 0.03);
-    vec3 c2 = mix(base, vec3(0.0, 0.45, 0.75), smoothstep(0.08, 0.60, t));
-    c2 = mix(c2, vec3(0.0, 0.9, 1.0), smoothstep(0.38, 0.72, t) * 0.88);
-    c2 = mix(c2, vec3(0.75, 0.0, 0.9), pow(smoothstep(0.60, 1.0, t), 1.7) * 0.7);
-    c2 = mix(c2, vec3(1.0, 0.62, 0.18), pow(smoothstep(0.74, 1.0, t), 2.0) * 0.28);
+    vec3 base = vec3(0.0, 0.02, 0.01);
+    vec3 c2 = mix(base, vec3(0.0, 0.38, 0.28),  smoothstep(0.06, 0.44, t));           // deep emerald
+    c2 = mix(c2, vec3(0.04, 0.80, 0.50), smoothstep(0.28, 0.58, t) * 0.88);           // jade / bright emerald
+    c2 = mix(c2, vec3(0.94, 0.68, 0.0),  smoothstep(0.42, 0.80, t) * 0.92);           // liquid gold (wide range)
+    c2 = mix(c2, vec3(1.0,  0.92, 0.52), pow(smoothstep(0.70, 1.0, t), 1.8) * 0.44); // champagne gold
     return c2;
   }
 
+  // Palette C — Mehroom / Copper / Rose Gold
   vec3 paletteC(float t) {
-    vec3 base = vec3(0.02, 0.0, 0.02);
-    vec3 c3 = mix(base, vec3(0.55, 0.0, 0.38), smoothstep(0.08, 0.58, t));
-    c3 = mix(c3, vec3(1.0, 0.0, 0.56), smoothstep(0.40, 0.80, t) * 0.85);
-    c3 = mix(c3, vec3(1.0, 0.72, 1.0), pow(smoothstep(0.68, 1.0, t), 1.4) * 0.65);
-    c3 = mix(c3, vec3(0.1, 0.98, 0.72), smoothstep(0.52, 0.9, t) * 0.22);
+    vec3 base = vec3(0.04, 0.0, 0.01);
+    vec3 c3 = mix(base, vec3(0.52, 0.04, 0.18), smoothstep(0.06, 0.46, t));           // deep mehroom
+    c3 = mix(c3, vec3(0.78, 0.20, 0.32), smoothstep(0.30, 0.64, t) * 0.90);           // bright rose
+    c3 = mix(c3, vec3(0.90, 0.50, 0.16), smoothstep(0.48, 0.80, t) * 0.86);           // copper / bronze
+    c3 = mix(c3, vec3(1.0,  0.82, 0.54), pow(smoothstep(0.70, 1.0, t), 1.6) * 0.44); // rose gold
     return c3;
   }
 
@@ -129,11 +132,11 @@ const fragmentShader = `
 
     float colorShift = sin(uTime * 0.058) * 0.5 + 0.5;
     vec3 color = palette(energy, colorShift);
-    vec3 specColor = mix(vec3(0.65, 0.95, 1.0), vec3(1.0, 0.72, 0.95), colorShift);
-    color += specColor * specular * 0.24;
-    color += vec3(0.0, 0.7, 1.0) * mouseGlow * 0.16;
-    color += vec3(1.0, 0.18, 0.48) * mouseWake * 0.1;
-    color += vec3(0.0, 0.045, 0.065);
+    vec3 specColor = mix(vec3(0.60, 0.88, 1.0), vec3(1.0, 0.86, 0.28), colorShift); // sapphire ↔ gold
+    color += specColor * specular * 0.26;
+    color += vec3(0.06, 0.35, 1.0) * mouseGlow * 0.18;  // sapphire mouse glow
+    color += vec3(0.96, 0.64, 0.06) * mouseWake * 0.12; // gold mouse wake
+    color += vec3(0.01, 0.01, 0.02);
 
     float vignette = smoothstep(1.42, 0.08, length((uv - 0.5) * vec2(1.18, 0.9)));
     color *= (0.56 + 0.34 * vignette);
@@ -179,6 +182,18 @@ export default class FluidBackground {
     window.addEventListener('resize', this.onResize, { passive: true });
 
     this.resize();
+    this._started = false;
+    if (!options.paused) {
+      this._started = true;
+      this.render(performance.now());
+    }
+  }
+
+  resume() {
+    if (this._started) return;
+    this._started = true;
+    this.startTime = performance.now();
+    this.lastTime = this.startTime;
     this.render(performance.now());
   }
 

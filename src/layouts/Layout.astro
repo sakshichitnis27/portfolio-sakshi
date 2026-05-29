@@ -51,9 +51,9 @@ const {
     const loader = document.getElementById('stage-loader');
     let fluidInstance;
     const accentFrames = [
-      ['#36f4ff', '#c77dff', '#ff4da6', '#23f6a5', '#ffb84d'],
-      ['#23f6a5', '#00d2ff', '#c77dff', '#ff4da6', '#ffb84d'],
-      ['#ff4da6', '#c77dff', '#36f4ff', '#23f6a5', '#ffb84d'],
+      ['#1e50ff', '#6622cc', '#00ccff', '#10d9a0', '#ffffff'],   // sapphire / violet / cyan / emerald / ice
+      ['#10d9a0', '#d4a017', '#c0476a', '#0d9488', '#8b5cf6'],   // emerald / gold / mehroom / teal / violet
+      ['#c0476a', '#d47320', '#8b5cf6', '#1e50ff', '#10d9a0'],   // mehroom / copper / violet / sapphire / emerald
     ];
 
     function hexToRgb(hex) {
@@ -97,8 +97,9 @@ const {
         const FluidBackground = await import('../scripts/FluidBackground.js');
         fluidInstance = new FluidBackground.default(fluidCanvas, {
           flowScale: window.innerWidth < 720 ? 0.9 : 1.12,
+          paused: true,  // compile shaders now, start rendering after loader exits
         });
-        document.documentElement.classList.add('fluid-ready');
+        // fluid-ready is set in finishLoader so opacity fades in after rendering begins
       } catch (error) {
         document.documentElement.classList.add('fluid-fallback');
         console.warn('Fluid background failed to start', error);
@@ -112,7 +113,19 @@ const {
       if (loaderFinished) return;
       loaderFinished = true;
       document.documentElement.classList.add('loader-done');
-      window.setTimeout(() => loader?.remove(), 1050);
+      window.setTimeout(() => {
+        loader?.remove();
+        if (fluidInstance) {
+          fluidInstance.resume();                                    // start render loop
+          requestAnimationFrame(() =>                                // let 1 frame render first
+            requestAnimationFrame(() =>
+              document.documentElement.classList.add('fluid-ready') // then fade in
+            )
+          );
+        } else {
+          document.documentElement.classList.add('fluid-ready');    // fallback / reduced-motion
+        }
+      }, 1050);
     }
 
     function scheduleLoaderFinish(delay = 650) {
