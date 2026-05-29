@@ -152,15 +152,19 @@ const {
       ];
       const QUOTE = QUOTES[Math.floor(Math.random() * QUOTES.length)];
 
-      // Stars — dense field, bright pinpoints
-      const stars = Array.from({ length: 420 }, () => ({
-        x:    Math.random(),
-        y:    Math.random(),
-        r:    Math.random() * 0.85 + 0.18,
-        a:    Math.random() * 0.30 + 0.70,
-        tw:   Math.random() * Math.PI * 2,
-        twS:  0.4 + Math.random() * 1.8,
-      }));
+      // Stars — dense field, bright pinpoints with z-depth for size/brightness
+      const stars = Array.from({ length: 420 }, () => {
+        const z = Math.random();
+        return {
+          x:   Math.random(),
+          y:   Math.random(),
+          z,
+          r:   (Math.random() * 0.7 + 0.2) * (1 - z * 0.55),
+          a:   (Math.random() * 0.25 + 0.75) * (1 - z * 0.45),
+          tw:  Math.random() * Math.PI * 2,
+          twS: 0.4 + Math.random() * 1.8,
+        };
+      });
 
       // 4 planets — uneven spacing, inner falls first, last one late
       const PLANETS = [
@@ -199,24 +203,22 @@ const {
       function drawStars(t, pull) {
         const p = ease5(pull);
         for (const s of stars) {
-          // Stars stay at their original screen positions throughout warp —
-          // never lerp toward center, so every edge of the screen stays populated.
           const sx = s.x * W, sy = s.y * H;
           const twk  = 0.5 + 0.5 * Math.sin(s.tw + t * 0.001 * s.twS);
-          // Remain bright right up to the flash — only slight fade at peak
           const alpha = s.a * twk * (1 - p * 0.18);
           if (alpha < 0.01) continue;
 
           if (p > 0.04) {
-            // Very slow drift toward center gives the sense of motion during warp.
-            // Factor kept tiny (0.12) so stars never bunch up and edges stay filled.
-            const drift = p * 0.12 + p * 0.018 * Math.sin(s.tw + t * 0.0006 * s.twS);
+            // Parallax warp: close stars (low z) drift faster toward BH
+            const depthSpeed = (1 - s.z) * 0.22 + 0.02;
+            const drift = p * depthSpeed + p * 0.015 * Math.sin(s.tw + t * 0.0006 * s.twS);
             const x = lerp(sx, CX, drift);
             const y = lerp(sy, CY, drift);
             const dx = x - CX, dy = y - CY;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const nx = dx / dist, ny = dy / dist;   // unit vec away from center (= tail dir)
-            const streak = p * p * 175 * (0.5 + s.r); // long enough to reach off-screen
+            const nx = dx / dist, ny = dy / dist;
+            // Close stars streak longer — deepens parallax illusion
+            const streak = p * p * (90 + (1 - s.z) * 130) * (0.5 + s.r);
             const x2 = x + nx * streak;
             const y2 = y + ny * streak;
             const gl = ctx.createLinearGradient(x, y, x2, y2);
@@ -540,10 +542,20 @@ const {
         ctx.restore();
       }
 
+      // Pre-warm: render 4 silent frames at t=0 so the GPU compiles blur/gradient
+      // shaders and JS JIT-compiles the hot paths before the animation starts.
+      // Each warmup frame is identical (t=0), so nothing visible jumps or pops.
       let t0 = null;
+      let preWarm = 4;
       function frame(ts) {
-        if (!t0) t0 = ts;
-        const t       = ts - t0;
+        let t;
+        if (preWarm > 0) {
+          t = 0;
+          preWarm--;
+          if (preWarm === 0) t0 = ts; // lock animation start to this frame
+        } else {
+          t = ts - t0;
+        }
         // sunPull: drives sun shrink + text fade as planets fall in
         const sunPull = t > T_PULL_START ? clamp((t - T_PULL_START) / (T_PULL_END - T_PULL_START), 0, 1) : 0;
         // bhPull: drives black hole formation, only starts AFTER all planets consumed
