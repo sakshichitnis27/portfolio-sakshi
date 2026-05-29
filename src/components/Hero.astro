@@ -27,6 +27,7 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
             <span class="hero-phrase">that make AI workflows production-ready.</span>
             <span class="hero-phrase">that stay fast, observable, and cost-efficient.</span>
             <span class="hero-phrase">that turn data-heavy products into systems.</span>
+            <span class="hero-phrase">that survive 3 AM on-call incidents.</span>
             <span class="hero-phrase">that are owned well after launch.</span>
           </span>
         </span>
@@ -77,11 +78,23 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
         const skills = [...techTicker];
         const metrics = impactMetrics.map(m => `${m.value} ${m.label}`);
         const merged: {text: string, type: string}[] = [];
-        const max = Math.max(skills.length, metrics.length);
-        for (let i = 0; i < max; i++) {
-          if (i < skills.length) merged.push({text: skills[i], type: 'skill'});
-          if (i < metrics.length) merged.push({text: metrics[i], type: 'metric'});
+        
+        let sIdx = 0;
+        let mIdx = 0;
+        
+        while (sIdx < skills.length || mIdx < metrics.length) {
+          for (let i = 0; i < 3; i++) {
+            if (sIdx < skills.length) {
+              merged.push({text: skills[sIdx], type: 'skill'});
+              sIdx++;
+            }
+          }
+          if (mIdx < metrics.length) {
+            merged.push({text: metrics[mIdx], type: 'metric'});
+            mIdx++;
+          }
         }
+        
         return [...merged, ...merged].map((item) => (
           <span class={item.type === 'metric' ? 'ticker-metric' : 'ticker-skill'}>{item.text}</span>
         ));
