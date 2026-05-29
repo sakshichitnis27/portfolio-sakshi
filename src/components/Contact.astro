@@ -43,6 +43,10 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
       </svg>
     </div>
   </div>
+  
+  <div class="copyright">
+    &copy; 2026 Vismay. All Rights Reserved.
+  </div>
 </section>
 
 <style>
@@ -123,6 +127,21 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
     user-select: none;
     pointer-events: none;
     line-height: 1;
+    padding-bottom: 2rem;
+  }
+
+  .copyright {
+    position: absolute;
+    bottom: 0.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: var(--text);
+    opacity: 0.85;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    z-index: 10;
   }
 
   .footer-name-svg {

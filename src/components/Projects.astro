@@ -155,18 +155,20 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
                 {project.stack.map((item) => <span>{item}</span>)}
               </div>
 
-              <a
-                class="lab-source mono"
-                href={project.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-cursor
-              >
-                View source
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-                  <path d="M3.2 11.8L11.8 3.2M11.8 3.2H5.4M11.8 3.2V9.6" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
+              {project.href && (
+                <a
+                  class="lab-source mono"
+                  href={project.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-cursor
+                >
+                  View source
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                    <path d="M3.2 11.8L11.8 3.2M11.8 3.2H5.4M11.8 3.2V9.6" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              )}
             </article>
           ))}
         </div>

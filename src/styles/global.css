@@ -149,6 +149,66 @@ select {
   width: 100%;
   height: 100%;
   display: block;
+  z-index: 2;
+}
+.stellar-sun-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.spline-bh-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  /* Brute-force slice off the bottom 80px where the logo sits! */
+  clip-path: inset(0px 0px 80px 0px);
+}
+.spline-bh-wrapper spline-viewer {
+  width: 100%;
+  height: 100%;
+}
+.stellar-core {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 20px #ffffff,
+    0 0 50px #fff3b0,
+    0 0 90px #ffb347,
+    0 0 160px #ff5500,
+    0 0 250px #900000;
+  z-index: 3;
+}
+.stellar-plasma {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,200,50,0.6) 30%, rgba(255,50,0,0.3) 60%, transparent 80%);
+  filter: blur(12px);
+  animation: pulse-plasma 2.5s infinite alternate ease-in-out;
+  z-index: 2;
+}
+
+@keyframes pulse-plasma {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.15); opacity: 1; }
 }
 /* Exit: canvas flash handles visual, this just removes the element */
 .loader-done .stage-loader {

@@ -26,9 +26,17 @@ const {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.95/build/spline-viewer.js"></script>
 </head>
 <body>
   <div class="stage-loader" id="stage-loader" aria-hidden="true">
+    <div class="spline-bh-wrapper" id="spline-bh">
+      <spline-viewer url="/portfolio/blackhole.splinecode"></spline-viewer>
+    </div>
+    <div class="stellar-sun-wrapper" id="stellar-sun">
+      <div class="stellar-plasma"></div>
+      <div class="stellar-core"></div>
+    </div>
     <canvas id="ldr-canvas"></canvas>
   </div>
 
@@ -144,6 +152,21 @@ const {
     // ── Solar system → black hole canvas loader ──────────
     (function () {
       const canvas = document.getElementById('ldr-canvas');
+      const stellarSun = document.getElementById('stellar-sun');
+      const splineBh = document.getElementById('spline-bh');
+      
+      // Remove the "Built with Spline" watermark from the shadow DOM
+      const viewer = document.querySelector('spline-viewer');
+      if (viewer) {
+        const removeLogo = setInterval(() => {
+          const logo = viewer.shadowRoot?.querySelector('#logo');
+          if (logo) {
+            logo.style.display = 'none';
+            clearInterval(removeLogo);
+          }
+        }, 100);
+      }
+
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       let W, H, CX, CY, raf;
@@ -205,6 +228,7 @@ const {
         dy: Math.sin(c.ang) * c.speed,
         active: false,
         nextT: c.delay,
+        trail: [],
       }));
 
       // 4 planets — uneven spacing, inner falls first, last one late
@@ -212,7 +236,7 @@ const {
         { r:3.8, oR:68,  spd:2.2,  ang:0.8,  col:'#d0d0d0', glo:'#909090', tc:'208,208,208', delay:    0 },
         { r:5.5, oR:112, spd:1.35, ang:2.4,  col:'#5bc8ff', glo:'#0096dd', tc:'91,200,255',  delay:  600 },
         { r:5,   oR:150, spd:0.92, ang:3.9,  col:'#ff7755', glo:'#dd3311', tc:'255,119,85',  delay: 1100 },
-        { r:9,   oR:205, spd:0.52, ang:5.2,  col:'#ffb347', glo:'#dd7700', tc:'255,179,71',  delay: 2100, ring:true },
+        { r:9,   oR:205, spd:0.52, ang:5.2,  col:'#ffb347', glo:'#dd7700', tc:'255,179,71',  delay: 2100 },
       ];
       const trails = PLANETS.map(() => []);
       const MAX_TRAIL = 32;
@@ -307,6 +331,7 @@ const {
             c.cy = c.y;
             c.dx = Math.cos(c.ang) * c.speed;
             c.dy = Math.sin(c.ang) * c.speed;
+            c.trail = [];
           }
           if (!c.active) continue;
 
@@ -314,13 +339,19 @@ const {
           if (pull > 0.04) {
             const toCX = 0.5 - c.cx, toCY = 0.5 - c.cy;
             const dist = Math.hypot(toCX, toCY) || 0.01;
-            const pullF = pull * pull * 0.6 / (dist + 0.08);
+            const pullF = pull * pull * 0.8 / (dist + 0.08); // stronger pull
             c.dx += (toCX / dist) * pullF * dtSec;
             c.dy += (toCY / dist) * pullF * dtSec;
           }
 
           c.cx += c.dx * dtSec;
           c.cy += c.dy * dtSec;
+
+          const px = c.cx * W, py = c.cy * H;
+          c.trail.push({x: px, y: py});
+          // Tail gets longer during stretch
+          const maxT = pull > 0.1 ? 25 : 12;
+          if (c.trail.length > maxT) c.trail.shift();
 
           // Consumed by BH? Fade near center
           const distC = Math.hypot(c.cx - 0.5, c.cy - 0.5);
@@ -333,30 +364,34 @@ const {
             continue;
           }
 
-          const px = c.cx * W, py = c.cy * H;
-          // Tail direction: follows velocity vector
-          const vel = Math.hypot(c.dx, c.dy) || 0.01;
-          const tailAng = Math.atan2(-c.dy, -c.dx);  // opposite velocity = tail behind
-          const stretch = pull > 0.1 ? c.tailLen * (1 + pull * 2.5) : c.tailLen;
-          const tx = px + Math.cos(tailAng) * stretch;
-          const ty = py + Math.sin(tailAng) * stretch;
-
           const fadeAlpha = pull > 0.15 ? clamp(distC / 0.15, 0, 1) : 1;
 
-          // Tail gradient
-          const tg = ctx.createLinearGradient(tx, ty, px, py);
-          tg.addColorStop(0, 'rgba(255,255,255,0)');
-          tg.addColorStop(0.5, `rgba(200,220,255,${(0.15 * fadeAlpha).toFixed(3)})`);
-          tg.addColorStop(1, `rgba(255,255,255,${(0.75 * fadeAlpha).toFixed(3)})`);
-          ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(px, py);
-          ctx.strokeStyle = tg; ctx.lineWidth = c.size * 0.8; ctx.stroke();
+          // Draw trailing curve (smoothed with quadratic curves)
+          if (c.trail.length > 2) {
+            ctx.beginPath();
+            ctx.moveTo(c.trail[0].x, c.trail[0].y);
+            for (let i = 1; i < c.trail.length - 1; i++) {
+              const xc = (c.trail[i].x + c.trail[i+1].x) / 2;
+              const yc = (c.trail[i].y + c.trail[i+1].y) / 2;
+              ctx.quadraticCurveTo(c.trail[i].x, c.trail[i].y, xc, yc);
+            }
+            ctx.lineTo(c.trail[c.trail.length-1].x, c.trail[c.trail.length-1].y);
+            
+            const tg = ctx.createLinearGradient(c.trail[0].x, c.trail[0].y, px, py);
+            tg.addColorStop(0, `rgba(180,220,255,0)`);
+            tg.addColorStop(0.5, `rgba(180,220,255,${0.3 * fadeAlpha})`);
+            tg.addColorStop(1, `rgba(255,255,255,${0.9 * fadeAlpha})`);
+            ctx.strokeStyle = tg;
+            ctx.lineWidth = c.size * 1.5;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+          }
 
           // Bright head
           ctx.globalAlpha = fadeAlpha;
           ctx.beginPath(); ctx.arc(px, py, c.size, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(255,255,255,0.9)';
-          ctx.shadowColor = '#aaccff'; ctx.shadowBlur = 8;
-          ctx.fill(); ctx.shadowBlur = 0;
+          ctx.fill();
 
           // Subtle glow
           const gg = ctx.createRadialGradient(px, py, 0, px, py, c.size * 5);
@@ -372,10 +407,27 @@ const {
         const p     = ease5(pull);
         const scale = 1 - p * 0.97;
         const R     = 28 * scale;
+        
+        // Sync the HTML CSS sun with the black hole gravity pull
+        if (stellarSun) {
+          if (p > 0) {
+            stellarSun.style.transform = `translate(-50%, -50%) scale(${Math.max(0, 0.65 * (1 - p * 1.5))})`;
+            stellarSun.style.opacity = Math.max(0, 1 - p * 1.2);
+            stellarSun.style.filter = `blur(${p * 20}px)`;
+          } else {
+            stellarSun.style.transform = `translate(-50%, -50%) scale(0.65)`;
+            stellarSun.style.opacity = 1;
+            stellarSun.style.filter = 'none';
+          }
+        }
+        
         if (R < 0.5) return;
         const pulse = 1 + 0.04 * Math.sin(t * 0.0018);
         const a     = clamp(1 - p * 1.15, 0, 1);
         if (a <= 0) return;
+        
+        // Return immediately so we don't draw the fake canvas sun anymore!
+        return;
 
         // Deep atmospheric glow layers
         for (const [hr, op, rv, gv, bv] of [
@@ -457,8 +509,8 @@ const {
         const startT  = T_PULL_START + pl.delay;
         const window_ = T_PULL_END - startT;
         const p       = (window_ > 0 && t > startT) ? ease5(clamp((t - startT) / window_, 0, 1)) : 0;
-        // Extra angular velocity builds up gradually with pull
-        const ang = pl.ang + (t / 1000) * pl.spd + p * p * 11 * pl.spd;
+        // Moderate angular velocity builds up so it curves smoothly instead of forming jagged spiderwebs
+        const ang = pl.ang + (t / 1000) * pl.spd + p * p * 12 * pl.spd;
         const oR  = pl.oR * (1 - p * 0.985);
         if (oR < 2) return;
         const x     = CX + Math.cos(ang) * oR;
@@ -466,19 +518,35 @@ const {
         // Stay fully visible until 88% in, then quick fade as it hits the sun
         const alpha = p < 0.88 ? 1.0 : clamp((1 - p) / 0.12, 0, 1);
 
-        // Trail
-        const tr = trails[idx];
-        tr.push({ x, y });
-        if (tr.length > MAX_TRAIL) tr.shift();
-        if (tr.length > 2 && alpha > 0.01) {
-          for (let i = 1; i < tr.length; i++) {
-            const frac = i / tr.length;
+        // Procedurally generated, mathematically perfect smooth trail
+        if (alpha > 0.01) {
+          const TIME_HISTORY = 900; // ms of history
+          const STEPS = 45; // ultra fine resolution
+          let lastX = x, lastY = y;
+          
+          for (let i = 1; i <= STEPS; i++) {
+            const frac = i / STEPS;
+            const pastT = t - frac * TIME_HISTORY;
+            
+            const p_past = (window_ > 0 && pastT > startT) ? ease5(clamp((pastT - startT) / window_, 0, 1)) : 0;
+            const ang_past = pl.ang + (pastT / 1000) * pl.spd + p_past * p_past * 12 * pl.spd;
+            const oR_past = pl.oR * (1 - p_past * 0.985);
+            
+            const px = CX + Math.cos(ang_past) * oR_past;
+            const py = CY + Math.sin(ang_past) * oR_past;
+            
             ctx.beginPath();
-            ctx.moveTo(tr[i-1].x, tr[i-1].y);
-            ctx.lineTo(tr[i].x,   tr[i].y);
-            ctx.strokeStyle = `rgba(${pl.tc},${(frac * alpha * 0.3).toFixed(3)})`;
-            ctx.lineWidth   = pl.r * frac * 0.65;
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(px, py);
+            
+            const weight = 1 - frac; // 1 at the planet, 0 at the tail
+            ctx.strokeStyle = `rgba(${pl.tc},${(weight * alpha * 0.4).toFixed(3)})`;
+            ctx.lineWidth   = pl.r * weight * 0.85;
+            ctx.lineCap     = 'round';
             ctx.stroke();
+            
+            lastX = px;
+            lastY = py;
           }
         }
 
@@ -498,16 +566,27 @@ const {
         ctx.beginPath(); ctx.arc(x, y, pl.r * 4, 0, Math.PI * 2);
         ctx.fillStyle = gg; ctx.fill();
 
-        // Body (sphere-lit gradient)
+        // Body (Realistic directional lighting)
         ctx.globalAlpha = alpha;
-        const bg = ctx.createRadialGradient(x - pl.r * 0.35, y - pl.r * 0.38, 0, x, y, pl.r);
-        bg.addColorStop(0,   '#ffffff');
-        bg.addColorStop(0.2, pl.col);
-        bg.addColorStop(1,   pl.glo);
+        const angleToSun = Math.atan2(CY - y, CX - x);
+        const bg = ctx.createLinearGradient(
+          x + Math.cos(angleToSun) * pl.r, y + Math.sin(angleToSun) * pl.r,
+          x - Math.cos(angleToSun) * pl.r, y - Math.sin(angleToSun) * pl.r
+        );
+        // Day side, terminator, and dark night side
+        bg.addColorStop(0,   pl.col);
+        bg.addColorStop(0.4, pl.glo);
+        bg.addColorStop(1,   '#08040a');
+        
         ctx.beginPath(); ctx.arc(x, y, pl.r, 0, Math.PI * 2);
         ctx.fillStyle = bg; ctx.fill();
+        
+        // Atmospheric rim
+        ctx.strokeStyle = pl.col;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
 
-        // Saturn ring
+        // Saturn ring (kept logic in case we want rings on other planets)
         if (pl.ring && p < 0.5) {
           ctx.globalAlpha = alpha * (1 - p / 0.5) * 0.85;
           ctx.save();
@@ -555,10 +634,19 @@ const {
       }
 
       function drawBlackHole(pull, t) {
+        if (splineBh) {
+          if (pull > 0) {
+            const p = easeOut3(pull);
+            splineBh.style.opacity = p;
+            splineBh.style.transform = `translate(-50%, -50%) scale(${0.08 + p * 0.10})`;
+            splineBh.style.pointerEvents = 'auto'; // Optional, but usually none for loaders
+          } else {
+            splineBh.style.opacity = 0;
+          }
+        }
+        
         if (pull <= 0) return;
-        const p  = easeOut3(pull);
-        const bR = lerp(0, 62, p);
-        const spin = t * 0.0004; // disk rotation
+        return; // We skip drawing the canvas black hole!
 
         // Outer diffuse glow — layered for depth
         for (const [rm, r, g, b, op] of [[5.5,80,30,180,0.04],[4.5,255,150,40,0.08],[3.2,200,100,255,0.06]]) {
@@ -744,7 +832,7 @@ const {
         const bhPull  = t > T_BH_START   ? clamp((t - T_BH_START)  / (T_BH_FULL  - T_BH_START),  0, 1) : 0;
         const flash   = t > T_BH_FULL    ? clamp((t - T_BH_FULL)   / (T_FLASH    - T_BH_FULL),   0, 1) : 0;
         const dt = t0 !== null && prevTs > 0 ? ts - prevTs : 16;
-        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+        ctx.clearRect(0, 0, W, H);
         drawStars(t, bhPull, dt);
         drawComets(t, bhPull, dt);
         drawBlackHole(bhPull, t);
