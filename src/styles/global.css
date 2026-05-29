@@ -236,7 +236,6 @@ select {
   height: 100vh;
   z-index: 9997;
   pointer-events: none;
-  mix-blend-mode: screen;
 }
 
 @media (hover: none), (pointer: coarse) {

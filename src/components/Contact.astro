@@ -141,19 +141,22 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
     stroke-width: 1.5;
     stroke-linecap: round;
     paint-order: stroke fill;
+    animation: shiftFooterColor 10s linear infinite;
+  }
+
+  @keyframes shiftFooterColor {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
   }
 
   .grad-stop-1 {
-    stop-color: var(--nebula-accent);
-    stop-opacity: 0.4;
+    stop-color: rgba(0, 210, 255, 0.4);
   }
   .grad-stop-2 {
-    stop-color: var(--nebula-accent-2);
-    stop-opacity: 0.4;
+    stop-color: rgba(199, 125, 255, 0.4);
   }
   .grad-stop-3 {
-    stop-color: var(--nebula-accent-3);
-    stop-opacity: 0.4;
+    stop-color: rgba(255, 184, 77, 0.4);
   }
 
   @media (max-width: 760px) {
