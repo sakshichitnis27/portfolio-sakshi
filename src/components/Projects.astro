@@ -7,12 +7,12 @@ const labMeta = [
     accent2: '#c77dff',
     marker: '#ffb84d',
     nodeLabel: 'Portfolio',
-    signal: 'Shader surface',
-    mode: 'Static deploy',
+    signal: 'Shader stack',
+    mode: 'Portfolio system',
     stats: [
-      { value: '0', label: 'server runtime' },
-      { value: 'GPU', label: 'visual layer' },
-      { value: 'Pages', label: 'deploy target' },
+      { value: 'Astro', label: 'static shell' },
+      { value: 'Three.js', label: '3D scene' },
+      { value: 'GSAP', label: 'scroll motion' },
     ],
     nodeX: '24%',
     nodeY: '33%',
@@ -22,12 +22,12 @@ const labMeta = [
     accent2: '#36f4ff',
     marker: '#23f6a5',
     nodeLabel: 'HotDrop',
-    signal: 'Local transfer',
-    mode: 'Device mesh',
+    signal: 'Device transfer',
+    mode: 'Local-first app',
     stats: [
-      { value: 'LAN', label: 'transport path' },
-      { value: 'QR', label: 'session entry' },
-      { value: 'TLS', label: 'auth channel' },
+      { value: 'LAN', label: 'no cloud hop' },
+      { value: 'QR', label: 'session pairing' },
+      { value: 'Desktop', label: 'macOS flow' },
     ],
     nodeX: '76%',
     nodeY: '68%',
@@ -50,9 +50,9 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
 >
   <div class="lab-container">
     <div class="lab-heading fade-up">
-      <p class="lab-kicker mono">04 / LAB</p>
-      <h2 id="lab-title">Build lab.</h2>
-      <p>Two public builds. Real constraints. Rendered live.</p>
+      <p class="lab-kicker mono">04 / WORKBENCH</p>
+      <h2 id="lab-title">Workbench.</h2>
+      <p>Two public builds, wired as interactive systems instead of static cards.</p>
     </div>
 
     <div class="lab-shell fade-up" data-lab-stage>
@@ -87,21 +87,21 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
         </div>
 
         <div class="lab-field-readout mono" aria-hidden="true">
-          <span>BUILD FIELD</span>
+          <span>WORKBENCH FIELD</span>
           <span>ACTIVE SIGNAL</span>
         </div>
       </div>
 
-      <aside class="lab-console" aria-label="Build lab details">
+      <aside class="lab-console" aria-label="Workbench details">
         <div class="lab-console-top">
           <div>
-            <span class="lab-console-label mono">Build console</span>
+            <span class="lab-console-label mono">Workbench console</span>
             <strong data-lab-active-title>{labProjects[0].title}</strong>
           </div>
           <span class="lab-status mono">Live</span>
         </div>
 
-        <div class="lab-switcher" role="tablist" aria-label="Select lab project">
+        <div class="lab-switcher" role="tablist" aria-label="Select workbench project">
           {labProjects.map((project, index) => (
             <button
               type="button"
@@ -404,15 +404,14 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
 
   .lab-heading h2 {
     margin: 0;
-    color: #fff;
+    background: var(--nebula-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: var(--fs-2xl);
     line-height: 0.96;
     letter-spacing: 0;
     text-wrap: balance;
-  }
-
-  .lab-heading h2::first-letter {
-    color: var(--active-accent);
   }
 
   .lab-heading p:last-child {

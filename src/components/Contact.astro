@@ -1,5 +1,7 @@
 ---
-import { certs, profile, socials } from '../data/portfolio';
+import { socials } from '../data/portfolio';
+
+const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes(social.label));
 ---
 
 <section id="contact" class="contact-section">
@@ -7,17 +9,17 @@ import { certs, profile, socials } from '../data/portfolio';
     <div class="contact-cta fade-up">
       <div class="section-num">05 / CONTACT</div>
       <h2 class="cta-heading">
-        <span>Bring me the</span>
-        <span class="text-gradient">hard backend + AI</span>
-        <span>problems.</span>
+        <span>Open for senior</span>
+        <span class="text-gradient">and lead engineering</span>
+        <span>roles globally.</span>
       </h2>
       <p class="cta-sub">
-        Senior backend roles, platform teams, revenue systems, data-heavy products,
-        LLM systems, and AI-native engineering workflows. Based in {profile.location}; open globally.
+        I build backend-heavy products across revenue systems, data platforms, LLM tooling,
+        and reliability work. If the role needs product judgment plus systems depth, reach out.
       </p>
 
       <div class="contact-links">
-        {socials.map((s) => (
+        {contactSocials.map((s) => (
           <a href={s.href} target={s.href.startsWith('mailto') ? undefined : '_blank'} rel="noopener noreferrer" class="contact-social" data-cursor>
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
               <path d={s.icon} />
@@ -28,34 +30,10 @@ import { certs, profile, socials } from '../data/portfolio';
       </div>
     </div>
 
-    <div class="contact-note fade-up">
-      <span class="mono">RESUME</span>
-      <p>Public copy is sanitized. Clean PDF available on request.</p>
-    </div>
-
-    <div class="h-line contact-div fade-up"></div>
-
-    <div class="contact-meta fade-up">
-      <div class="meta-block">
-        <div class="meta-label mono">CERTIFICATIONS</div>
-        {certs.map((c) => (
-          <div class="cert-item">
-            <span class="cert-dot"></span>
-            <span class="cert-name">{c}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-
     <div class="footer-name" aria-hidden="true">
       <svg class="footer-name-svg" viewBox="0 0 900 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         <text x="50%" y="138" text-anchor="middle" class="footer-name-text">VISMAY</text>
       </svg>
-    </div>
-
-    <div class="footer-bar fade-up">
-      <span class="mono">&copy; <span id="footer-year"></span> {profile.name}</span>
-      <span class="mono">Static Astro frontend / GitHub Pages ready</span>
     </div>
   </div>
 </section>
@@ -131,68 +109,6 @@ import { certs, profile, socials } from '../data/portfolio';
     transform: translateY(-2px);
   }
 
-  .contact-note {
-    max-width: 760px;
-    padding: 1rem 1.1rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    background: rgba(255,255,255,0.035);
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
-  }
-
-  .contact-note span {
-    display: block;
-    color: var(--cyan);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.14em;
-    margin-bottom: 0.45rem;
-  }
-
-  .contact-note p {
-    margin: 0;
-    color: rgba(255,255,255,0.9);
-    font-size: var(--fs-sm);
-    line-height: 1.58;
-  }
-
-  .contact-div {
-    margin: 0;
-  }
-
-  .contact-meta {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
-  .meta-label {
-    margin-bottom: 1rem;
-    color: rgba(255,255,255,0.86);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.2em;
-  }
-
-  .cert-item {
-    display: flex;
-    align-items: center;
-    gap: 0.58rem;
-    margin-bottom: 0.58rem;
-  }
-
-  .cert-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--cyan);
-    box-shadow: 0 0 14px rgba(0,210,255,0.75);
-  }
-
-  .cert-name {
-    color: rgba(255,255,255,0.86);
-    font-size: var(--fs-sm);
-  }
-
   .footer-name {
     overflow: hidden;
     margin-bottom: -0.15em;
@@ -220,40 +136,10 @@ import { certs, profile, socials } from '../data/portfolio';
     paint-order: stroke fill;
   }
 
-  .footer-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.25rem 0 calc(1.25rem + env(safe-area-inset-bottom));
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .footer-bar span {
-    color: rgba(255,255,255,0.82);
-    font-size: var(--fs-xs);
-    line-height: 1.4;
-  }
-
   @media (max-width: 760px) {
-    .contact-meta {
-      grid-template-columns: 1fr;
-      gap: 1.6rem;
-    }
-
     .cta-heading {
       font-size: clamp(2rem, 10vw, 3.8rem);
       line-height: 0.96;
     }
-
-    .footer-bar {
-      align-items: flex-start;
-      flex-direction: column;
-    }
   }
 </style>
-
-<script>
-  const year = document.getElementById('footer-year');
-  if (year) year.textContent = new Date().getFullYear();
-</script>

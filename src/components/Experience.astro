@@ -28,8 +28,8 @@ const mobileStops = [
 
 const briefs = [
   'B.Tech CS · systems foundation',
-  'Realtime feeds & fraud paths',
-  'Payments, DB, Search & LLM',
+  'Realtime feeds, fraud & white-label',
+  'Payments, search & A/B scale',
   'AI agents & MCP workflows',
   'Your hard problem, I\'m ready',
 ];
@@ -39,13 +39,6 @@ const briefs = [
   <div class="career-heading fade-up">
     <p class="career-kicker mono">02 / EXPERIENCE</p>
     <h2 id="career-title">Experience in motion.</h2>
-    <div class="career-path-label mono" aria-label="Career path">
-      <span>Medicaps</span><i></i>
-      <span>Gammastack</span><i></i>
-      <span>Pocket FM</span><i></i>
-      <span>Stealth</span><i></i>
-      <span>Your call</span>
-    </div>
     <p>Fundamentals → realtime → consumer scale → AI agents → your call.</p>
   </div>
 
@@ -389,14 +382,14 @@ const briefs = [
   .career-heading h2 {
     max-width: 1040px;
     margin: 0;
+    background: var(--nebula-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: var(--fs-2xl);
     line-height: 0.96;
     letter-spacing: 0;
     text-wrap: balance;
-  }
-
-  .career-heading h2::first-letter {
-    color: var(--nebula-accent);
   }
 
   .career-heading p {
@@ -405,28 +398,6 @@ const briefs = [
     color: rgba(255,255,255,0.9);
     font-size: var(--fs-base);
     line-height: 1.65;
-  }
-
-  .career-path-label {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.55rem;
-    max-width: 980px;
-    margin-top: 1rem;
-    color: rgba(255,255,255,0.88);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-  }
-
-  .career-path-label span:nth-of-type(3) { color: var(--nebula-accent); }
-
-  .career-path-label i {
-    flex: 0 0 clamp(1.3rem, 3.5vw, 3.2rem);
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--nebula-accent), transparent);
-    box-shadow: 0 0 14px rgba(0,210,255,0.35);
   }
 
   /* ── River canvas ─────────────────────────────────── */
@@ -766,7 +737,6 @@ const briefs = [
       font-size: clamp(2.2rem, 10vw, 3.2rem);
     }
 
-    .career-path-label,
     .career-heading p { display: none; }
 
     /* Taller container for the vertical path */
