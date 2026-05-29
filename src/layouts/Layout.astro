@@ -165,19 +165,46 @@ const {
       ];
       const QUOTE = QUOTES[Math.floor(Math.random() * QUOTES.length)];
 
-      // Stars — dense field, bright pinpoints with z-depth for size/brightness
+      // Stars — dense field with z-depth, drift velocities, and stronger twinkle
+      const STAR_COLORS = [
+        [255,255,255], [255,255,255], [255,255,255], [255,255,255], // most are white
+        [255,240,200], [200,220,255], [255,210,210], [220,255,240], // warm tints
+      ];
       const stars = Array.from({ length: 420 }, () => {
         const z = Math.random();
+        const speed = (1 - z) * 0.012 + 0.002;  // close stars drift faster
+        const angle = Math.random() * Math.PI * 2;
+        const col = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
         return {
           x:   Math.random(),
           y:   Math.random(),
           z,
-          r:   (Math.random() * 0.7 + 0.2) * (1 - z * 0.55),
-          a:   (Math.random() * 0.25 + 0.75) * (1 - z * 0.45),
+          r:   (Math.random() * 0.8 + 0.3) * (1 - z * 0.5),
+          a:   (Math.random() * 0.3 + 0.7) * (1 - z * 0.4),
           tw:  Math.random() * Math.PI * 2,
-          twS: 0.4 + Math.random() * 1.8,
+          twS: 0.8 + Math.random() * 2.5,       // twinkle speed
+          twA: 0.3 + Math.random() * 0.2,       // twinkle amplitude (stronger)
+          vx:  Math.cos(angle) * speed,          // drift velocity
+          vy:  Math.sin(angle) * speed,
+          col,
         };
       });
+
+      // Comets — bright streaks that fly across the scene
+      const COMETS = [
+        { x: -0.05, y: 0.15, ang: 0.35,  speed: 0.09, tailLen: 110, size: 2.2, delay: 1200, period: 6500 },
+        { x: 1.05,  y: 0.08, ang: 2.65,  speed: 0.07, tailLen: 85,  size: 1.8, delay: 2800, period: 7500 },
+        { x: 0.5,   y:-0.05, ang: 1.85,  speed: 0.11, tailLen: 100, size: 2.0, delay: 4200, period: 8000 },
+        { x: -0.05, y: 0.75, ang: 0.15,  speed: 0.08, tailLen: 95,  size: 1.6, delay: 5500, period: 7000 },
+        { x: 1.05,  y: 0.55, ang: 2.95,  speed: 0.10, tailLen: 105, size: 2.4, delay: 3200, period: 8500 },
+      ].map(c => ({
+        ...c,
+        cx: c.x, cy: c.y,
+        dx: Math.cos(c.ang) * c.speed,
+        dy: Math.sin(c.ang) * c.speed,
+        active: false,
+        nextT: c.delay,
+      }));
 
       // 4 planets — uneven spacing, inner falls first, last one late
       const PLANETS = [
@@ -213,13 +240,25 @@ const {
 
       // ── Draw helpers ──────────────────────────────────────
 
-      function drawStars(t, pull) {
+      function drawStars(t, pull, dt) {
         const p = ease5(pull);
+        const dtSec = dt * 0.001;
         for (const s of stars) {
+          // Drift movement (wrap at edges)
+          if (p < 0.5) {
+            s.x += s.vx * dtSec;
+            s.y += s.vy * dtSec;
+            if (s.x < -0.02) s.x = 1.02;
+            if (s.x > 1.02)  s.x = -0.02;
+            if (s.y < -0.02) s.y = 1.02;
+            if (s.y > 1.02)  s.y = -0.02;
+          }
+
           const sx = s.x * W, sy = s.y * H;
-          const twk  = 0.5 + 0.5 * Math.sin(s.tw + t * 0.001 * s.twS);
+          const twk  = (1 - s.twA) + s.twA * (0.5 + 0.5 * Math.sin(s.tw + t * 0.001 * s.twS));
           const alpha = s.a * twk * (1 - p * 0.18);
           if (alpha < 0.01) continue;
+          const [cr, cg, cb] = s.col;
 
           if (p > 0.04) {
             // Parallax warp: close stars (low z) drift faster toward BH
@@ -230,13 +269,12 @@ const {
             const dx = x - CX, dy = y - CY;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
             const nx = dx / dist, ny = dy / dist;
-            // Close stars streak longer — deepens parallax illusion
             const streak = p * p * (90 + (1 - s.z) * 130) * (0.5 + s.r);
             const x2 = x + nx * streak;
             const y2 = y + ny * streak;
             const gl = ctx.createLinearGradient(x, y, x2, y2);
-            gl.addColorStop(0, `rgba(255,255,255,${alpha.toFixed(3)})`);
-            gl.addColorStop(1, 'rgba(255,255,255,0)');
+            gl.addColorStop(0, `rgba(${cr},${cg},${cb},${alpha.toFixed(3)})`);
+            gl.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.lineTo(x2, y2);
@@ -244,11 +282,88 @@ const {
             ctx.lineWidth   = s.r * 1.6;
             ctx.stroke();
           } else {
+            // Glow halo for brighter stars
+            if (s.r > 0.5 && alpha > 0.4) {
+              ctx.beginPath();
+              ctx.arc(sx, sy, s.r * 3, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(${cr},${cg},${cb},${(alpha * 0.12).toFixed(3)})`;
+              ctx.fill();
+            }
             ctx.beginPath();
             ctx.arc(sx, sy, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
+            ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha.toFixed(3)})`;
             ctx.fill();
           }
+        }
+      }
+
+      function drawComets(t, pull, dt) {
+        const dtSec = dt * 0.001;
+        for (const c of COMETS) {
+          if (!c.active && t >= c.nextT && pull < 0.02) {
+            c.active = true;
+            c.cx = c.x;
+            c.cy = c.y;
+            c.dx = Math.cos(c.ang) * c.speed;
+            c.dy = Math.sin(c.ang) * c.speed;
+          }
+          if (!c.active) continue;
+
+          // During BH pull, curve comets toward center (gravitational deflection)
+          if (pull > 0.04) {
+            const toCX = 0.5 - c.cx, toCY = 0.5 - c.cy;
+            const dist = Math.hypot(toCX, toCY) || 0.01;
+            const pullF = pull * pull * 0.6 / (dist + 0.08);
+            c.dx += (toCX / dist) * pullF * dtSec;
+            c.dy += (toCY / dist) * pullF * dtSec;
+          }
+
+          c.cx += c.dx * dtSec;
+          c.cy += c.dy * dtSec;
+
+          // Consumed by BH? Fade near center
+          const distC = Math.hypot(c.cx - 0.5, c.cy - 0.5);
+          if (pull > 0.2 && distC < 0.04) { c.active = false; continue; }
+
+          // Off-screen reset (only when no BH pull)
+          if (pull < 0.02 && (c.cx < -0.15 || c.cx > 1.15 || c.cy < -0.15 || c.cy > 1.15)) {
+            c.active = false;
+            c.nextT = t + c.period + Math.random() * 2000;
+            continue;
+          }
+
+          const px = c.cx * W, py = c.cy * H;
+          // Tail direction: follows velocity vector
+          const vel = Math.hypot(c.dx, c.dy) || 0.01;
+          const tailAng = Math.atan2(-c.dy, -c.dx);  // opposite velocity = tail behind
+          const stretch = pull > 0.1 ? c.tailLen * (1 + pull * 2.5) : c.tailLen;
+          const tx = px + Math.cos(tailAng) * stretch;
+          const ty = py + Math.sin(tailAng) * stretch;
+
+          const fadeAlpha = pull > 0.15 ? clamp(distC / 0.15, 0, 1) : 1;
+
+          // Tail gradient
+          const tg = ctx.createLinearGradient(tx, ty, px, py);
+          tg.addColorStop(0, 'rgba(255,255,255,0)');
+          tg.addColorStop(0.5, `rgba(200,220,255,${(0.15 * fadeAlpha).toFixed(3)})`);
+          tg.addColorStop(1, `rgba(255,255,255,${(0.75 * fadeAlpha).toFixed(3)})`);
+          ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(px, py);
+          ctx.strokeStyle = tg; ctx.lineWidth = c.size * 0.8; ctx.stroke();
+
+          // Bright head
+          ctx.globalAlpha = fadeAlpha;
+          ctx.beginPath(); ctx.arc(px, py, c.size, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255,255,255,0.9)';
+          ctx.shadowColor = '#aaccff'; ctx.shadowBlur = 8;
+          ctx.fill(); ctx.shadowBlur = 0;
+
+          // Subtle glow
+          const gg = ctx.createRadialGradient(px, py, 0, px, py, c.size * 5);
+          gg.addColorStop(0, 'rgba(180,210,255,0.2)');
+          gg.addColorStop(1, 'rgba(180,210,255,0)');
+          ctx.beginPath(); ctx.arc(px, py, c.size * 5, 0, Math.PI * 2);
+          ctx.fillStyle = gg; ctx.fill();
+          ctx.globalAlpha = 1;
         }
       }
 
@@ -442,14 +557,35 @@ const {
         if (pull <= 0) return;
         const p  = easeOut3(pull);
         const bR = lerp(0, 62, p);
+        const spin = t * 0.0004; // disk rotation
 
-        // Outer diffuse glow
-        const gOut = ctx.createRadialGradient(CX, CY, bR, CX, CY, bR * 4.5);
-        gOut.addColorStop(0,    `rgba(255,150,40,${0.10*p})`);
-        gOut.addColorStop(0.55, `rgba(140,60,255,${0.06*p})`);
-        gOut.addColorStop(1,    'rgba(0,0,0,0)');
-        ctx.beginPath(); ctx.arc(CX, CY, bR * 4.5, 0, Math.PI * 2);
-        ctx.fillStyle = gOut; ctx.fill();
+        // Outer diffuse glow — layered for depth
+        for (const [rm, r, g, b, op] of [[5.5,80,30,180,0.04],[4.5,255,150,40,0.08],[3.2,200,100,255,0.06]]) {
+          const go = ctx.createRadialGradient(CX, CY, bR, CX, CY, bR * rm);
+          go.addColorStop(0,   `rgba(${r},${g},${b},${op*p})`);
+          go.addColorStop(0.6, `rgba(${r},${g},${b},${op*0.2*p})`);
+          go.addColorStop(1,   'rgba(0,0,0,0)');
+          ctx.beginPath(); ctx.arc(CX, CY, bR * rm, 0, Math.PI * 2);
+          ctx.fillStyle = go; ctx.fill();
+        }
+
+        // Subtle jets from poles
+        if (p > 0.3) {
+          const jA = (p - 0.3) / 0.7;
+          const jLen = bR * 4.5 * jA;
+          for (const dir of [-1, 1]) {
+            const jg = ctx.createLinearGradient(CX, CY, CX, CY + dir * jLen);
+            jg.addColorStop(0,   `rgba(180,120,255,${0.22*jA})`);
+            jg.addColorStop(0.4, `rgba(120,80,220,${0.10*jA})`);
+            jg.addColorStop(1,   'rgba(0,0,0,0)');
+            ctx.beginPath();
+            ctx.moveTo(CX - bR * 0.15, CY);
+            ctx.lineTo(CX, CY + dir * jLen);
+            ctx.lineTo(CX + bR * 0.15, CY);
+            ctx.closePath();
+            ctx.fillStyle = jg; ctx.fill();
+          }
+        }
 
         // Back half of disk (upper — cool, dim)
         ctx.save();
@@ -461,17 +597,24 @@ const {
         ctx.beginPath(); ctx.arc(CX, CY, bR, 0, Math.PI * 2);
         ctx.fillStyle = '#000'; ctx.fill();
 
-        // Photon ring — outer halo glow
-        ctx.beginPath(); ctx.arc(CX, CY, bR * 1.24, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255,195,80,${0.42*p})`;
-        ctx.lineWidth   = 6;
-        ctx.shadowColor = '#ff9400'; ctx.shadowBlur = 24 * p;
+        // Einstein ring (gravitational lensing)
+        ctx.beginPath(); ctx.arc(CX, CY, bR * 1.38, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(200,180,255,${0.18*p})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Photon ring — pulsing outer halo
+        const ringPulse = 1 + 0.06 * Math.sin(t * 0.003);
+        ctx.beginPath(); ctx.arc(CX, CY, bR * 1.24 * ringPulse, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,195,80,${0.45*p})`;
+        ctx.lineWidth   = 5;
+        ctx.shadowColor = '#ff9400'; ctx.shadowBlur = 28 * p;
         ctx.stroke(); ctx.shadowBlur = 0;
-        // Photon ring — sharp bright line
+        // Photon ring — sharp bright inner line
         ctx.beginPath(); ctx.arc(CX, CY, bR * 1.15, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(255,245,170,${0.98*p})`;
         ctx.lineWidth   = 2;
-        ctx.shadowColor = '#ffe060'; ctx.shadowBlur = 14 * p;
+        ctx.shadowColor = '#ffe060'; ctx.shadowBlur = 16 * p;
         ctx.stroke(); ctx.shadowBlur = 0;
 
         // Front half of disk (lower — warm, bright)
@@ -479,6 +622,24 @@ const {
         ctx.beginPath(); ctx.rect(0, CY, W, H); ctx.clip();
         drawDiskHalf(bR, p, true);
         ctx.restore();
+
+        // Spinning hot-spots orbiting in the disk
+        if (p > 0.2) {
+          const hsP = (p - 0.2) / 0.8;
+          for (let h = 0; h < 3; h++) {
+            const a = spin * (2.5 + h * 0.7) + h * 2.09;
+            const hR = bR * (1.4 + h * 0.35);
+            const hx = CX + Math.cos(a) * hR;
+            const hy = CY + Math.sin(a) * hR * 0.30; // disk tilt
+            const hAlpha = hsP * 0.4 * (0.7 + 0.3 * Math.sin(a)); // Doppler: bright approaching side
+            const hg = ctx.createRadialGradient(hx, hy, 0, hx, hy, bR * 0.3);
+            hg.addColorStop(0, `rgba(255,230,140,${hAlpha})`);
+            hg.addColorStop(0.5, `rgba(255,140,40,${hAlpha * 0.4})`);
+            hg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.beginPath(); ctx.arc(hx, hy, bR * 0.3, 0, Math.PI * 2);
+            ctx.fillStyle = hg; ctx.fill();
+          }
+        }
 
         // Relativistic hot spot — bright glow at bottom where disk bends around
         const hsY = CY + bR * 1.08;
@@ -560,6 +721,7 @@ const {
       // After warm-up, hold static for 250ms so the scene is visible and calm
       // before movement begins — avoids the first-frame jitter on cold load.
       let t0 = null;
+      let prevTs = 0;
       let preWarm = 4;
       let holdUntil = null;
       const HOLD_MS = 250;
@@ -580,13 +742,16 @@ const {
         // bhPull: drives black hole formation, only starts AFTER all planets consumed
         const bhPull  = t > T_BH_START   ? clamp((t - T_BH_START)  / (T_BH_FULL  - T_BH_START),  0, 1) : 0;
         const flash   = t > T_BH_FULL    ? clamp((t - T_BH_FULL)   / (T_FLASH    - T_BH_FULL),   0, 1) : 0;
+        const dt = t0 !== null && prevTs > 0 ? ts - prevTs : 16;
         ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
-        drawStars(t, bhPull);
+        drawStars(t, bhPull, dt);
+        drawComets(t, bhPull, dt);
         drawBlackHole(bhPull, t);
         drawSun(t, sunPull);
         for (let i = 0; i < PLANETS.length; i++) drawPlanet(PLANETS[i], i, t);
         drawFlash(flash);
         drawText(t, sunPull);
+        prevTs = ts;
         if (t < T_FLASH + 300) raf = requestAnimationFrame(frame);
       }
       raf = requestAnimationFrame(frame);

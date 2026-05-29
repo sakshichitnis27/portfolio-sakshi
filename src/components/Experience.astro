@@ -228,6 +228,128 @@ const briefs = [
   }, { passive: true });
 </script>
 
+<script>
+  /* ── Photon: single glowing particle, origin → end → repeat ── */
+  (function () {
+    const river = document.querySelector('.career-river');
+    if (!river || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    /* ── gradient color interpolation ── */
+    const STOPS = [
+      [0,    255,184, 77],
+      [0.25, 199,125,255],
+      [0.52,   0,210,255],
+      [0.76,  35,246,165],
+      [1,    255, 77,166],
+    ];
+    function colorAt(t) {
+      let i = 0;
+      while (i < STOPS.length - 1 && STOPS[i + 1][0] < t) i++;
+      if (i >= STOPS.length - 1) { const s = STOPS[STOPS.length - 1]; return `rgb(${s[1]},${s[2]},${s[3]})`; }
+      const a = STOPS[i], b = STOPS[i + 1], f = (t - a[0]) / (b[0] - a[0]);
+      return `rgb(${a[1]+(b[1]-a[1])*f|0},${a[2]+(b[2]-a[2])*f|0},${a[3]+(b[3]-a[3])*f|0})`;
+    }
+
+    /* ── node positions for pulse bursts ── */
+    const D_NODES = [[6,74],[28,40],[52,62],[74,26],[92,48]];
+    const M_NODES = [[26,8],[72,28],[26,50],[72,72],[26,91]];
+
+    function nearNode(px, py) {
+      const nodes = mob ? M_NODES : D_NODES;
+      for (const [nx, ny] of nodes) {
+        const dx = px - nx, dy = py - ny;
+        if (dx * dx + dy * dy < 18) return true;
+      }
+      return false;
+    }
+
+    /* ── DOM ── */
+    const TRAIL = 5;
+    const TRAIL_GAP = 0.018;           // spacing between trail dots (fraction of path)
+    const SPEED = 0.000085;             // progress per ms (~12s per full journey)
+
+    const wrap = document.createElement('div');
+    wrap.className = 'photon-wrap';
+    wrap.setAttribute('aria-hidden', 'true');
+    river.appendChild(wrap);
+
+    const lead = document.createElement('div');
+    lead.className = 'photon photon--lead';
+    wrap.appendChild(lead);
+
+    const trails = [];
+    for (let i = 0; i < TRAIL; i++) {
+      const d = document.createElement('div');
+      d.className = 'photon photon--trail';
+      const decay = 1 - (i + 1) / (TRAIL + 1);
+      d.style.opacity = String(decay * 0.78);
+      d.style.setProperty('--s', String(decay));
+      wrap.appendChild(d);
+      trails.push(d);
+    }
+    const allEls = [lead, ...trails];
+
+    /* ── layout cache (avoid measuring every frame) ── */
+    let mob = false;
+    let cw = 0, ch = 0;
+
+    function measure() {
+      mob = window.innerWidth <= 640;
+      const r = river.getBoundingClientRect();
+      cw = r.width;
+      ch = r.height;
+    }
+    measure();
+    window.addEventListener('resize', measure, { passive: true });
+
+    function getPath() {
+      const paths = document.querySelectorAll(mob ? '.career-ray-mob path' : '.career-ray path');
+      return paths[1] || paths[0];
+    }
+
+    /* ── animation loop (transform-only, GPU composited) ── */
+    let progress = 0;
+    let prev = 0;
+
+    function tick(now) {
+      const dt = prev ? now - prev : 16;
+      prev = now;
+
+      const path = getPath();
+      if (!path) { requestAnimationFrame(tick); return; }
+
+      const len = path.getTotalLength();
+      progress = (progress + SPEED * dt) % 1;
+
+      for (let i = 0; i < allEls.length; i++) {
+        let t = progress - i * TRAIL_GAP;
+        // trail particles that haven't "spawned" yet stay hidden at origin
+        if (t < 0) {
+          allEls[i].style.opacity = '0';
+          continue;
+        }
+        if (i > 0) allEls[i].style.opacity = String((1 - (i / (TRAIL + 1))) * 0.78);
+
+        const pt = path.getPointAtLength(t * len);
+        // viewBox 0-100 → pixel position inside the container
+        const px = (pt.x / 100) * cw;
+        const py = (pt.y / 100) * ch;
+
+        allEls[i].style.transform = `translate(${px}px, ${py}px) translate(-50%, -50%)`;
+        allEls[i].style.setProperty('--pc', colorAt(t));
+
+        if (i === 0) {
+          lead.classList.toggle('photon--pulse', nearNode(pt.x, pt.y));
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  })();
+</script>
+
 <style>
   /* ── Section shell ────────────────────────────────── */
   .career-section {
@@ -449,45 +571,46 @@ const briefs = [
     place-items: center;
     border-radius: 50%;
     color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 10%, rgba(5,0,10,0.3));
-    border: 1px solid color-mix(in srgb, var(--accent) 38%, rgba(255,255,255,0.08));
-    box-shadow:
-      0 0 12px color-mix(in srgb, var(--accent) 26%, transparent),
-      inset 0 1px 0 rgba(255,255,255,0.1);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
     font-size: var(--fs-xs);
     letter-spacing: 0;
     position: relative;
-    animation: dot-hue-shift 10s linear infinite;
-    animation-delay: calc(var(--i) * -2s);
-    transition: box-shadow 0.24s ease, transform 0.24s ease;
+    background: color-mix(in srgb, var(--accent) 10%, rgba(5,0,10,0.55));
+    border: 1px solid color-mix(in srgb, var(--accent) 52%, rgba(255,255,255,0.12));
+    box-shadow:
+      0 0 14px color-mix(in srgb, var(--accent) 28%, transparent),
+      inset 0 0 18px color-mix(in srgb, var(--accent) 8%, transparent);
+    transition: transform 0.32s ease, box-shadow 0.32s ease;
   }
 
-  @keyframes dot-hue-shift {
-    to { filter: hue-rotate(360deg); }
+  .chapter-dot::before {
+    content: "";
+    position: absolute;
+    inset: -0.52rem;
+    border-radius: 50%;
+    border: 1px dashed color-mix(in srgb, var(--accent) 32%, transparent);
+    animation: dot-ring-spin 14s linear infinite;
   }
 
   .chapter-dot::after {
     content: "";
     position: absolute;
-    inset: -0.5rem;
+    inset: -0.82rem;
     border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-    animation: dot-ring-pulse 3s ease-in-out infinite;
-    animation-delay: calc(var(--i) * 0.6s);
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    animation: dot-ring-spin 20s linear infinite reverse;
   }
 
-  @keyframes dot-ring-pulse {
-    0%, 100% { transform: scale(1);   opacity: 0.5; }
-    50%       { transform: scale(1.4); opacity: 0; }
+  @keyframes dot-ring-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
   }
 
-  .chapter:hover .chapter-dot {
-    box-shadow:
-      0 0 24px color-mix(in srgb, var(--accent) 55%, transparent),
-      inset 0 1px 0 rgba(255,255,255,0.14);
+  .chapter:hover .chapter-dot,
+  .chapter:focus-visible .chapter-dot {
     transform: scale(1.12);
+    box-shadow:
+      0 0 26px color-mix(in srgb, var(--accent) 52%, transparent),
+      inset 0 0 22px color-mix(in srgb, var(--accent) 12%, transparent);
   }
 
   /* ── Compact card ─────────────────────────────────── */
@@ -662,19 +785,26 @@ const briefs = [
       top:  var(--mob-cy) !important;
       max-width: 42vw;
       position: absolute;
-      animation: chapter-float 6s ease-in-out infinite;
-      animation-delay: calc(var(--i) * -1.1s);
+      /* stop vertical float — it shifts circles off the path on mobile */
+      animation: none !important;
+      translate: 0 0 !important;
     }
 
-    /* Override desktop side class with mobile data attribute */
+    /* Override desktop side class with mobile data attribute.
+       The dot (2.5rem on mobile) must sit exactly on the SVG coord.
+       translate(-1.25rem, -50%) puts the dot-center on (mob-cx, mob-cy).
+       For left-side: row-reverse so the card is on the left and dot on the right;
+       translate shifts by (full-width - half-dot) to land the dot on the coord. */
     .chapter[data-mob-side="right"] {
-      transform: translate(-1.5rem, -50%) !important;
+      transform: translate(-1.25rem, -50%) !important;
       flex-direction: row !important;
+      align-items: center !important;
       text-align: left !important;
     }
     .chapter[data-mob-side="left"] {
-      transform: translate(calc(-100% + 1.5rem), -50%) !important;
+      transform: translate(calc(-100% + 1.25rem), -50%) !important;
       flex-direction: row-reverse !important;
+      align-items: center !important;
       text-align: right !important;
     }
 
@@ -692,7 +822,71 @@ const briefs = [
 
   @media (prefers-reduced-motion: reduce) {
     .career-aura, .ray-spark, .chapter,
-    .chapter-dot, .chapter-dot::after { animation: none !important; }
+    .chapter-dot, .chapter-dot::before,
+    .chapter-dot::after { animation: none !important; }
     .exp-pop { transition: none !important; }
+    :global(.photon-wrap) { display: none !important; }
+  }
+
+  /* ── Photon particles (global: dynamically created by JS) ── */
+  :global(.photon-wrap) {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: visible;
+  }
+
+  :global(.photon) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  :global(.photon--lead) {
+    width: 7px;
+    height: 7px;
+    background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+    box-shadow:
+      0 0 3px 1px  rgba(255,255,255,0.95),
+      0 0 8px 3px  var(--pc, #c77dff),
+      0 0 22px 6px var(--pc, #c77dff),
+      0 0 48px 14px color-mix(in srgb, var(--pc, #c77dff) 35%, transparent);
+    transition: box-shadow 0.18s ease;
+  }
+
+  :global(.photon--lead.photon--pulse) {
+    width: 9px;
+    height: 9px;
+    box-shadow:
+      0 0 4px 2px  rgba(255,255,255,1),
+      0 0 14px 5px var(--pc, #c77dff),
+      0 0 36px 10px var(--pc, #c77dff),
+      0 0 72px 22px color-mix(in srgb, var(--pc, #c77dff) 42%, transparent);
+  }
+
+  :global(.photon--trail) {
+    width: calc(5px * var(--s, 0.5));
+    height: calc(5px * var(--s, 0.5));
+    background: radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 80%);
+    box-shadow:
+      0 0 2px 1px rgba(255,255,255,0.5),
+      0 0 6px 2px var(--pc, #c77dff),
+      0 0 16px 5px color-mix(in srgb, var(--pc, #c77dff) 28%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    :global(.photon--lead) {
+      width: 6px;
+      height: 6px;
+      box-shadow:
+        0 0 3px 1px rgba(255,255,255,0.9),
+        0 0 7px 3px var(--pc, #c77dff),
+        0 0 18px 5px var(--pc, #c77dff),
+        0 0 38px 12px color-mix(in srgb, var(--pc, #c77dff) 30%, transparent);
+    }
   }
 </style>
