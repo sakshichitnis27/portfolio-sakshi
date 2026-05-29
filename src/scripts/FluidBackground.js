@@ -25,8 +25,9 @@ const fragmentShader = `
   }
 
   float hash(vec2 p) {
-    p = fract(p * vec2(127.1, 311.7));
-    p += dot(p, p + 45.32);
+    // fract first to keep inputs small — prevents mediump overflow on mobile GPUs
+    p = fract(p * vec2(0.1031, 0.1030));
+    p += dot(p, p + 33.33);
     return fract(p.x * p.y);
   }
 
@@ -42,7 +43,7 @@ const fragmentShader = `
     float v = 0.0, amp = 0.52;
     for (int i = 0; i < 7; i++) {
       v += amp * noise(p);
-      p = rot(0.48) * p * 1.98 + vec2(13.5, 4.7);
+      p = rot(0.48) * p * 1.98 + vec2(1.7, 0.6); // smaller offsets to stay in mediump range
       amp *= 0.48;
     }
     return v;
@@ -231,7 +232,9 @@ export default class FluidBackground {
 
     this.running = true;
     this.flowScale = options.flowScale ?? 1.0;
-    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    // Mobile devices: cap at 1.0 to reduce GPU fragment load and prevent jerkiness
+    const isMobile = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    this.pixelRatio = Math.min(window.devicePixelRatio || 1, isMobile ? 1.0 : 1.5);
     this.startTime = performance.now();
     this.lastTime = this.startTime;
     this.mouse = [0.5, 0.5];
@@ -342,7 +345,7 @@ export default class FluidBackground {
   resize() {
     const width = this.canvas.clientWidth || window.innerWidth;
     const height = this.canvas.clientHeight || window.innerHeight;
-    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    // Keep original ratio — don't recalculate on resize to avoid mobile jank
     const renderWidth = Math.max(1, Math.round(width * this.pixelRatio));
     const renderHeight = Math.max(1, Math.round(height * this.pixelRatio));
 

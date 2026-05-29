@@ -85,11 +85,11 @@ export const journey = [
   },
   {
     id: 'somewhere',
-    label: 'Enterprise Cloud Platform',
+    label: 'Stealth Org',
     status: '2025 – Present',
-    title: 'AI Tooling & Global Microservices',
-    line: 'Building AI-native developer tooling (MCP, LangChain) reducing debugging time by 50%, orchestrating agent evaluation pipelines, and working across 100+ highly distributed microservices while serving active on-call rotations.',
-    proof: ['AI Agents & MCP', 'Langfuse Observability', 'Worked on 100+ Microservices', 'Active On-Call'],
+    title: 'LLM Infrastructure & AI Agents',
+    line: 'Building production LLM infrastructure and autonomous agent systems at scale — evaluation pipelines, tool-use orchestration, observability, and cost optimization across large distributed backends.',
+    proof: ['LLM Agents', 'Eval Pipelines', 'Tool-Use Orchestration', 'Cost Optimization'],
     accent: '#23f6a5',
   },
   {
@@ -112,7 +112,7 @@ export const projects = [
       'A shader-driven Astro portfolio with a WebGL fluid field, Three.js workbench scene, GSAP scroll choreography, glass UI, and static deployment.',
     proof: ['Fluid WebGL background', 'Three.js workbench', 'GSAP scroll motion'],
     stack: ['Astro', 'TypeScript', 'Three.js', 'GSAP', 'WebGL'],
-    href: '#view-source',
+    href: 'https://github.com/vismaytiwari/portfolio',
   },
   {
     id: 'hotdrop',

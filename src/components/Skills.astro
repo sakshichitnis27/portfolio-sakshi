@@ -848,13 +848,13 @@
       univ.classList.add('warping');
 
       // Phase 2: after warp + burst, reveal constellation
-    setTimeout(() => {
-      revealed = true;
-      univ.classList.add('revealed');
-    }, 800);
+      setTimeout(() => {
+        revealed = true;
+        univ.classList.add('revealed');
+      }, 2200);
 
-    // Phase 3: auto-select a cluster after everything settles
-      setTimeout(() => { if (!activeId) toggle('lang'); }, 1300);
+      // Phase 3: auto-select a cluster after everything settles
+      setTimeout(() => { if (!activeId) toggle('lang'); }, 2800);
     }
   }, { threshold: 0.12 }).observe(univ);
 
