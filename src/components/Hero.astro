@@ -76,14 +76,14 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
       {(() => {
         const skills = [...techTicker];
         const metrics = impactMetrics.map(m => `${m.value} ${m.label}`);
-        const merged: string[] = [];
+        const merged: {text: string, type: string}[] = [];
         const max = Math.max(skills.length, metrics.length);
         for (let i = 0; i < max; i++) {
-          if (i < skills.length) merged.push(skills[i]);
-          if (i < metrics.length) merged.push(metrics[i]);
+          if (i < skills.length) merged.push({text: skills[i], type: 'skill'});
+          if (i < metrics.length) merged.push({text: metrics[i], type: 'metric'});
         }
         return [...merged, ...merged].map((item) => (
-          <span>{item}</span>
+          <span class={item.type === 'metric' ? 'ticker-metric' : 'ticker-skill'}>{item.text}</span>
         ));
       })()}
     </div>
@@ -367,18 +367,30 @@ import { impactMetrics, profile, techTicker } from '../data/portfolio';
   .hero-ticker-track {
     display: flex;
     width: max-content;
-    animation: marquee 28s linear infinite;
+    animation: marquee 50s linear infinite;
   }
 
   .hero-ticker span {
     display: inline-flex;
     align-items: center;
     padding: 0.72rem 1.1rem;
-    color: rgba(255,255,255,0.72);
     font-family: 'JetBrains Mono', monospace;
     font-size: var(--fs-xs);
     letter-spacing: 0.12em;
     text-transform: uppercase;
+  }
+
+  .ticker-skill {
+    color: rgba(255,255,255,0.65);
+  }
+
+  .ticker-metric {
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(35,246,165,0.4));
   }
 
   .hero-ticker span::after {
