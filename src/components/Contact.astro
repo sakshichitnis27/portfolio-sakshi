@@ -14,8 +14,8 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
         <span>roles globally.</span>
       </h2>
       <p class="cta-sub">
-        I build backend-heavy products across revenue systems, data platforms, LLM tooling,
-        and reliability work. If the role needs product judgment plus systems depth, reach out.
+        I have built backend-heavy products across revenue systems, data platforms, LLM tooling,
+        and reliability work. Bonus: I can build the frontend too when the product needs a complete path from systems depth to user-facing polish.
       </p>
 
       <div class="contact-links">
@@ -32,6 +32,13 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
 
     <div class="footer-name" aria-hidden="true">
       <svg class="footer-name-svg" viewBox="0 0 900 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="footerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" class="grad-stop-1" />
+            <stop offset="50%" class="grad-stop-2" />
+            <stop offset="100%" class="grad-stop-3" />
+          </linearGradient>
+        </defs>
         <text x="50%" y="138" text-anchor="middle" class="footer-name-text">VISMAY</text>
       </svg>
     </div>
@@ -110,6 +117,7 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
   }
 
   .footer-name {
+    position: relative;
     overflow: hidden;
     margin-bottom: -0.15em;
     user-select: none;
@@ -124,16 +132,28 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
   }
 
   .footer-name-text {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-size: 168px;
-    font-weight: 700;
+    font-weight: 900;
     letter-spacing: 0.04em;
-    fill: none;
-    stroke: rgba(255,255,255,0.38);
+    fill: url(#footerGrad);
+    stroke: rgba(255, 255, 255, 0.45);
     stroke-width: 1.5;
-    stroke-dasharray: 4 7;
     stroke-linecap: round;
     paint-order: stroke fill;
+  }
+
+  .grad-stop-1 {
+    stop-color: var(--nebula-accent);
+    stop-opacity: 0.4;
+  }
+  .grad-stop-2 {
+    stop-color: var(--nebula-accent-2);
+    stop-opacity: 0.4;
+  }
+  .grad-stop-3 {
+    stop-color: var(--nebula-accent-3);
+    stop-opacity: 0.4;
   }
 
   @media (max-width: 760px) {

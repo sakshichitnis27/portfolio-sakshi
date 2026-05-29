@@ -25,7 +25,7 @@ const {
   <title>{title}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="stage-loader" id="stage-loader" aria-hidden="true">
@@ -42,6 +42,7 @@ const {
 
   <div class="cursor" id="cursor"></div>
   <div class="cursor-follower" id="cursor-follower"></div>
+  <canvas id="comet-cursor" aria-hidden="true"></canvas>
 
   <slot />
 
@@ -773,6 +774,28 @@ const {
     let my = 0;
 
     if (finePointer) {
+      const cometCanvas = document.getElementById('comet-cursor');
+      let cCtx = null;
+      let cw = 0, ch = 0;
+      let tailPoints = [];
+      const TAIL_LEN = 16;
+      let isHovering = false;
+      let hoverVal = 0;
+
+      if (cometCanvas) {
+        cCtx = cometCanvas.getContext('2d', { alpha: true });
+        const resizeComet = () => {
+          cw = window.innerWidth;
+          ch = window.innerHeight;
+          cometCanvas.width = cw;
+          cometCanvas.height = ch;
+        };
+        window.addEventListener('resize', resizeComet, {passive: true});
+        resizeComet();
+        
+        tailPoints = Array.from({length: TAIL_LEN}, () => ({x: cw/2, y: ch/2}));
+      }
+
       document.addEventListener('mousemove', (event) => {
         mx = event.clientX;
         my = event.clientY;
@@ -789,9 +812,50 @@ const {
           follower.style.left = `${fx}px`;
           follower.style.top = `${fy}px`;
         }
+
+        // Render smooth tail attached to follower (fx, fy)
+        if (cCtx && (fx !== 0 || fy !== 0)) {
+          cCtx.clearRect(0, 0, cw, ch);
+          hoverVal += ( (isHovering ? 1 : 0) - hoverVal ) * 0.15;
+
+          tailPoints[0].x = fx;
+          tailPoints[0].y = fy;
+          for (let i = 1; i < TAIL_LEN; i++) {
+            tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * 0.42;
+            tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * 0.42;
+          }
+
+          const cColor = document.documentElement.style.getPropertyValue('--nebula-accent').trim() || '#00d2ff';
+          
+          for (let i = 1; i < TAIL_LEN; i++) {
+            cCtx.beginPath();
+            cCtx.moveTo(tailPoints[i-1].x, tailPoints[i-1].y);
+            cCtx.lineTo(tailPoints[i].x, tailPoints[i].y);
+            cCtx.strokeStyle = cColor;
+            cCtx.lineWidth = (TAIL_LEN - i) / TAIL_LEN * (3.5 + hoverVal * 2.5);
+            cCtx.lineCap = 'round';
+            cCtx.globalAlpha = Math.max(0, (TAIL_LEN - i) / TAIL_LEN);
+            cCtx.stroke();
+          }
+          cCtx.globalAlpha = 1;
+        }
+
         requestAnimationFrame(animateCursor);
       }
       animateCursor();
+      
+      // Bind hover state tracking for the comet tail thickness
+      const bindHover = () => {
+        document.querySelectorAll('a, button, [data-cursor], .skill-ring__item').forEach((el) => {
+          if (!el.dataset.tailAttached) {
+             el.dataset.tailAttached = 'true';
+             el.addEventListener('mouseenter', () => isHovering = true);
+             el.addEventListener('mouseleave', () => isHovering = false);
+          }
+        });
+      };
+      bindHover();
+      new MutationObserver(bindHover).observe(document.body, {childList: true, subtree: true});
     }
 
     document.querySelectorAll('a, button, [data-cursor]').forEach((el) => {

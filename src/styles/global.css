@@ -229,9 +229,20 @@ select {
   transition: width 0.15s ease, height 0.15s ease;
 }
 
+#comet-cursor {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9997;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
 @media (hover: none), (pointer: coarse) {
   .cursor,
-  .cursor-follower {
+  .cursor-follower,
+  #comet-cursor {
     display: none;
   }
 }
