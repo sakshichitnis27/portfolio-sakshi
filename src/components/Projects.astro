@@ -373,6 +373,36 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
     document.addEventListener('astro:before-swap', destroyLab, { once: true });
     window.addEventListener('pagehide', destroyLab, { once: true });
   }
+
+  // Developer Easter Egg: Intercept "View source" clicks
+  document.body.addEventListener('click', (e) => {
+    const target = e.target.closest('a[href="#view-source"]');
+    if (target) {
+      e.preventDefault();
+      const html = document.documentElement.outerHTML.replace(/</g, '&lt;');
+      
+      const trollComment = `&lt;!-- 
+#########################################################################
+#########################################################################
+
+    Hey there! Sorry for not sharing the original, un-minified code. 
+    This portfolio contains a lot of heavily customized mathematics 
+    and physics logic that I prefer to keep closed-source.
+    
+    If you like what you see and want something similar built, 
+    feel free to reach out to me! 🚀
+
+#########################################################################
+#########################################################################
+--&gt;\n\n`;
+
+      const w = window.open('', '_blank');
+      if (w) {
+        w.document.write('<!DOCTYPE html><html><head><title>Source Code</title></head><body style="margin:0; background:#050005; color:#23f6a5; font-family:\'JetBrains Mono\', monospace; padding:2rem;"><pre style="white-space:pre-wrap; word-break:break-all;">' + trollComment + html + '</pre></body></html>');
+        w.document.close();
+      }
+    }
+  });
 </script>
 
 <style>
