@@ -47,7 +47,11 @@ import { certs, profile, socials } from '../data/portfolio';
       </div>
     </div>
 
-    <div class="footer-name" aria-hidden="true">VISMAYTIWARI</div>
+    <div class="footer-name" aria-hidden="true">
+      <svg class="footer-name-svg" viewBox="0 0 900 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <text x="50%" y="138" text-anchor="middle" class="footer-name-text">VISMAY</text>
+      </svg>
+    </div>
 
     <div class="footer-bar fade-up">
       <span class="mono">&copy; <span id="footer-year"></span> {profile.name}</span>
@@ -61,18 +65,16 @@ import { certs, profile, socials } from '../data/portfolio';
     position: relative;
     z-index: 10;
     overflow: hidden;
-    border-top: 1px solid rgba(255,255,255,0.06);
     background:
-      radial-gradient(circle at 12% 18%, rgba(0,210,255,0.14), transparent 24rem),
-      radial-gradient(circle at 82% 30%, rgba(255,0,110,0.12), transparent 24rem),
-      radial-gradient(circle at 45% 84%, rgba(35,246,165,0.12), transparent 22rem),
-      rgba(5,0,5,0.3);
+      radial-gradient(circle at 12% 18%, rgba(0,210,255,0.08), transparent 24rem),
+      radial-gradient(circle at 82% 30%, rgba(255,0,110,0.07), transparent 24rem),
+      radial-gradient(circle at 45% 84%, rgba(35,246,165,0.07), transparent 22rem);
   }
 
   .contact-container {
     max-width: 1440px;
     margin: 0 auto;
-    padding: clamp(4rem, 8vw, 7rem) var(--page-pad) 0;
+    padding: clamp(2rem, 3.5vw, 3.5rem) var(--page-pad) 0;
     position: relative;
     z-index: 2;
     display: flex;
@@ -194,14 +196,28 @@ import { certs, profile, socials } from '../data/portfolio';
   .footer-name {
     overflow: hidden;
     margin-bottom: -0.15em;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255,255,255,0.055);
     user-select: none;
     pointer-events: none;
-    font-size: clamp(4.3rem, 13.5vw, 13.5rem);
-    font-weight: 700;
-    letter-spacing: 0;
     line-height: 1;
+  }
+
+  .footer-name-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .footer-name-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 168px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    fill: none;
+    stroke: rgba(255,255,255,0.38);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 7;
+    stroke-linecap: round;
+    paint-order: stroke fill;
   }
 
   .footer-bar {

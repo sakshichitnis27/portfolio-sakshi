@@ -557,16 +557,22 @@ const {
 
       // Pre-warm: render 4 silent frames at t=0 so the GPU compiles blur/gradient
       // shaders and JS JIT-compiles the hot paths before the animation starts.
-      // Each warmup frame is identical (t=0), so nothing visible jumps or pops.
+      // After warm-up, hold static for 250ms so the scene is visible and calm
+      // before movement begins — avoids the first-frame jitter on cold load.
       let t0 = null;
       let preWarm = 4;
+      let holdUntil = null;
+      const HOLD_MS = 250;
       function frame(ts) {
         let t;
         if (preWarm > 0) {
           t = 0;
           preWarm--;
-          if (preWarm === 0) t0 = ts; // lock animation start to this frame
+          if (preWarm === 0) holdUntil = ts + HOLD_MS; // start hold after warm-up
+        } else if (holdUntil !== null && ts < holdUntil) {
+          t = 0; // hold static — scene visible, nothing moving yet
         } else {
+          if (t0 === null) t0 = ts; // lock animation clock on first moving frame
           t = ts - t0;
         }
         // sunPull: drives sun shrink + text fade as planets fall in
@@ -663,59 +669,82 @@ const {
       const skillsDriver = document.getElementById('skills-driver');
       if (!aboutDriver && !expDriver && !skillsDriver) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      // Skip on narrow screens — 70vw translate is too jarring on mobile
+      // Skip on narrow screens — large translates are too jarring on mobile
       if (window.innerWidth < 640) return;
+
+      // Pre-promote animated elements to compositor layers to avoid repaints
+      const aboutCont  = aboutDriver  && aboutDriver.querySelector('.about-container');
+      const expRiver   = expDriver    && expDriver.querySelector('.career-river');
+      const skillsCont = skillsDriver && skillsDriver.querySelector('.skills-section');
+      if (aboutCont)  aboutCont.style.willChange  = 'transform';
+      if (expRiver)   expRiver.style.willChange   = 'transform';
+      if (skillsCont) skillsCont.style.willChange = 'transform';
 
       const settled = { about: false, exp: false, skills: false };
 
-      // Starts late (section must be 28% into viewport) then finishes quickly
+      // Ease-out curve: fast start, decelerates to rest — prevents snap-to-place feel
+      function easeOut(t) { return 1 - (1 - t) * (1 - t); }
+
+      // Returns 0→1 progress: section must be 22% into viewport, then eases over 45% of viewport
       function entryP(el) {
         const raw = Math.max(0, 1 - el.getBoundingClientRect().top / window.innerHeight);
-        const delay = 0.28;
+        const delay = 0.22;
         if (raw < delay) return 0;
-        return Math.min(1, (raw - delay) * 3.2);
+        return easeOut(Math.min(1, (raw - delay) * 2.4));
       }
 
       function updateEntries() {
-        if (aboutDriver && !settled.about) {
+        if (aboutCont && !settled.about) {
           const p = entryP(aboutDriver);
-          const cont = aboutDriver.querySelector('.about-container');
           if (p >= 1) {
-            if (cont) cont.style.transform = '';
+            aboutCont.style.transform = '';
+            aboutCont.style.willChange = 'auto';
             settled.about = true;
           } else if (p > 0) {
-            if (cont) cont.style.transform = `translateX(${(1 - p) * 70}vw)`;
+            aboutCont.style.transform = `translateX(${(1 - p) * 44}vw)`;
           }
         }
-        if (expDriver && !settled.exp) {
+        if (expRiver && !settled.exp) {
           const p = entryP(expDriver);
-          const river = expDriver.querySelector('.career-river');
           if (p >= 1) {
-            if (river) river.style.transform = '';
+            expRiver.style.transform = '';
+            expRiver.style.willChange = 'auto';
             settled.exp = true;
           } else if (p > 0) {
-            if (river) river.style.transform = `rotate(${(1 - p) * -22}deg) scale(${0.84 + p * 0.16})`;
+            expRiver.style.transform = `rotate(${(1 - p) * -14}deg) scale(${0.9 + p * 0.1})`;
           }
         }
-        if (skillsDriver && !settled.skills) {
+        if (skillsCont && !settled.skills) {
           const p = entryP(skillsDriver);
-          const cont = skillsDriver.querySelector('.skills-section');
           if (p >= 1) {
-            if (cont) cont.style.transform = '';
+            skillsCont.style.transform = '';
+            skillsCont.style.willChange = 'auto';
             settled.skills = true;
           } else if (p > 0) {
-            if (cont) cont.style.transform = `translateX(${-(1 - p) * 70}vw)`;
+            skillsCont.style.transform = `translateX(${-(1 - p) * 44}vw)`;
           }
         }
         // Stop listening once all sections have settled
         if (settled.about && settled.exp && settled.skills) {
-          window.removeEventListener('scroll', updateEntries);
-          window.removeEventListener('resize', updateEntries);
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onScroll);
         }
       }
 
-      window.addEventListener('scroll', updateEntries, { passive: true });
-      window.addEventListener('resize', updateEntries, { passive: true });
+      // rAF-gated scroll handler — coalesces multiple scroll events per frame into one DOM update
+      let _ticking = false;
+      function onScroll() {
+        if (!_ticking) {
+          requestAnimationFrame(() => {
+            updateEntries();
+            _ticking = false;
+          });
+          _ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
       updateEntries();
     })();
 

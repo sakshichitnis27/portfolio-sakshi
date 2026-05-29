@@ -144,6 +144,7 @@ export const socials = [
 ] as const;
 
 export const certs = [
-  'AWS Solutions Architect - Associate',
-  'IBM Machine Learning Practitioner',
+  'HackerRank REST API — Intermediate',
+  'Programming, Data Structures & Algorithms in Python (NPTEL)',
+  'CCNA: Introduction to Networks',
 ] as const;

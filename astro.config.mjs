@@ -6,4 +6,5 @@ export default defineConfig({
   site: 'https://vismaytiwari.github.io',
   base: '/portfolio',
   output: 'static',
+  devToolbar: { enabled: false },
 });
