@@ -10,6 +10,8 @@ const {
   title = 'Vismay Tiwari - Backend Systems Engineer',
   description = 'Database-heavy backend engineer building revenue-critical distributed systems across payments, subscriptions, search, LLM tooling, Kafka, Redis, Kubernetes, and AWS.',
 } = Astro.props;
+
+const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +48,7 @@ const {
   
   <div class="stage-loader" id="stage-loader" aria-hidden="true">
     <div class="spline-bh-wrapper" id="spline-bh">
-      <spline-viewer url="/portfolio/blackhole.splinecode"></spline-viewer>
+      <spline-viewer url={`${assetBase}/blackhole.splinecode`}></spline-viewer>
     </div>
     <div class="stellar-sun-wrapper" id="stellar-sun">
       <div class="stellar-plasma"></div>
@@ -157,12 +159,12 @@ const {
     }
 
     if (document.readyState === 'complete') {
-      scheduleLoaderFinish(12200);
+      scheduleLoaderFinish(2800);
     } else {
-      window.addEventListener('load', () => scheduleLoaderFinish(12200), { once: true });
+      window.addEventListener('load', () => scheduleLoaderFinish(2800), { once: true });
     }
-    document.addEventListener('DOMContentLoaded', () => scheduleLoaderFinish(12400), { once: true });
-    window.setTimeout(finishLoader, 14500);
+    document.addEventListener('DOMContentLoaded', () => scheduleLoaderFinish(3000), { once: true });
+    window.setTimeout(finishLoader, 4500);
 
     // ── Solar system → black hole canvas loader ──────────
     (function () {

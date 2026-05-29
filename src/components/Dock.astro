@@ -143,6 +143,12 @@ const navItems = [
       pointer-events: none;
       transform: translate(-50%, 14px);
     }
+
+    .dock.is-content-focus {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 14px);
+    }
   }
 </style>
 
@@ -155,6 +161,7 @@ const navItems = [
 
   function setActive(id) {
     dock?.classList.toggle('is-home', id === 'hero' || window.scrollY < 180);
+    dock?.classList.toggle('is-content-focus', id === 'skills');
     dockBtns.forEach((btn) => {
       btn.classList.toggle('active', btn.getAttribute('data-target') === id);
     });

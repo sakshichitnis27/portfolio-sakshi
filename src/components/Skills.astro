@@ -79,7 +79,13 @@
   }
 
   @media (max-width: 768px) {
-    .sk-universe { height: 900px; }
+    .skills-section {
+      padding-bottom: calc(7.5rem + env(safe-area-inset-bottom));
+    }
+
+    .sk-universe {
+      height: clamp(980px, 250vw, 1120px);
+    }
   }
 
   /* ── Starfield + Warp intro ─────────────────── */
@@ -415,8 +421,8 @@
   .sk-universe.revealed .sk-node.expanded { opacity: 1; }
 
   .sk-node-icon {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     padding: 5px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 50%;
@@ -664,7 +670,7 @@
       el.title = sk.name;
       el.style.setProperty('--rd', (ci * 90 + si * 28 + 80) + 'ms');
       const img = document.createElement('img');
-      img.src = `https://cdn.simpleicons.org/${sk.slug}/ffffff`;
+      img.src = `https://api.iconify.design/simple-icons/${sk.slug}.svg?color=white`;
       img.alt = sk.name;
       img.loading = 'lazy';
       img.width = 15; img.height = 15;
@@ -842,13 +848,13 @@
       univ.classList.add('warping');
 
       // Phase 2: after warp + burst, reveal constellation
-      setTimeout(() => {
-        revealed = true;
-        univ.classList.add('revealed');
-      }, 2200);
+    setTimeout(() => {
+      revealed = true;
+      univ.classList.add('revealed');
+    }, 800);
 
-      // Phase 3: auto-select a cluster after everything settles
-      setTimeout(() => { if (!activeId) toggle('lang'); }, 4500);
+    // Phase 3: auto-select a cluster after everything settles
+      setTimeout(() => { if (!activeId) toggle('lang'); }, 1300);
     }
   }, { threshold: 0.12 }).observe(univ);
 

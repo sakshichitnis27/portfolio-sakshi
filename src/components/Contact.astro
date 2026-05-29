@@ -133,8 +133,10 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
   .copyright {
     position: absolute;
     bottom: 0.8rem;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
     font-size: 0.7rem;
     color: var(--text);
     opacity: 0.85;
@@ -180,8 +182,9 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn'].includes
 
   @media (max-width: 760px) {
     .cta-heading {
-      font-size: clamp(2rem, 10vw, 3.8rem);
-      line-height: 0.96;
+      display: block;
+      font-size: clamp(1.8rem, 8.5vw, 3.8rem);
+      line-height: 1.1;
     }
   }
 </style>
