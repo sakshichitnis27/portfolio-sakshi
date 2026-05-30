@@ -82,7 +82,7 @@ I’ve worked on real systems at serious scale, and I like the full arc: taking 
     <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
   </a>
   &nbsp;&nbsp;
-  <a href="mailto:vismay.t@gmail.com">
+  <a href="mailto:hire.vtiwari@gmail.com">
     <img src="https://img.shields.io/badge/Email_Me-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
   </a>
 
