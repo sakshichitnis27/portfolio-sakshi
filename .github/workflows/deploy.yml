@@ -32,21 +32,7 @@ jobs:
           echo "Copyright (c) 2026 Vismay Tiwari. All Rights Reserved." > dist/LICENSE
           echo "This repository contains the compiled static assets for my personal portfolio." >> dist/LICENSE
           echo "This code is NOT open source. You may not copy, reproduce, distribute, or create derivative works from this repository without explicit permission." >> dist/LICENSE
-          
-          cat << 'EOF' > dist/README.md
-          # Vismay Tiwari — Portfolio Output
 
-          > **Hey there! Sorry for not sharing the original, un-minified code.** 
-
-          This repository only contains the compiled static HTML, CSS, and minified JavaScript assets required to host the site on GitHub Pages. 
-
-          The portfolio contains a lot of heavily customized mathematics and physics logic for the WebGL fluid field and 3D rendering that I prefer to keep closed-source. 
-
-          If you like what you see and want something similar built, feel free to reach out to me! 🚀
-
-          ---
-          *Copyright (c) 2026 Vismay Tiwari. All Rights Reserved.*
-          EOF
 
       - name: Push to Public Repo
         uses: peaceiris/actions-gh-pages@v4
