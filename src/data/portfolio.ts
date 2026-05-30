@@ -112,7 +112,7 @@ export const projects = [
       'A shader-driven Astro portfolio with a WebGL fluid field, Three.js workbench scene, GSAP scroll choreography, glass UI, and static deployment.',
     proof: ['Fluid WebGL background', 'Three.js workbench', 'GSAP scroll motion'],
     stack: ['Astro', 'TypeScript', 'Three.js', 'GSAP', 'WebGL'],
-    href: 'https://github.com/vismaytiwari/portfolio',
+    href: '#view-source',
   },
   {
     id: 'hotdrop',
