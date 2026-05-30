@@ -12,7 +12,7 @@ export const profile = {
     linkedin: 'https://linkedin.com/in/vismaytiwari/',
     github: 'https://github.com/vismaytiwari',
     leetcode: 'https://leetcode.com/u/vismaytiwari/',
-    stackoverflow: 'https://stackoverflow.com/users/10820780/vismay',
+    stackoverflow: 'https://stackoverflow.com/users/18101320/vismay-tiwari',
   },
 } as const;
 
