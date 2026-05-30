@@ -1,27 +1,30 @@
 <div align="center">
-  <h1>Vismay Tiwari — Portfolio & Workbench</h1>
-  <p><strong>Heavily optimized, custom-engineered, and built for scale.</strong></p>
+  <h1>🕵️‍♂️ You found the source code... kinda.</h1>
 </div>
 
----
+Welcome to the deployment branch for **[Vismay Tiwari's Portfolio](https://vismaytiwari.github.io/portfolio)**.
 
-> [!WARNING]
-> **Source Code Not Provided**
-> 
-> You've found the compiled output! This repository only contains the minified HTML, CSS, and JavaScript assets required to host the site statically on GitHub Pages. 
+If you're here to see how the WebGL fluid simulations, Three.js workbench, or GSAP scroll triggers work—I've got bad news. What you're looking at is the minified, heavily optimized, static build output. 
 
-This portfolio contains highly customized mathematics, physics logic for a WebGL fluid field, a custom Three.js workbench scene, and bespoke GSAP scroll choreography. Because of the proprietary nature of this code, I prefer to keep the original architecture and un-minified source files closed-source.
+### Why is it closed source?
+As a backend-heavy full-stack engineer, diving deep into shaders, 3D math, and frontend physics for this portfolio was a seriously fun and challenging detour. It took a lot of late nights to get it right, and the project ended up being pretty close to my heart. For that reason, I'm keeping the original architecture and un-minified code in a private vault for now.
 
-If you are a recruiter, engineering leader, or just someone who appreciates good systems architecture and wants something similar built—let's talk!
+If you need an engineer who can handle the heavy backend systems *and* cares enough to build a frontend like this from scratch, you know where to find me.
+
+<br>
 
 <div align="center">
-  <a href="https://vismaytiwari.github.io/portfolio">View the Live Site</a> • 
-  <a href="https://github.com/vismaytiwari">GitHub Profile</a>
+  <h3>
+    <a href="https://vismaytiwari.github.io/portfolio">🌐 View the Live Site</a> &nbsp; | &nbsp; 
+    <a href="https://linkedin.com/in/vismaytiwari">💼 LinkedIn</a> &nbsp; | &nbsp; 
+    <a href="mailto:hire.vtiwari@gmail.com">✉️ Email Me</a>
+  </h3>
 </div>
 
----
+<br>
+<hr>
 
-### Copyright & License
-*Copyright &copy; 2026 Vismay Tiwari. All Rights Reserved.*
-
-*This code is NOT open source. You may view the compiled assets for educational purposes, but you may not copy, reproduce, distribute, or create derivative works from this repository without explicit permission.*
+<div align="center">
+  <p><em>Copyright &copy; 2026 Vismay Tiwari. All Rights Reserved.</em></p>
+  <p><em>This code is not open source. You may view the compiled assets for educational purposes, but please do not copy, reproduce, or distribute this code.</em></p>
+</div>
