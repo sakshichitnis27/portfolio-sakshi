@@ -1,7 +1,7 @@
 ---
 import { socials } from '../data/portfolio';
 
-const contactSocials = socials.filter((social) => ['Email', 'LinkedIn', 'GitHub'].includes(social.label));
+const contactSocials = socials.filter((social) => ['Email', 'LinkedIn', 'GitHub', 'LeetCode', 'Resume'].includes(social.label));
 ---
 
 <section id="contact" class="contact-section">
@@ -9,13 +9,13 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn', 'GitHub'
     <div class="contact-cta fade-up">
       <div class="section-num">05 / CONTACT</div>
       <h2 class="cta-heading">
-        <span>Open for senior</span>
-        <span class="text-gradient">and lead engineering</span>
-        <span>roles globally.</span>
+        <span>Let's build enterprise</span>
+        <span class="text-gradient">Java systems</span>
+        <span>together.</span>
       </h2>
       <p class="cta-sub">
-        I have built backend-heavy products across revenue systems, data platforms, LLM tooling,
-        and reliability work. Bonus: I can build the frontend too when the product needs a complete path from systems depth to user-facing polish.
+        I'm open to global Java Full Stack, Java Backend, Spring Boot, Kafka,
+        React, microservices, and cloud-native engineering opportunities.
       </p>
 
       <div class="contact-links">
@@ -39,13 +39,13 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn', 'GitHub'
             <stop offset="100%" class="grad-stop-3" />
           </linearGradient>
         </defs>
-        <text x="50%" y="138" text-anchor="middle" class="footer-name-text">VISMAY</text>
+        <text x="50%" y="138" text-anchor="middle" class="footer-name-text">SAKSHI</text>
       </svg>
     </div>
   </div>
   
   <div class="copyright">
-    &copy; 2026 Vismay. All Rights Reserved.
+    &copy; 2026 Sakshi. All Rights Reserved.
   </div>
 </section>
 
@@ -55,9 +55,11 @@ const contactSocials = socials.filter((social) => ['Email', 'LinkedIn', 'GitHub'
     z-index: 10;
     overflow: hidden;
     background:
-      radial-gradient(circle at 12% 18%, rgba(0,210,255,0.08), transparent 24rem),
-      radial-gradient(circle at 82% 30%, rgba(255,0,110,0.07), transparent 24rem),
-      radial-gradient(circle at 45% 84%, rgba(35,246,165,0.07), transparent 22rem);
+      linear-gradient(135deg, rgba(34,211,238,0.07) 0 1px, transparent 1px 58px),
+      linear-gradient(45deg, rgba(35,246,165,0.045) 0 1px, transparent 1px 64px),
+      radial-gradient(ellipse at 18% 20%, rgba(34,211,238,0.08), transparent 24rem),
+      radial-gradient(ellipse at 78% 76%, rgba(35,246,165,0.07), transparent 25rem),
+      rgba(2,10,24,0.18);
   }
 
   .contact-container {

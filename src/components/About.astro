@@ -1,13 +1,14 @@
 ---
 import { profile } from '../data/portfolio';
 
+const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
 const aboutStats = [
-  { label: 'Experience', value: '5+ years' },
-  { label: 'Current role', value: 'Software Engineer 3' },
+  { label: 'Experience', value: '4+ years' },
+  { label: 'Role', value: 'Java Full Stack Developer' },
   { label: 'Location', value: profile.location },
-  { label: 'Work scope', value: 'Global / remote' },
-  { label: 'Specialty', value: 'Backend-heavy full stack' },
-  { label: 'Systems', value: 'Payments / data / LLM' },
+  { label: 'Work scope', value: 'Global opportunities' },
+  { label: 'Specialty', value: 'Kafka / Spring / React' },
+  { label: 'Systems', value: 'Financial data / cloud' },
 ];
 ---
 
@@ -15,36 +16,45 @@ const aboutStats = [
   <div class="about-container">
     <div class="section-header fade-up">
       <div class="section-num">01 / ABOUT</div>
-      <h2 class="section-title">Backend-heavy full stack engineer for revenue, data, and <span>AI systems</span>.</h2>
+      <h2 class="section-title">Java Full Stack Developer for event-driven, cloud-native, <span>enterprise systems</span>.</h2>
     </div>
 
     <div class="about-layout fade-up" style="transition-delay:0.1s">
-      <div class="about-bio">
-        <p class="bio-lead">
-          <span class="bio-accent">Backend-heavy full stack engineer for revenue, data, and AI systems.</span>
-        </p>
-        <p>
-          I like building the systems a product clearly needs, and the unusual things imagination demands.
-        </p>
-        <p>
-          I build product systems where latency, correctness, and cost matter: payments, subscriptions, experimentation, search, caching, realtime data, and LLM workflows.
-        </p>
-        <p>
-          I am strongest at turning ambiguous product ideas into production paths: schema, APIs, queues, query plans, rollout controls, metrics, and operational follow-through.
-        </p>
-        <p>
-          I work well with platform, product, and data teams when the problem needs both shipping speed and systems discipline.
-        </p>
-        <p>
-          I have strong experience as an IC and in close collaboration with PMs, analysts, QA, and other engineers.
-        </p>
-        <p>
-          I also have solid frontend experience, mainly with TypeScript, React, and smaller frameworks; this portfolio is one example of that work.
-        </p>
+      <div class="about-main">
+        <div class="profile-frame">
+          <div class="profile-ring" aria-hidden="true"></div>
+          <img
+            src={`${assetBase}/sakshi-footer-headshot.png`}
+            alt="Sakshi Chitnis"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <div class="about-bio">
+          <p class="bio-lead">
+            <span class="bio-accent">I build event-driven backend systems, React frontends, and cloud-native platforms that are reliable, observable, and ready for enterprise scale.</span>
+          </p>
+          <p>
+            I'm a Java Full Stack Developer with 4+ years of experience across Java, Spring Boot, Spring MVC, Spring Security, Kafka, React, Angular, PostgreSQL, Redis, Cassandra, Elasticsearch, Docker, Kubernetes, Jenkins, and cloud platforms.
+          </p>
+          <p>
+            I currently work on NeoXam DataHub, an enterprise financial data platform used by 30-100 global institutions, across feed processing, validation governance, audit tracking, downstream data distribution, and CI/CD release pipelines.
+          </p>
+          <p>
+            At Deloitte, I built Kafka consumers processing 1M+ events/day, designed Redis-backed feature flags and bitwise segmentation, migrated monolith services to Kubernetes-based microservices, and optimized Redis, Cassandra, and Elasticsearch performance.
+          </p>
+          <p>
+            At HCL Technologies, I built React-based user management and authorization screens for 2,000+ users, integrated backend APIs for access control, improved REST API response time, and raised test coverage from 45% to 90%.
+          </p>
+          <p>
+            I also use AI-assisted developer tools like GitHub Copilot, Codex, and Claude Code for refactoring, debugging, and test generation while keeping delivery grounded in clean engineering practices.
+          </p>
+        </div>
       </div>
 
-      <div class="about-meta">
-        <div class="about-stats" aria-label="Profile facts">
+      <aside class="about-meta" aria-label="Profile facts">
+        <div class="about-stats">
           {aboutStats.map((item) => (
             <div class="stat-card">
               <span class="stat-label mono">{item.label}</span>
@@ -52,7 +62,7 @@ const aboutStats = [
             </div>
           ))}
         </div>
-      </div>
+      </aside>
     </div>
   </div>
 </section>
@@ -86,9 +96,16 @@ const aboutStats = [
   .about-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(360px, 0.48fr);
-    gap: clamp(1rem, 3vw, 2.2rem);
+    gap: clamp(1rem, 3vw, 2.4rem);
     align-items: stretch;
     margin-top: 3rem;
+  }
+
+  .about-main {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 2vw, 1.4rem);
+    min-width: 0;
   }
 
   .about-bio {
@@ -133,6 +150,71 @@ const aboutStats = [
   .bio-highlight {
     color: #c77dff;
     font-weight: 600;
+  }
+
+  .profile-frame {
+    position: relative;
+    display: grid;
+    place-items: end center;
+    min-height: clamp(17rem, 30vw, 25rem);
+    overflow: hidden;
+    border: 1px solid rgba(34,211,238,0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.065), rgba(255,255,255,0.018) 58%),
+      radial-gradient(circle at 24% 18%, rgba(34,211,238,0.12), transparent 15rem),
+      radial-gradient(circle at 70% 84%, rgba(35,246,165,0.075), transparent 18rem),
+      rgba(4, 1, 12, 0.34);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 24px 70px rgba(0,0,0,0.18);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+    overflow: hidden;
+  }
+
+  .profile-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(34,211,238,0.08) 0 1px, transparent 1px 56px),
+      linear-gradient(0deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 56px);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.65), transparent 72%);
+    pointer-events: none;
+  }
+
+  .profile-frame::after {
+    content: "";
+    position: absolute;
+    inset: auto 8% 0;
+    height: 34%;
+    background: linear-gradient(to top, rgba(2,10,24,0.78), transparent);
+    pointer-events: none;
+  }
+
+  .profile-ring {
+    position: absolute;
+    inset: 11% 12% 18%;
+    border: 1px solid rgba(35,246,165,0.16);
+    border-radius: 999px;
+    box-shadow:
+      0 0 44px rgba(34,211,238,0.12),
+      inset 0 0 44px rgba(34,211,238,0.07);
+    opacity: 0.78;
+  }
+
+  .profile-frame img {
+    position: relative;
+    z-index: 1;
+    width: min(64%, 290px);
+    height: auto;
+    display: block;
+    filter:
+      saturate(0.9)
+      contrast(1.04)
+      drop-shadow(0 0 18px rgba(34,211,238,0.18))
+      drop-shadow(0 20px 36px rgba(0,0,0,0.42));
   }
 
   .about-meta {
@@ -208,6 +290,14 @@ const aboutStats = [
 
     .about-bio {
       padding: 1rem;
+    }
+
+    .profile-frame {
+      min-height: 15rem;
+    }
+
+    .profile-frame img {
+      width: min(72%, 220px);
     }
 
     .about-stats {

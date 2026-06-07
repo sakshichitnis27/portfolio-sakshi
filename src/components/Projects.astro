@@ -3,38 +3,53 @@ import { projects } from '../data/portfolio';
 
 const labMeta = [
   {
-    accent: '#ff4da6',
-    accent2: '#c77dff',
-    marker: '#ffb84d',
-    nodeLabel: 'Portfolio',
-    signal: 'Shader stack',
-    mode: 'Portfolio system',
+    accent: '#22d3ee',
+    accent2: '#23f6a5',
+    marker: '#22d3ee',
+    nodeLabel: 'DocIntel',
+    signal: 'AI docs',
+    mode: 'AI document platform',
     stats: [
-      { value: 'Astro', label: 'static shell' },
-      { value: 'Three.js', label: '3D scene' },
-      { value: 'GSAP', label: 'scroll motion' },
+      { value: 'React', label: 'upload UI' },
+      { value: 'PDFBox', label: 'text extraction' },
+      { value: 'AI', label: 'summaries' },
     ],
-    nodeX: '24%',
-    nodeY: '33%',
+    nodeX: '20%',
+    nodeY: '30%',
+  },
+  {
+    accent: '#60a5fa',
+    accent2: '#22d3ee',
+    marker: '#60a5fa',
+    nodeLabel: 'Kafka',
+    signal: 'Event scale',
+    mode: 'High-throughput consumers',
+    stats: [
+      { value: '1M+', label: 'events/day' },
+      { value: '-30%', label: 'latency' },
+      { value: 'Retry', label: 'resilience' },
+    ],
+    nodeX: '50%',
+    nodeY: '52%',
   },
   {
     accent: '#23f6a5',
-    accent2: '#36f4ff',
+    accent2: '#22d3ee',
     marker: '#23f6a5',
-    nodeLabel: 'HotDrop',
-    signal: 'Device transfer',
-    mode: 'Local-first app',
+    nodeLabel: 'JWT',
+    signal: 'Auth security',
+    mode: 'JWT authentication system',
     stats: [
-      { value: 'LAN', label: 'no cloud hop' },
-      { value: 'QR', label: 'session pairing' },
-      { value: 'Desktop', label: 'macOS flow' },
+      { value: 'JWT', label: 'token auth' },
+      { value: 'Spring', label: 'security' },
+      { value: 'MySQL', label: 'sessions' },
     ],
     nodeX: '76%',
-    nodeY: '68%',
+    nodeY: '72%',
   },
 ] as const;
 
-const labProjects = projects.slice(0, 2).map((project, index) => ({
+const labProjects = projects.map((project, index) => ({
   ...project,
   ...labMeta[index],
   number: String(index + 1).padStart(2, '0'),
@@ -51,8 +66,8 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
   <div class="lab-container">
     <div class="lab-heading fade-up">
       <p class="lab-kicker mono">04 / WORKBENCH</p>
-      <h2 id="lab-title">Workbench.</h2>
-      <p>Side projects built in public: two real systems wired as interactive workbench nodes instead of static cards.</p>
+      <h2 id="lab-title">Enterprise Systems / Projects.</h2>
+      <p>Resume-backed systems across AI document analysis, high-throughput Kafka processing, and secure JWT-based authentication.</p>
     </div>
 
     <div class="lab-shell fade-up" data-lab-stage>
@@ -87,15 +102,15 @@ const labProjects = projects.slice(0, 2).map((project, index) => ({
         </div>
 
         <div class="lab-field-readout mono" aria-hidden="true">
-          <span>WORKBENCH FIELD</span>
-          <span>ACTIVE SIGNAL</span>
+          <span>SECURE SERVICE MAP</span>
+          <span>ACTIVE ACCESS PATH</span>
         </div>
       </div>
 
       <aside class="lab-console" aria-label="Workbench details">
         <div class="lab-console-top">
           <div>
-            <span class="lab-console-label mono">Workbench console</span>
+            <span class="lab-console-label mono">Vault project console</span>
             <strong data-lab-active-title>{labProjects[0].title}</strong>
           </div>
           <span class="lab-status mono">Live</span>

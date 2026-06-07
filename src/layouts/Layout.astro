@@ -7,8 +7,8 @@ export interface Props {
 }
 
 const {
-  title = 'Vismay Tiwari - Backend Systems Engineer',
-  description = 'Database-heavy backend engineer building revenue-critical distributed systems across payments, subscriptions, search, LLM tooling, Kafka, Redis, Kubernetes, and AWS.',
+  title = 'Sakshi Chitnis - Java Full Stack Developer',
+  description = 'Java Full Stack Developer with 4+ years of experience building event-driven microservices, React frontends, Kafka pipelines, and cloud-native enterprise systems.',
 } = Astro.props;
 
 const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -19,8 +19,8 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
-  <meta name="keywords" content="backend engineer, distributed systems, python, golang, kafka, redis, aws, cloud, portfolio" />
-  <meta name="theme-color" content="#050005" />
+  <meta name="keywords" content="java full stack developer, java backend developer, spring boot, react, kafka, microservices, redis, cassandra, elasticsearch, docker, kubernetes, aws, gcp, portfolio" />
+  <meta name="theme-color" content="#020a18" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
@@ -29,17 +29,20 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet" />
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.95/build/spline-viewer.js"></script>
 </head>
 <body>
   
   <div class="stage-loader" id="stage-loader" aria-hidden="true">
-    <div class="spline-bh-wrapper" id="spline-bh">
-      <spline-viewer url={`${assetBase}/blackhole.splinecode`}></spline-viewer>
-    </div>
-    <div class="stellar-sun-wrapper" id="stellar-sun">
-      <div class="stellar-plasma"></div>
-      <div class="stellar-core"></div>
+    <div class="vault-loader-card">
+      <div class="vault-loader-ring">
+        <svg width="58" height="58" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M7 11V8a5 5 0 0 1 10 0v3" />
+          <path d="M5 11h14v10H5z" />
+          <path d="M12 15v3" />
+        </svg>
+      </div>
+      <p class="mono">INITIALIZING ENTERPRISE DATA SYSTEM</p>
+      <span class="vault-loader-status mono">PIPELINES READY</span>
     </div>
     <canvas id="ldr-canvas"></canvas>
   </div>
@@ -62,7 +65,7 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const fluidCanvas = document.getElementById('fluid-canvas');
     const loader = document.getElementById('stage-loader');
-    let fluidInstance;
+    let networkInstance;
     const accentFrames = [
       ['#1e50ff', '#6622cc', '#00ccff', '#10d9a0', '#ffffff'],   // sapphire / violet / cyan / emerald / ice
       ['#10d9a0', '#d4a017', '#c0476a', '#0d9488', '#8b5cf6'],   // emerald / gold / mehroom / teal / violet
@@ -100,26 +103,29 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     requestAnimationFrame(animateAccent);
 
-    let fluidReady;
-    function bootFluid() {
+    let networkReady;
+    function bootNetworkBackground() {
       if (!fluidCanvas || reduceMotion.matches) {
         document.documentElement.classList.add('is-reduced-motion');
-        fluidReady = Promise.resolve();
+        networkReady = Promise.resolve();
         return;
       }
 
-      fluidReady = import('../scripts/FluidBackground.js').then(FluidBackground => {
-        fluidInstance = new FluidBackground.default(fluidCanvas, {
-          flowScale: window.innerWidth < 720 ? 0.9 : 1.12,
+      networkReady = import('../scripts/NetworkBackground.js').then(NetworkBackground => {
+        networkInstance = new NetworkBackground.default(fluidCanvas, {
+          density: window.innerWidth < 720 ? 0.000095 : 0.000145,
+          maxParticles: window.innerWidth < 720 ? 92 : 190,
+          linkDistance: window.innerWidth < 720 ? 142 : 178,
+          drift: window.innerWidth < 720 ? 0.18 : 0.24,
           paused: true,
         });
       }).catch(error => {
         document.documentElement.classList.add('fluid-fallback');
-        console.warn('Fluid background failed to start', error);
+        console.warn('Network background failed to start', error);
       });
     }
 
-    requestAnimationFrame(bootFluid);
+    requestAnimationFrame(bootNetworkBackground);
 
     let loaderFinished = false;
     function finishLoader() {
@@ -128,10 +134,10 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
       document.documentElement.classList.add('loader-done');
       window.setTimeout(() => {
         loader?.remove();
-        // Wait for the async fluid import to resolve before resuming
-        (fluidReady || Promise.resolve()).then(() => {
-          if (fluidInstance) {
-            fluidInstance.resume();
+        // Wait for the async background import to resolve before resuming
+        (networkReady || Promise.resolve()).then(() => {
+          if (networkInstance) {
+            networkInstance.resume();
             requestAnimationFrame(() =>
               requestAnimationFrame(() =>
                 document.documentElement.classList.add('fluid-ready')
@@ -150,6 +156,7 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     // Fallbacks in case the animation loop fails to run
     window.addEventListener('load', () => scheduleLoaderFinish(13500), { once: true });
+    window.setTimeout(finishLoader, 2200);
     window.setTimeout(finishLoader, 15000);
 
     // ── Solar system → black hole canvas loader ──────────
@@ -843,13 +850,18 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
     let fy = 0;
     let mx = 0;
     let my = 0;
+    let lastMx = 0;
+    let lastMy = 0;
+    let cursorAngle = -10;
+    let targetCursorAngle = -10;
+    let hasCursorMoved = false;
 
     if (finePointer) {
       const cometCanvas = document.getElementById('comet-cursor');
       let cCtx = null;
       let cw = 0, ch = 0;
       let tailPoints = [];
-      const TAIL_LEN = 16;
+      const TAIL_LEN = 34;
       let isHovering = false;
       let hoverVal = 0;
 
@@ -868,8 +880,16 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
 
       document.addEventListener('mousemove', (event) => {
+        const dx = hasCursorMoved ? event.clientX - lastMx : 0;
+        const dy = hasCursorMoved ? event.clientY - lastMy : 0;
         mx = event.clientX;
         my = event.clientY;
+        if (Math.hypot(dx, dy) > 1.2) {
+          targetCursorAngle = Math.atan2(dy, dx) * 180 / Math.PI + 125;
+        }
+        lastMx = mx;
+        lastMy = my;
+        hasCursorMoved = true;
         if (cursor) {
           cursor.style.left = `${mx}px`;
           cursor.style.top = `${my}px`;
@@ -879,35 +899,85 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
       function animateCursor() {
         fx += (mx - fx) * 0.12;
         fy += (my - fy) * 0.12;
+        let angleDelta = ((targetCursorAngle - cursorAngle + 540) % 360) - 180;
+        cursorAngle += angleDelta * 0.22;
+        if (cursor) cursor.style.setProperty('--cursor-angle', `${cursorAngle}deg`);
         if (follower) {
           follower.style.left = `${fx}px`;
           follower.style.top = `${fy}px`;
         }
 
-        // Render smooth tail attached to follower (fx, fy)
-        if (cCtx && (fx !== 0 || fy !== 0)) {
+        // Render smooth network tail attached to the arrow position.
+        if (cCtx && hasCursorMoved) {
           cCtx.clearRect(0, 0, cw, ch);
           hoverVal += ( (isHovering ? 1 : 0) - hoverVal ) * 0.15;
 
-          tailPoints[0].x = fx;
-          tailPoints[0].y = fy;
+          tailPoints[0].x += (mx - tailPoints[0].x) * 0.62;
+          tailPoints[0].y += (my - tailPoints[0].y) * 0.62;
           for (let i = 1; i < TAIL_LEN; i++) {
-            tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * 0.42;
-            tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * 0.42;
+            const follow = 0.28 - Math.min(i * 0.0035, 0.12);
+            tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * follow;
+            tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * follow;
           }
 
           const cColor = document.documentElement.style.getPropertyValue('--nebula-accent').trim() || '#00d2ff';
-          
-          for (let i = 1; i < TAIL_LEN; i++) {
+
+          cCtx.lineJoin = 'round';
+          cCtx.lineCap = 'round';
+
+          for (let i = 2; i < TAIL_LEN; i++) {
+            const p0 = tailPoints[i - 2];
+            const p1 = tailPoints[i - 1];
+            const p2 = tailPoints[i];
+            const strength = (TAIL_LEN - i) / TAIL_LEN;
             cCtx.beginPath();
-            cCtx.moveTo(tailPoints[i-1].x, tailPoints[i-1].y);
-            cCtx.lineTo(tailPoints[i].x, tailPoints[i].y);
+            cCtx.moveTo(p0.x, p0.y);
+            cCtx.quadraticCurveTo(p1.x, p1.y, (p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
             cCtx.strokeStyle = cColor;
-            cCtx.lineWidth = (TAIL_LEN - i) / TAIL_LEN * (3.5 + hoverVal * 2.5);
-            cCtx.lineCap = 'round';
-            cCtx.globalAlpha = Math.max(0, (TAIL_LEN - i) / TAIL_LEN);
+            cCtx.lineWidth = Math.max(0.6, strength * (2.8 + hoverVal * 1.8));
+            cCtx.globalAlpha = strength * 0.72;
             cCtx.stroke();
           }
+
+          for (let i = 3; i < TAIL_LEN - 3; i += 3) {
+            const p = tailPoints[i];
+            const q = tailPoints[i + 2];
+            const prev = tailPoints[i - 1];
+            const dx = p.x - prev.x;
+            const dy = p.y - prev.y;
+            const len = Math.max(1, Math.hypot(dx, dy));
+            const side = i % 2 === 0 ? 1 : -1;
+            const offset = Math.min(18, 4 + i * 0.35);
+            const ox = (-dy / len) * offset * side;
+            const oy = (dx / len) * offset * side;
+            const strength = (TAIL_LEN - i) / TAIL_LEN;
+
+            cCtx.beginPath();
+            cCtx.moveTo(p.x, p.y);
+            cCtx.lineTo(p.x + ox, p.y + oy);
+            cCtx.lineTo(q.x, q.y);
+            cCtx.strokeStyle = cColor;
+            cCtx.lineWidth = 0.65;
+            cCtx.globalAlpha = strength * 0.42;
+            cCtx.stroke();
+
+            cCtx.beginPath();
+            cCtx.fillStyle = '#d8fbff';
+            cCtx.globalAlpha = strength * 0.78;
+            cCtx.arc(p.x + ox, p.y + oy, Math.max(1, strength * 2.1), 0, Math.PI * 2);
+            cCtx.fill();
+          }
+
+          for (let i = 0; i < TAIL_LEN; i += 2) {
+            const p = tailPoints[i];
+            const strength = (TAIL_LEN - i) / TAIL_LEN;
+            cCtx.beginPath();
+            cCtx.fillStyle = i < 3 ? '#d8fbff' : cColor;
+            cCtx.globalAlpha = Math.max(0, strength * 0.9);
+            cCtx.arc(p.x, p.y, Math.max(0.8, strength * (2.6 + hoverVal)), 0, Math.PI * 2);
+            cCtx.fill();
+          }
+
           cCtx.globalAlpha = 1;
         }
 
@@ -932,24 +1002,24 @@ const assetBase = import.meta.env.BASE_URL.replace(/\/$/, '');
     document.querySelectorAll('a, button, [data-cursor]').forEach((el) => {
       el.addEventListener('mouseenter', () => {
         if (cursor) {
-          cursor.style.width = '20px';
-          cursor.style.height = '20px';
-          cursor.style.opacity = '0.5';
+          cursor.style.setProperty('--cursor-scale', '1.08');
+          cursor.style.opacity = '0.86';
         }
         if (follower) {
-          follower.style.width = '52px';
-          follower.style.height = '52px';
+          follower.style.width = '40px';
+          follower.style.height = '40px';
+          follower.style.borderColor = 'rgba(34, 211, 238, 0.56)';
         }
       });
       el.addEventListener('mouseleave', () => {
         if (cursor) {
-          cursor.style.width = '10px';
-          cursor.style.height = '10px';
+          cursor.style.setProperty('--cursor-scale', '1');
           cursor.style.opacity = '1';
         }
         if (follower) {
-          follower.style.width = '32px';
-          follower.style.height = '32px';
+          follower.style.width = '29px';
+          follower.style.height = '29px';
+          follower.style.borderColor = 'rgba(34, 211, 238, 0.24)';
         }
       });
     });

@@ -5,8 +5,8 @@
   <div class="skills-container">
     <div class="skills-copy">
       <p class="skills-kicker">03 / STACK</p>
-      <h2 id="skills-title">The <span>stack</span> behind the production numbers.</h2>
-      <p class="skills-hint">Backend-heavy full stack: APIs, data infrastructure, frontend surfaces, observability, and LLM tooling.</p>
+      <h2 id="skills-title">Full stack and cloud-native <span>toolkit</span>.</h2>
+      <p class="skills-hint">Java/Spring backend, React frontends, Kafka streaming, data platforms, cloud delivery, observability, security, testing, and AI productivity.</p>
     </div>
   </div>
   <div class="sk-universe" id="sk-universe"></div>
@@ -70,7 +70,7 @@
     margin: 0;
   }
 
-  /* ── Universe container ────────────────────── */
+  /* ── Access map container ────────────────────── */
   .sk-universe {
     position: relative;
     width: 100%;
@@ -88,7 +88,7 @@
     }
   }
 
-  /* ── Starfield + Warp intro ─────────────────── */
+  /* ── Encrypted particle intro ─────────────────── */
   .sk-starfield {
     position: absolute;
     inset: 0;
@@ -523,98 +523,104 @@
 (function () {
   const CLUSTERS = [
     {
-      id: 'lang', label: 'LANGUAGES', color: '#a855f7',
+      id: 'core', label: 'BACKEND CORE', color: '#22d3ee',
       dp: [12, 26], mp: [24, 11],
       skills: [
-        { name: 'Python',     slug: 'python',     url: 'https://python.org' },
-        { name: 'Go',         slug: 'go',         url: 'https://go.dev' },
-        { name: 'JavaScript', slug: 'javascript', url: 'https://developer.mozilla.org/docs/Web/JavaScript' },
-        { name: 'TypeScript', slug: 'typescript', url: 'https://typescriptlang.org' },
-        { name: 'Ruby',       slug: 'ruby',       url: 'https://ruby-lang.org' },
-        { name: 'SQL',        slug: 'mysql',      url: 'https://en.wikipedia.org/wiki/SQL' },
+        { name: 'Java',        slug: 'openjdk',    url: 'https://openjdk.org' },
+        { name: 'Spring Boot', slug: 'springboot', url: 'https://spring.io/projects/spring-boot' },
+        { name: 'Spring MVC',  slug: 'spring',     url: 'https://spring.io' },
+        { name: 'Spring Cloud', slug: 'spring',    url: 'https://spring.io/projects/spring-cloud' },
+        { name: 'REST APIs',   slug: 'swagger',    url: 'https://swagger.io' },
+        { name: 'gRPC',        slug: 'grpc',       url: 'https://grpc.io' },
+        { name: 'Hibernate',   slug: 'hibernate',  url: 'https://hibernate.org' },
+        { name: 'Maven',       slug: 'apachemaven', url: 'https://maven.apache.org' },
       ]
     },
     {
-      id: 'fw', label: 'FRAMEWORKS', color: '#7c3aed',
+      id: 'frontend', label: 'FRONTEND', color: '#38bdf8',
       dp: [32, 26], mp: [74, 19],
       skills: [
-        { name: 'Django',  slug: 'django',      url: 'https://djangoproject.com' },
-        { name: 'FastAPI', slug: 'fastapi',     url: 'https://fastapi.tiangolo.com' },
-        { name: 'Flask',   slug: 'flask',       url: 'https://flask.palletsprojects.com' },
-        { name: 'Gin',     slug: 'gin',         url: 'https://gin-gonic.com' },
-        { name: 'React',   slug: 'react',       url: 'https://react.dev' },
-        { name: 'Rails',   slug: 'rubyonrails', url: 'https://rubyonrails.org' },
-        { name: 'Pandas',  slug: 'pandas',      url: 'https://pandas.pydata.org' },
+        { name: 'React.js',    slug: 'react',      url: 'https://react.dev' },
+        { name: 'Angular',     slug: 'angular',    url: 'https://angular.dev' },
+        { name: 'TypeScript',  slug: 'typescript', url: 'https://typescriptlang.org' },
+        { name: 'JavaScript',  slug: 'javascript', url: 'https://developer.mozilla.org/docs/Web/JavaScript' },
+        { name: 'Bootstrap',   slug: 'bootstrap',  url: 'https://getbootstrap.com' },
       ]
     },
     {
-      id: 'db', label: 'DATABASES', color: '#ec4899',
+      id: 'security', label: 'SECURITY LAYER', color: '#23f6a5',
       dp: [58, 26], mp: [30, 31],
       skills: [
-        { name: 'Redis',         slug: 'redis',           url: 'https://redis.io' },
-        { name: 'PostgreSQL',    slug: 'postgresql',      url: 'https://postgresql.org' },
-        { name: 'MySQL',         slug: 'mysql',           url: 'https://mysql.com' },
-        { name: 'MongoDB',       slug: 'mongodb',         url: 'https://mongodb.com' },
-        { name: 'Cassandra',     slug: 'apachecassandra', url: 'https://cassandra.apache.org' },
-        { name: 'Elasticsearch', slug: 'elasticsearch',   url: 'https://elastic.co' },
-        { name: 'DynamoDB',      slug: 'amazondynamodb',  url: 'https://aws.amazon.com/dynamodb' },
+        { name: 'Spring Security', slug: 'springsecurity', url: 'https://spring.io/projects/spring-security' },
+        { name: 'OAuth2',          slug: 'auth0',          url: 'https://oauth.net/2/' },
+        { name: 'JWT',             slug: 'jsonwebtokens',  url: 'https://jwt.io' },
+        { name: 'RBAC',            slug: 'auth0',          url: 'https://auth0.com' },
+        { name: 'SSL/TLS',         slug: 'letsencrypt',    url: 'https://letsencrypt.org' },
+        { name: 'API Security',    slug: 'owasp',          url: 'https://owasp.org' },
       ]
     },
     {
-      id: 'msg', label: 'MESSAGING', color: '#f97316',
+      id: 'data', label: 'DATA LAYER', color: '#60a5fa',
       dp: [88, 28], mp: [74, 41],
       skills: [
-        { name: 'Kafka',    slug: 'apachekafka', url: 'https://kafka.apache.org' },
-        { name: 'RabbitMQ', slug: 'rabbitmq',    url: 'https://rabbitmq.com' },
-        { name: 'GraphQL',  slug: 'graphql',     url: 'https://graphql.org' },
-        { name: 'gRPC',     slug: 'grpc',        url: 'https://grpc.io' },
-        { name: 'Pub/Sub',  slug: 'googlepubsub', url: 'https://cloud.google.com/pubsub' },
+        { name: 'PostgreSQL',    slug: 'postgresql',      url: 'https://postgresql.org' },
+        { name: 'MySQL',         slug: 'mysql',           url: 'https://mysql.com' },
+        { name: 'Oracle SQL',    slug: 'oracle',          url: 'https://oracle.com/database' },
+        { name: 'Redis',         slug: 'redis',           url: 'https://redis.io' },
+        { name: 'Cassandra',     slug: 'apachecassandra', url: 'https://cassandra.apache.org' },
+        { name: 'Elasticsearch', slug: 'elasticsearch',   url: 'https://elastic.co' },
+        { name: 'MongoDB',       slug: 'mongodb',         url: 'https://mongodb.com' },
       ]
     },
     {
-      id: 'infra', label: 'CLOUD & DEVOPS', color: '#06b6d4',
+      id: 'messaging', label: 'MESSAGING LAYER', color: '#f59e0b',
       dp: [62, 72], mp: [24, 53],
+      skills: [
+        { name: 'Kafka',    slug: 'apachekafka',  url: 'https://kafka.apache.org' },
+        { name: 'RabbitMQ', slug: 'rabbitmq',     url: 'https://rabbitmq.com' },
+        { name: 'Google Pub/Sub', slug: 'googlecloud', url: 'https://cloud.google.com/pubsub' },
+        { name: 'WebSockets', slug: 'socketdotio', url: 'https://developer.mozilla.org/docs/Web/API/WebSockets_API' },
+        { name: 'Webhooks',  slug: 'webhook',      url: 'https://en.wikipedia.org/wiki/Webhook' },
+        { name: 'Event-driven Architecture', slug: 'apachekafka', url: 'https://kafka.apache.org' },
+      ]
+    },
+    {
+      id: 'cloud', label: 'CLOUD & DEVOPS', color: '#06b6d4',
+      dp: [40, 80], mp: [72, 62],
       skills: [
         { name: 'AWS',        slug: 'amazonaws',      url: 'https://aws.amazon.com' },
         { name: 'GCP',        slug: 'googlecloud',    url: 'https://cloud.google.com' },
         { name: 'Azure',      slug: 'microsoftazure', url: 'https://azure.microsoft.com' },
         { name: 'Docker',     slug: 'docker',         url: 'https://docker.com' },
         { name: 'Kubernetes', slug: 'kubernetes',     url: 'https://kubernetes.io' },
-        { name: 'Terraform',  slug: 'terraform',      url: 'https://terraform.io' },
         { name: 'Jenkins',    slug: 'jenkins',        url: 'https://jenkins.io' },
+        { name: 'GitLab CI/CD', slug: 'gitlab',       url: 'https://gitlab.com' },
+        { name: 'Terraform',  slug: 'terraform',      url: 'https://terraform.io' },
+        { name: 'Git',        slug: 'git',            url: 'https://git-scm.com' },
       ]
     },
     {
-      id: 'analytics', label: 'DATA & ANALYTICS', color: '#8b5cf6',
-      dp: [40, 80], mp: [72, 62],
-      skills: [
-        { name: 'Spark',    slug: 'apachespark',    url: 'https://spark.apache.org' },
-        { name: 'Airflow',  slug: 'apacheairflow',  url: 'https://airflow.apache.org' },
-        { name: 'BigQuery', slug: 'googlebigquery', url: 'https://cloud.google.com/bigquery' },
-        { name: 'Redshift', slug: 'amazonredshift', url: 'https://aws.amazon.com/redshift' },
-        { name: 'Metabase', slug: 'metabase',       url: 'https://metabase.com' },
-      ]
-    },
-    {
-      id: 'obs', label: 'OBSERVABILITY', color: '#10b981',
+      id: 'observability', label: 'OBSERVABILITY', color: '#10b981',
       dp: [14, 70], mp: [26, 74],
       skills: [
-        { name: 'Grafana',    slug: 'grafana',    url: 'https://grafana.com' },
-        { name: 'Prometheus', slug: 'prometheus', url: 'https://prometheus.io' },
-        { name: 'Kibana',     slug: 'kibana',     url: 'https://elastic.co/kibana' },
-        { name: 'Datadog',    slug: 'datadog',    url: 'https://datadoghq.com' },
+        { name: 'Grafana',    slug: 'grafana',        url: 'https://grafana.com' },
+        { name: 'Prometheus', slug: 'prometheus',     url: 'https://prometheus.io' },
+        { name: 'Datadog',    slug: 'datadog',        url: 'https://datadoghq.com' },
         { name: 'CloudWatch', slug: 'amazoncloudwatch', url: 'https://aws.amazon.com/cloudwatch' },
+        { name: 'Kibana',     slug: 'kibana',         url: 'https://elastic.co/kibana' },
       ]
     },
     {
-      id: 'ai', label: 'AI & LLM', color: '#f59e0b',
+      id: 'quality', label: 'QUALITY & AI', color: '#8b5cf6',
       dp: [82, 60], mp: [70, 84],
       skills: [
-        { name: 'LangChain', slug: 'langchain',     url: 'https://langchain.com' },
-        { name: 'Langfuse',  slug: 'langfuse',      url: 'https://langfuse.com' },
-        { name: 'Copilot',   slug: 'githubcopilot', url: 'https://github.com/features/copilot' },
-        { name: 'OpenAI',    slug: 'openai',        url: 'https://openai.com' },
-        { name: 'Anthropic', slug: 'anthropic',     url: 'https://anthropic.com' },
+        { name: 'JUnit',   slug: 'junit5',  url: 'https://junit.org' },
+        { name: 'Mockito', slug: 'mockito', url: 'https://site.mockito.org' },
+        { name: 'Pytest',  slug: 'pytest',  url: 'https://pytest.org' },
+        { name: 'SonarQube', slug: 'sonarqube', url: 'https://sonarsource.com/products/sonarqube' },
+        { name: 'Postman', slug: 'postman', url: 'https://postman.com' },
+        { name: 'RAG', slug: 'openai', url: 'https://en.wikipedia.org/wiki/Retrieval-augmented_generation' },
+        { name: 'GitHub Copilot', slug: 'githubcopilot', url: 'https://github.com/features/copilot' },
       ]
     },
   ];
@@ -854,7 +860,7 @@
       }, 2200);
 
       // Phase 3: auto-select a cluster after everything settles
-      setTimeout(() => { if (!activeId) toggle('lang'); }, 2800);
+      setTimeout(() => { if (!activeId) toggle('core'); }, 2800);
     }
   }, { threshold: 0.12 }).observe(univ);
 
