@@ -1,8 +1,8 @@
-# Vismay Tiwari Portfolio
+# Sakshi Chitnis Portfolio
 
-Personal portfolio for backend-heavy full stack work, production systems, AI tooling, and side projects.
+Personal portfolio for Java full stack work, production systems, AI tooling, and side projects.
 
-Live site: [vismaytiwari.github.io/portfolio](https://vismaytiwari.github.io/portfolio/)
+Live site: [sakshichitnis27.github.io/sakshi-portfolio](https://sakshichitnis27.github.io/sakshi-portfolio/)
 
 ## Stack
 
@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-The site runs locally at the Astro dev server URL, usually `http://localhost:4321/portfolio`.
+The site runs locally at the Astro dev server URL, usually `http://localhost:4321/sakshi-portfolio`.
 
 ## Production Build
 

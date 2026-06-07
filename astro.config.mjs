@@ -3,8 +3,8 @@ import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   integrations: [tailwind()],
-  site: 'https://vismaytiwari.github.io',
-  base: '/portfolio',
+  site: 'https://sakshichitnis27.github.io',
+  base: '/sakshi-portfolio',
   output: 'static',
   devToolbar: { enabled: false },
 });

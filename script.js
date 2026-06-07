@@ -55,8 +55,8 @@ const roles = [
   // Code snippet
   const codeSnippet = `async def backend_engineer():
      profile = {
-         "name": "Vismay Tiwari",
-         "role": "Backend Engineer",
+         "name": "Sakshi Chitnis",
+         "role": "Java Full Stack Developer",
          "DSA Questions Solved": 530+ (if LeetCode is to be believed 🤷‍♂️)",
          "scale I worked on": {
                 "users": "200M+ 🙌",
