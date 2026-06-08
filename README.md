@@ -2,7 +2,7 @@
 
 Personal portfolio for Java full stack work, production systems, AI tooling, and side projects.
 
-Live site: [sakshichitnis27.github.io/sakshi-portfolio](https://sakshichitnis27.github.io/sakshi-portfolio/)
+Live site: [sakshichitnis27.github.io/portfolio-sakshi](https://sakshichitnis27.github.io/portfolio-sakshi/)
 
 ## Stack
 
@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-The site runs locally at the Astro dev server URL, usually `http://localhost:4321/sakshi-portfolio`.
+The site runs locally at the Astro dev server URL, usually `http://localhost:4321/portfolio-sakshi`.
 
 ## Production Build
 
