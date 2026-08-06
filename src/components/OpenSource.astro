@@ -1,0 +1,145 @@
+---
+const contributions = [
+  { project: 'Micronaut Core', prs: '2 PRs', area: 'Java · Cloud-native', links: ['https://github.com/micronaut-projects/micronaut-core/pull/12814', 'https://github.com/micronaut-projects/micronaut-core/pull/12812'], accent: '#60a5fa' },
+  { project: 'Redis OM Python', prs: '2 PRs', area: 'Python · Data access', links: ['https://github.com/redis/redis-om-python/pull/841', 'https://github.com/redis/redis-om-python/pull/842'], accent: '#ff4d6d' },
+  { project: 'OpenRewrite', prs: '2 PRs', area: 'Java · Code migration', links: ['https://github.com/openrewrite/rewrite-migrate-java/pull/1159', 'https://github.com/openrewrite/rewrite/pull/8009'], accent: '#23f6a5' },
+  { project: 'OpenAPI Generator', prs: '1 PR', area: 'Java · Developer tooling', links: ['https://github.com/OpenAPITools/openapi-generator/pull/24394'], accent: '#c77dff' },
+  { project: 'MapStruct', prs: '1 PR', area: 'Java · Code generation', links: ['https://github.com/mapstruct/mapstruct/pull/4089'], accent: '#00d2ff' },
+  { project: 'Quarkus', prs: '1 PR', area: 'Java · Frameworks', links: ['https://github.com/quarkusio/quarkus/pull/55636'], accent: '#ffb84d' },
+  { project: 'ScyllaDB', prs: '1 PR', area: 'Distributed systems', links: ['https://github.com/scylladb/scylladb/pull/30800'], accent: '#f97316' },
+  { project: 'isort', prs: '1 PR', area: 'Python · Developer tooling', links: ['https://github.com/PyCQA/isort/pull/2581'], accent: '#22d3ee' },
+];
+
+const stats = [
+  { value: '11', label: 'pull requests' },
+  { value: '8', label: 'open-source projects' },
+  { value: '2', label: 'ecosystems' },
+];
+---
+
+<section id="open-source" class="opensource-section" aria-labelledby="opensource-title">
+  <div class="opensource-orbit" aria-hidden="true"></div>
+  <div class="opensource-heading fade-up">
+    <p class="opensource-kicker mono">03 / OPEN SOURCE IMPACT</p>
+    <h2 id="opensource-title">Engineering beyond<br /><span>the workplace.</span></h2>
+    <p>Contributing fixes, improvements, and developer tooling across backend frameworks, distributed systems, and the wider engineering ecosystem.</p>
+  </div>
+
+  <div class="opensource-stats fade-up" aria-label="Open source contribution statistics">
+    {stats.map((stat) => (
+      <div class="opensource-stat">
+        <strong>{stat.value}</strong>
+        <span class="mono">{stat.label}</span>
+      </div>
+    ))}
+  </div>
+
+  <div class="opensource-grid fade-up" aria-label="Open source projects">
+    <div class="opensource-core" aria-hidden="true">
+      <span class="core-pulse"></span>
+      <strong>OSS</strong>
+      <small class="mono">CONTRIBUTIONS</small>
+    </div>
+
+    {contributions.map((contribution, index) => (
+      <article
+        class="opensource-card"
+        style={`--accent:${contribution.accent};--delay:${index * 70}ms;`}
+      >
+        <span class="opensource-card-index mono">{String(index + 1).padStart(2, '0')}</span>
+        <span class="opensource-card-prs mono">{contribution.prs}</span>
+        <h3>{contribution.project}</h3>
+        <span class="opensource-card-area">{contribution.area}</span>
+        <div class="opensource-card-links mono">
+          {contribution.links.map((link) => (
+            <a href={link} target="_blank" rel="noreferrer" class="opensource-card-link">PR #{link.split('/').pop()} <span aria-hidden="true">↗</span></a>
+          ))}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .opensource-section {
+    min-height: 100svh;
+    padding: clamp(6rem, 10vw, 10rem) var(--page-pad) clamp(6rem, 10vw, 9rem);
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+  }
+
+  .opensource-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.035), transparent);
+    pointer-events: none;
+  }
+
+  .opensource-orbit {
+    position: absolute;
+    width: min(72vw, 900px);
+    height: min(72vw, 900px);
+    right: -22%;
+    top: 8%;
+    border: 1px solid rgba(34, 211, 238, 0.1);
+    border-radius: 50%;
+    box-shadow: 0 0 80px rgba(34, 211, 238, 0.04), inset 0 0 80px rgba(35, 246, 165, 0.025);
+    pointer-events: none;
+  }
+
+  .opensource-orbit::before,
+  .opensource-orbit::after {
+    content: '';
+    position: absolute;
+    inset: 12%;
+    border: 1px dashed rgba(199, 125, 255, 0.15);
+    border-radius: 50%;
+    transform: rotate(38deg) scaleY(0.56);
+  }
+
+  .opensource-orbit::after { inset: 25%; transform: rotate(-42deg) scaleY(0.7); border-color: rgba(35, 246, 165, 0.13); }
+
+  .opensource-heading { position: relative; max-width: 670px; }
+  .opensource-kicker { color: var(--cyan); font-size: var(--fs-xs); letter-spacing: 0.18em; margin-bottom: 1.15rem; }
+  .opensource-heading h2 { font-size: var(--fs-2xl); line-height: 0.98; letter-spacing: -0.055em; }
+  .opensource-heading h2 span { color: var(--green); }
+  .opensource-heading p:last-child { max-width: 570px; margin-top: 1.5rem; color: rgba(255,255,255,0.78); font-size: var(--fs-md); line-height: 1.55; }
+
+  .opensource-stats { position: relative; display: flex; gap: clamp(1.5rem, 6vw, 6rem); margin: 3.5rem 0 4.5rem; }
+  .opensource-stat { display: grid; gap: 0.3rem; }
+  .opensource-stat strong { color: #fff; font-size: clamp(2.4rem, 4vw, 4.3rem); line-height: 0.9; letter-spacing: -0.07em; }
+  .opensource-stat span { color: rgba(255,255,255,0.55); font-size: var(--fs-2xs); letter-spacing: 0.12em; text-transform: uppercase; }
+
+  .opensource-grid { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+  .opensource-core { grid-column: span 4; display: grid; place-items: center; width: 9rem; height: 9rem; margin: 0 auto 1.5rem; border: 1px solid rgba(34, 211, 238, 0.32); border-radius: 50%; background: radial-gradient(circle, rgba(34, 211, 238, 0.18), rgba(4, 14, 27, 0.9) 62%); box-shadow: 0 0 38px rgba(34, 211, 238, 0.18), inset 0 0 28px rgba(35, 246, 165, 0.1); text-align: center; }
+  .opensource-core strong { grid-area: 1 / 1; font-size: 2rem; color: #fff; }
+  .opensource-core small { grid-area: 1 / 1; padding-top: 4.6rem; color: var(--cyan); font-size: 0.5rem; letter-spacing: 0.12em; }
+  .core-pulse { position: absolute; width: 9rem; height: 9rem; border: 1px solid rgba(34, 211, 238, 0.2); border-radius: 50%; animation: oss-pulse 2.8s ease-out infinite; }
+  @keyframes oss-pulse { 0% { opacity: 0.7; transform: scale(0.96); } 100% { opacity: 0; transform: scale(1.5); } }
+
+  .opensource-card { min-height: 11.5rem; display: flex; flex-direction: column; padding: 1.2rem; border: 1px solid color-mix(in srgb, var(--accent) 24%, rgba(255,255,255,0.1)); border-radius: 10px; color: inherit; text-decoration: none; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 8%, rgba(6,18,34,0.84)), rgba(4,12,24,0.72)); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+  .opensource-card:hover { transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 14px 38px color-mix(in srgb, var(--accent) 15%, transparent); }
+  .opensource-card-index { color: var(--accent); font-size: var(--fs-2xs); letter-spacing: 0.16em; }
+  .opensource-card-prs { align-self: flex-end; margin-top: -0.9rem; padding: 0.25rem 0.45rem; border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 999px; color: var(--accent); font-size: var(--fs-2xs); }
+  .opensource-card h3 { margin-top: 1.6rem; font-size: var(--fs-lg); letter-spacing: -0.03em; }
+  .opensource-card-area { margin-top: 0.35rem; color: rgba(255,255,255,0.58); font-size: var(--fs-xs); }
+  .opensource-card-links { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: auto; padding-top: 1.3rem; }
+  .opensource-card-link { color: rgba(255,255,255,0.8); font-size: var(--fs-2xs); letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+  .opensource-card-link:hover { color: var(--accent); }
+  .opensource-card-link span { color: var(--accent); font-size: var(--fs-base); }
+
+  @media (max-width: 900px) { .opensource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .opensource-core { grid-column: span 2; } }
+  @media (max-width: 560px) {
+    .opensource-section { padding-top: 4.5rem; }
+    .opensource-heading p:last-child { font-size: var(--fs-base); }
+    .opensource-stats { gap: 1.3rem; margin: 2.8rem 0 3.5rem; }
+    .opensource-stat strong { font-size: 2.2rem; }
+    .opensource-stat span { font-size: 0.52rem; letter-spacing: 0.07em; }
+    .opensource-grid { grid-template-columns: 1fr; }
+    .opensource-core { grid-column: span 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { .core-pulse { animation: none; } .opensource-card { transition: none; } }
+</style>
