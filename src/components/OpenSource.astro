@@ -8,12 +8,16 @@ const contributions = [
   { project: 'Quarkus', prs: '1 PR', area: 'Java · Frameworks', links: ['https://github.com/quarkusio/quarkus/pull/55636'], accent: '#ffb84d' },
   { project: 'ScyllaDB', prs: '1 PR', area: 'Distributed systems', links: ['https://github.com/scylladb/scylladb/pull/30800'], accent: '#f97316' },
   { project: 'isort', prs: '1 PR', area: 'Python · Developer tooling', links: ['https://github.com/PyCQA/isort/pull/2581'], accent: '#22d3ee' },
+  { project: 'Apache DataFusion', prs: '1 PR', area: 'Rust · Query engine', links: ['https://github.com/apache/datafusion/pull/23685'], accent: '#f59e0b' },
+  { project: 'Liquibase', prs: '1 PR', area: 'Java · Database migrations', links: ['https://github.com/liquibase/liquibase/pull/7866'], accent: '#a78bfa' },
+  { project: 'DBeaver', prs: '1 PR', area: 'Java · Developer tooling', links: ['https://github.com/dbeaver/dbeaver/pull/41621'], accent: '#38bdf8' },
+  { project: 'Keycloak', prs: '1 PR', area: 'Java · Identity and access', links: ['https://github.com/keycloak/keycloak/pull/51337'], accent: '#fb7185' },
 ];
 
 const stats = [
-  { value: '11', label: 'pull requests' },
-  { value: '8', label: 'open-source projects' },
-  { value: '2', label: 'ecosystems' },
+  { value: '15', label: 'pull requests' },
+  { value: '12', label: 'open-source projects' },
+  { value: '3', label: 'ecosystems' },
 ];
 ---
 
@@ -112,8 +116,8 @@ const stats = [
   .opensource-stat strong { color: #fff; font-size: clamp(2.4rem, 4vw, 4.3rem); line-height: 0.9; letter-spacing: -0.07em; }
   .opensource-stat span { color: rgba(255,255,255,0.55); font-size: var(--fs-2xs); letter-spacing: 0.12em; text-transform: uppercase; }
 
-  .opensource-grid { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
-  .opensource-core { grid-column: span 4; display: grid; place-items: center; width: 9rem; height: 9rem; margin: 0 auto 1.5rem; border: 1px solid rgba(34, 211, 238, 0.32); border-radius: 50%; background: radial-gradient(circle, rgba(34, 211, 238, 0.18), rgba(4, 14, 27, 0.9) 62%); box-shadow: 0 0 38px rgba(34, 211, 238, 0.18), inset 0 0 28px rgba(35, 246, 165, 0.1); text-align: center; }
+  .opensource-grid { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; }
+  .opensource-core { grid-column: span 6; display: grid; place-items: center; width: 9rem; height: 9rem; margin: 0 auto 1.5rem; border: 1px solid rgba(34, 211, 238, 0.32); border-radius: 50%; background: radial-gradient(circle, rgba(34, 211, 238, 0.18), rgba(4, 14, 27, 0.9) 62%); box-shadow: 0 0 38px rgba(34, 211, 238, 0.18), inset 0 0 28px rgba(35, 246, 165, 0.1); text-align: center; }
   .opensource-core strong { grid-area: 1 / 1; font-size: 2rem; color: #fff; }
   .opensource-core small { grid-area: 1 / 1; padding-top: 4.6rem; color: var(--cyan); font-size: 0.5rem; letter-spacing: 0.12em; }
   .core-pulse { position: absolute; width: 9rem; height: 9rem; border: 1px solid rgba(34, 211, 238, 0.2); border-radius: 50%; animation: oss-pulse 2.8s ease-out infinite; }
@@ -130,7 +134,8 @@ const stats = [
   .opensource-card-link:hover { color: var(--accent); }
   .opensource-card-link span { color: var(--accent); font-size: var(--fs-base); }
 
-  @media (max-width: 900px) { .opensource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .opensource-core { grid-column: span 2; } }
+  @media (max-width: 1200px) { .opensource-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .opensource-core { grid-column: span 3; } }
+  @media (max-width: 760px) { .opensource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .opensource-core { grid-column: span 2; } }
   @media (max-width: 560px) {
     .opensource-section { padding-top: 4.5rem; }
     .opensource-heading p:last-child { font-size: var(--fs-base); }
