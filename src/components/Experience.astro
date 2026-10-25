@@ -1,45 +1,47 @@
 ---
 import { journey } from '../data/portfolio';
 
-// SVG path: M6 74 C14 58 20 26 28 40 C36 54 42 74 52 62 C62 50 62 16 74 26 C84 36 83 57 92 48
+// Six milestones distributed along the desktop and mobile SVG paths.
 // stops[i].cx / cy  === on-curve bezier endpoints in SVG viewBox-100 space
 // Because preserveAspectRatio="none" and viewBox 0 0 100 100:
 //   SVG x=6 == CSS left=6%,  SVG y=74 == CSS top=74%
 // dot width = 3rem => half = 1.5rem used in the translate math
-// Overall arc: cy 74→40→62→26→48 — peaks at 40 & 26 get progressively higher (growth story)
-// Card x-zones verified non-overlapping at container width 1440px
+// Overall desktop arc alternates between low and high points to tell a growth story.
 
 const stops = [
-  { cx: 6,  cy: 74, side: 'right', w: '13rem' },
-  { cx: 28, cy: 40, side: 'right', w: '16rem' },
-  { cx: 52, cy: 62, side: 'left',  w: '18rem' },
-  { cx: 74, cy: 26, side: 'left',  w: '16rem' },
-  { cx: 92, cy: 48, side: 'left',  w: '15rem' },
+  { cx: 5,  cy: 74, side: 'right', w: '13rem' },
+  { cx: 23, cy: 40, side: 'right', w: '15rem' },
+  { cx: 42, cy: 62, side: 'left',  w: '17rem' },
+  { cx: 59, cy: 27, side: 'left',  w: '15rem' },
+  { cx: 77, cy: 50, side: 'right', w: '16rem' },
+  { cx: 95, cy: 27, side: 'left',  w: '14rem' },
 ];
 
 // Mobile: vertical zigzag (same aesthetic, rotated portrait)
 const mobileStops = [
-  { cx: 26, cy: 8,  side: 'right' },
-  { cx: 72, cy: 28, side: 'left'  },
-  { cx: 26, cy: 50, side: 'right' },
-  { cx: 72, cy: 72, side: 'left'  },
-  { cx: 26, cy: 91, side: 'right' },
+  { cx: 26, cy: 7,  side: 'right' },
+  { cx: 72, cy: 24, side: 'left'  },
+  { cx: 26, cy: 41, side: 'right' },
+  { cx: 72, cy: 58, side: 'left'  },
+  { cx: 26, cy: 75, side: 'right' },
+  { cx: 72, cy: 92, side: 'left'  },
 ];
 
 const briefs = [
-  'B.Tech CS · GPA 8.4/10',
+  'B.Tech · Computer Science & Engineering',
   'React auth UI & API performance',
   'Kafka, flags, search & microservices',
   'Financial data platform & CI/CD',
+  'MSc Computer Science · Current student',
   'Global Java full stack roles',
 ];
 ---
 
 <section id="journey" class="career-section" aria-labelledby="career-title">
   <div class="career-heading fade-up">
-    <p class="career-kicker mono">02 / EXPERIENCE</p>
-    <h2 id="career-title">Experience Timeline.</h2>
-    <p>Computer science foundation → enterprise access systems → Kafka scale → financial data platform → global opportunities.</p>
+    <p class="career-kicker mono">02 / EDUCATION &amp; EXPERIENCE</p>
+    <h2 id="career-title">Education &amp; Experience Timeline.</h2>
+    <p>B.Tech foundation → enterprise access systems → Kafka scale → financial data platform → MSc at UCD → global opportunities.</p>
   </div>
 
   <div class="career-river fade-up" aria-label="Experience chapters">
@@ -47,9 +49,10 @@ const briefs = [
       <defs>
         <linearGradient id="careerRayGradient" x1="0%" x2="100%" y1="0%" y2="0%">
           <stop offset="0%"   stop-color="#ffb84d" />
-          <stop offset="25%"  stop-color="#c77dff" />
-          <stop offset="52%"  stop-color="#00d2ff" />
-          <stop offset="76%"  stop-color="#23f6a5" />
+          <stop offset="20%"  stop-color="#c77dff" />
+          <stop offset="40%"  stop-color="#00d2ff" />
+          <stop offset="60%"  stop-color="#23f6a5" />
+          <stop offset="80%"  stop-color="#3b82f6" />
           <stop offset="100%" stop-color="#ff4da6" />
         </linearGradient>
         <filter id="careerRayGlow" x="-5%" y="-400%" width="110%" height="900%">
@@ -61,17 +64,17 @@ const briefs = [
       <path vector-effect="non-scaling-stroke" fill="none"
         stroke="url(#careerRayGradient)" stroke-width="22" stroke-linecap="round"
         opacity="0.05" filter="url(#careerRayGlow)"
-        d="M6 74 C14 58 20 26 28 40 C36 54 42 74 52 62 C62 50 62 16 74 26 C84 36 83 57 92 48" />
+        d="M5 74 C11 58 17 27 23 40 C29 53 35 73 42 62 C49 51 51 17 59 27 C67 37 69 61 77 50 C85 39 88 17 95 27" />
       <!-- main thin line -->
       <path class="ray-flow" vector-effect="non-scaling-stroke" fill="none"
         stroke="url(#careerRayGradient)" stroke-width="1.5" stroke-linecap="round"
         opacity="0.75"
-        d="M6 74 C14 58 20 26 28 40 C36 54 42 74 52 62 C62 50 62 16 74 26 C84 36 83 57 92 48" />
+        d="M5 74 C11 58 17 27 23 40 C29 53 35 73 42 62 C49 51 51 17 59 27 C67 37 69 61 77 50 C85 39 88 17 95 27" />
       <!-- animated spark dash -->
       <path class="ray-spark" vector-effect="non-scaling-stroke" fill="none"
         stroke="url(#careerRayGradient)" stroke-width="1" stroke-linecap="round"
         stroke-dasharray="3 14" opacity="0.95"
-        d="M6 74 C14 58 20 26 28 40 C36 54 42 74 52 62 C62 50 62 16 74 26 C84 36 83 57 92 48" />
+        d="M5 74 C11 58 17 27 23 40 C29 53 35 73 42 62 C49 51 51 17 59 27 C67 37 69 61 77 50 C85 39 88 17 95 27" />
     </svg>
 
     <div class="career-aura" aria-hidden="true"></div>
@@ -81,24 +84,25 @@ const briefs = [
       <defs>
         <linearGradient id="mobGrad" x1="0%" x2="0%" y1="0%" y2="100%">
           <stop offset="0%"   stop-color="#ffb84d" />
-          <stop offset="25%"  stop-color="#c77dff" />
-          <stop offset="52%"  stop-color="#00d2ff" />
-          <stop offset="76%"  stop-color="#23f6a5" />
+          <stop offset="20%"  stop-color="#c77dff" />
+          <stop offset="40%"  stop-color="#00d2ff" />
+          <stop offset="60%"  stop-color="#23f6a5" />
+          <stop offset="80%"  stop-color="#3b82f6" />
           <stop offset="100%" stop-color="#ff4da6" />
         </linearGradient>
       </defs>
       <path vector-effect="non-scaling-stroke" fill="none"
         stroke="url(#mobGrad)" stroke-width="22" stroke-linecap="round"
         opacity="0.05"
-        d="M26 8 C8 15 92 22 72 28 C52 34 48 44 26 50 C8 56 92 64 72 72 C52 78 48 86 26 91" />
+        d="M26 7 C8 13 92 18 72 24 C52 30 46 35 26 41 C8 47 92 52 72 58 C52 64 46 69 26 75 C8 81 92 86 72 92" />
       <path vector-effect="non-scaling-stroke" fill="none"
         stroke="url(#mobGrad)" stroke-width="1.5" stroke-linecap="round"
         opacity="0.75"
-        d="M26 8 C8 15 92 22 72 28 C52 34 48 44 26 50 C8 56 92 64 72 72 C52 78 48 86 26 91" />
+        d="M26 7 C8 13 92 18 72 24 C52 30 46 35 26 41 C8 47 92 52 72 58 C52 64 46 69 26 75 C8 81 92 86 72 92" />
       <path class="ray-spark" vector-effect="non-scaling-stroke" fill="none"
         stroke="url(#mobGrad)" stroke-width="1" stroke-linecap="round"
         stroke-dasharray="3 14" opacity="0.95"
-        d="M26 8 C8 15 92 22 72 28 C52 34 48 44 26 50 C8 56 92 64 72 72 C52 78 48 86 26 91" />
+        d="M26 7 C8 13 92 18 72 24 C52 30 46 35 26 41 C8 47 92 52 72 58 C52 64 46 69 26 75 C8 81 92 86 72 92" />
     </svg>
 
     {journey.map((chapter, i) => {
@@ -244,8 +248,8 @@ const briefs = [
     }
 
     /* ── node positions for pulse bursts ── */
-    const D_NODES = [[6,74],[28,40],[52,62],[74,26],[92,48]];
-    const M_NODES = [[26,8],[72,28],[26,50],[72,72],[26,91]];
+    const D_NODES = [[5,74],[23,40],[42,62],[59,27],[77,50],[95,27]];
+    const M_NODES = [[26,7],[72,24],[26,41],[72,58],[26,75],[72,92]];
 
     function nearNode(px, py) {
       const nodes = mob ? M_NODES : D_NODES;

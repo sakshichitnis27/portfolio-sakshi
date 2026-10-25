@@ -82,11 +82,11 @@ export const techTicker = [
 export const journey = [
   {
     id: 'education',
-    label: 'RGPV',
-    status: '2018 - 2022',
-    title: 'B.Tech in Computer Science',
-    line: 'Completed B.Tech in Computer Science from Rajiv Gandhi Prodyogiki Vishwavidyalaya with GPA 8.4/10.0, building the foundation for backend engineering, data structures, databases, and distributed systems.',
-    proof: ['Computer Science', 'GPA 8.4/10', 'Engineering foundation'],
+    label: 'Rajiv Gandhi Proudyogiki Vishwavidyalaya',
+    status: 'Apr 2018 - Jul 2022',
+    title: 'B.Tech in Computer Science and Engineering',
+    line: 'Completed a B.Tech in Computer Science and Engineering in India, building a strong foundation in software engineering, data structures, databases, and distributed systems.',
+    proof: ['B.Tech', 'Computer Science and Engineering', 'India'],
     accent: '#60a5fa',
   },
   {
@@ -115,6 +115,15 @@ export const journey = [
     line: 'Contributing to NeoXam DataHub, an enterprise financial data platform used by 30-100 global institutions, across feed processing, validation governance, audit tracking, downstream distribution, CI/CD release pipelines, Java/Spring ingestion workflows, and AI-assisted development.',
     proof: ['NeoXam DataHub', '30-100 institutions', 'Financial data', 'CI/CD ownership', 'AI-assisted delivery'],
     accent: '#8b5cf6',
+  },
+  {
+    id: 'ucd',
+    label: 'University College Dublin (UCD)',
+    status: 'Sep 2026 - Sep 2027 (Expected)',
+    title: 'MSc Computer Science (Negotiated Learning)',
+    line: 'Currently pursuing an MSc in Computer Science (Negotiated Learning) at University College Dublin in Dublin, Ireland, with selected coursework in Distributed Systems, Cloud Computing, Advanced Data Structures in Java, Big Data Programming, and Information Security.',
+    proof: ['Current student', 'Distributed Systems', 'Cloud Computing', 'Big Data Programming', 'Information Security'],
+    accent: '#3b82f6',
   },
   {
     id: 'global',
